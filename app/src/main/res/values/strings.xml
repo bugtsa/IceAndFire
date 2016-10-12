@@ -1,0 +1,66 @@
+<resources>
+
+    <string name="ff_regular">sans-serif</string>
+    <string name="ff_medium">sans-serif-medium</string>
+    <string name="ff_condensed">sans-serif-condensed</string>
+
+    <string name="app_name">Vladimir Polkhovtsev</string>
+    <string name="my_name">Полховцев Владимир</string>
+    <string name="phone_number_title">Мобильный</string>
+    <string name="email_address_title">E-mail</string>
+    <string name="vk_profile_title">Профиль в VK</string>
+    <string name="repo_title">Репозиторий</string>
+    <string name="about_me_title">О себе</string>
+
+    <string name="phone_number_body">+7 (926) 432-79-17</string>
+    <string name="email_address_body">bugtsa@gmail.com</string>
+    <string name="vk_profile_body">vk.com/id44169</string>
+    <string name="repo_body">github.com/bugtsa/DevIntensive</string>
+    <string name="about_me_body">Что такое быть русским? Думаю, во-первых, это ничего не ждать, ни на что не надеяться и рассчитывать только на себя и своих близких. Доктор не приедет, помощь не придет. А если и придет, то, как показывает пример Новороссии, страшной, выедающей душу ценой. Быть русским сегодня — это осознавать, что у вас нет ни государства, ни диаспоры, но есть лишь другие русские, такие же разбросанные, потерянные, растерянные.
+    Во-вторых, быть русским сегодня — это помогать другим русским, стараться ответить на каждый крик о помощи, на каждую просьбу о поддержке. Один человек — хрупок и слаб. Десять человек — уже сильнее. А тысяча человек… тысяча человек — это народный сход в Минводах (после которого начались новые задержания убийц) или даже механизированная бригада «Призрак» Алексея Мозгового. Искать друг друга, цепляться друг за друга, не оставлять других на растерзание, не проходить мимо «Наших бьют!» Вроде простые слова — говорить, но очень сложные — делать. Окружающих людей можно воспитывать лишь собственным примером (если вы курите — бесполезно требовать от соседей не курить), а собственный пример начинается с борьбы с собственным равнодушием.
+    </string>
+    <string name="quantity">5</string>
+    <string name="rating">Рейтинг</string>
+    <string name="lines_code">Написано строк кода</string>
+    <string name="projects">Проектов</string>
+    <string name="menu_team">Команда</string>
+    <string name="menu_sign_in">Вход</string>
+    <string name="menu_user_profile">Мой профиль</string>
+    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+
+    <string name="user_profile_placeholder_image_title">Изменить фотографию профиля</string>
+    <string name="user_profile_dialog_gallery">Загрузить из галереи</string>
+    <string name="user_profile_dialog_camera">Сделать снимок</string>
+    <string name="user_profile_dialog_cancel">Отмена</string>
+    <string name="chose_gallery_photo">Выберите фото</string>
+    <string name="give_permission_message">Для корректной работы приложения необходимо дать требуемые разрешения</string>
+    <string name="allow_message">Разрешить</string>
+    <string name="err_msg_phone">Неверно! Формат: +x xxx xxx-xx-xx</string>
+    <string name="err_msg_email">Неверный e-mail. Формат: xxx@xx.xx</string>
+    <string name="err_msg_vk">Неверно! Формат: vk.com/ххх</string>
+    <string name="err_msg_git">Неверно! Формат: github.com/ххх</string>
+
+    <string name="sing_in">Войти</string>
+    <string name="hint_search">Поиск пользователя</string>
+    <string name="search_input_name_user">Введите имя пользователя</string>
+    <string name="show_user_profile">Просмотр</string>
+
+    //Errors
+    <string name="not_known_response">Неизвестный ответ</string>
+    <string name="login_password_not_match_response">Неверный логин или пароль</string>
+    <string name="error_response">"Ошибка: "</string>
+    <string name="network_not_access_response">Сеть на данный момент недоступна, попробуйте позже</string>
+    <string name="error_load_users_list">Ошибка загрузки списка пользователей</string>
+    <string name="request_auth">Необходима авторизация</string>
+    <string name="login_pass_not_match">Неверный логин или пароль</string>
+    <string name="editable_error">Ошибка изменения строки</string>
+    <string name="users_list_not_saved">Список пользователей не сохранён в ЬД</string>
+    <string name="photo_save_on_site">Фото сохранено на сайте</string>
+    <string name="photo_not_save_on_site">Фото сохранить на сайте не удалось</string>
+    <string name="set_like">Пользователь поставил Вам лайк</string>
+    <string name="zeros">0</string>
+    //End Errors
+
+    <string name="hint_not_connection_inet">Проверьте подключение к сети интернет!</string>
+
+</resources>
