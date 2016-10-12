@@ -192,7 +192,7 @@ public class HouseListActivity extends BaseActivity {
 
     private void loadHousesFromNetwork() {
         if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
-            Call<HouseRes> call = mDataManager.getUserListFromNetwork();
+            Call<HouseRes> call = mDataManager.getHouseFromNetwork(String.valueOf(ConstantManager.TARGARIEN_KEY));
             call.enqueue(new Callback<HouseRes>() {
                 @Override
                 public void onResponse(Call<HouseRes> call, Response<HouseRes> response) {

@@ -57,4 +57,8 @@ public interface ConstantManager {
     int END_SHOW_USERS = 711;
     int EDITABLE_ERROR = 722;
     int USER_LIST_NOT_SAVED = 733;
+
+    int LANNISTER_KEY = 229;
+    int TARGARIEN_KEY = 378;
+    int STARK_KEY = 362;
 }

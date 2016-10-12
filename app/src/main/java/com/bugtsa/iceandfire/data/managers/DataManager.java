@@ -2,12 +2,13 @@ package com.bugtsa.iceandfire.data.managers;
 
 import android.content.Context;
 
+import com.bugtsa.iceandfire.IceAndFireApplication;
 import com.bugtsa.iceandfire.data.network.PicassoCache;
 import com.bugtsa.iceandfire.data.network.RestService;
 import com.bugtsa.iceandfire.data.network.ServiceGenerator;
+import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.DaoSession;
-import com.bugtsa.iceandfire.IceAndFireApplication;
 import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
@@ -66,8 +67,12 @@ public class DataManager {
 
     //region ============Network=================
 
-    public Call<HouseRes> getUserListFromNetwork() {
-        return mRestService.getHouse();
+    public Call<HouseRes> getHouseFromNetwork(String house) {
+        return mRestService.getHouse(house);
+    }
+
+    public Call<CharacterRes> getCharacterFromNetwork(int character) {
+        return mRestService.getCharacter(character);
     }
 
     //end region
