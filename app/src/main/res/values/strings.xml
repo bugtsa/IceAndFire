@@ -23,9 +23,9 @@
     <string name="rating">Рейтинг</string>
     <string name="lines_code">Написано строк кода</string>
     <string name="projects">Проектов</string>
-    <string name="menu_team">Команда</string>
-    <string name="menu_sign_in">Вход</string>
-    <string name="menu_user_profile">Мой профиль</string>
+    <string name="menu_lanister">Ланистеры</string>
+    <string name="menu_targarien">Таргариены</string>
+    <string name="menu_stark">Старки</string>
     <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
 
     <string name="user_profile_placeholder_image_title">Изменить фотографию профиля</string>

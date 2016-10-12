@@ -245,7 +245,7 @@ public class HouseListActivity extends BaseActivity {
 
         insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
-        mNavigationView.setCheckedItem(R.id.team_menu);
+        mNavigationView.setCheckedItem(R.id.stark_menu);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -253,10 +253,13 @@ public class HouseListActivity extends BaseActivity {
                 mNavigationDrawer.closeDrawer(GravityCompat.START);
 
                 switch (item.getItemId()) {
-                    case R.id.user_profile_menu:
-                        showSplash();
+                    case R.id.stark_menu:
+
                         break;
-                    case R.id.team_menu:
+                    case R.id.targarien_menu:
+
+                        break;
+                    case R.id.lanister_menu:
 
                         break;
                 }
