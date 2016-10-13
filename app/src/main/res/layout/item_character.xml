@@ -26,7 +26,7 @@
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar_profile"
                 style="@style/match_and_wrap"
-                app:contentScrim="@color/color_primary"
+                app:contentScrim="@color/red_dark"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
@@ -74,11 +74,11 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <!--<include layout="@layout/static_profile_content"></include>-->
+        <include layout="@layout/character_content"></include>
 
         <!--<include-->
-        <!--android:id="@+id/static_profile_content"-->
-        <!--layout="@layout/static_profile_content"-->
+        <!--android:id="@+id/character_content"-->
+        <!--layout="@layout/character_content"-->
         <!--app:recyclerViewContent="@{1}"></include>-->
 
     </android.support.design.widget.CoordinatorLayout>

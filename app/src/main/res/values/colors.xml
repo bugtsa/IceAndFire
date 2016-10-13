@@ -15,5 +15,10 @@
 
     <color name="orange_dark">#f2594a</color>
 
+
+    <color name="red_dark">#7F0000</color>
+
+
+
     <color name="primary_text">#212121</color>
 </resources>

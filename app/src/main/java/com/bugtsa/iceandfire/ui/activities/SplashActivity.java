@@ -26,7 +26,7 @@ import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveCharacterOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
-import com.bugtsa.iceandfire.databinding.ActivityHouseListBinding;
+import com.bugtsa.iceandfire.databinding.ActivitySplashBinding;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
 import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
 import com.bugtsa.iceandfire.utils.AppConfig;
@@ -56,9 +56,7 @@ public class SplashActivity extends BaseActivity {
     private static Fragment lannisterFragment;
     private static Fragment starkFragment;
 
-    private Fragment mFragmentContainer;
-
-    private ActivityHouseListBinding mBinding;
+    private ActivitySplashBinding mBinding;
     private ImageView drawerUserAvatar;
     private TextView drawerUserFullName;
     private TextView drawerUserEmail;
@@ -73,7 +71,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView((Activity)this, R.layout.activity_house_list);
+        mBinding = DataBindingUtil.setContentView((Activity)this, R.layout.activity_splash);
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);

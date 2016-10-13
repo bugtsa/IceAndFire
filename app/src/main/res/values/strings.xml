@@ -65,5 +65,11 @@
     <string name="lannister_title">Lannister</string>
     <string name="targarien_title">Targarien</string>
     <string name="stark_title">Stark</string>
+    <string name="character_words">Words</string>
+    <string name="character_born">Born:</string>
+    <string name="character_titles">Titles:</string>
+    <string name="character_aliases">Aliases:</string>
+    <string name="character_mother">Mother:</string>
+    <string name="character_father">Father:</string>
 
 </resources>
