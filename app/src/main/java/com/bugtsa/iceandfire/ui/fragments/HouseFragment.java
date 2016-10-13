@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import com.bugtsa.iceandfire.data.storage.models.House;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListByHouseIdOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.databinding.FragmentHousesBinding;
+import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
+import com.bugtsa.iceandfire.ui.routers.CharactersRouter;
+import com.bugtsa.iceandfire.ui.views.IHouseView;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.redmadrobot.chronos.ChronosConnector;
 
@@ -27,7 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HouseFragment extends Fragment {
+public class HouseFragment extends Fragment implements IHouseView{
 
     private static final String HOUSE_KEY = "HOUSE_KEY";
     private FragmentHousesBinding mBinding;
@@ -39,8 +43,11 @@ public class HouseFragment extends Fragment {
 
     private ChronosConnector mConnector;
 
+    private CharactersRouter mRouter;
+
+    private CharactersAdapter mAdapter;
+
     private List<CharacterOfHouse> mCharacters;
-    private List<CharacterOfHouse> mUpdateCharacters;
 
     private List<House> mHouses;
 
@@ -57,12 +64,13 @@ public class HouseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mRouter = new CharactersRouter(getActivity());
+
         mDataManager = DataManager.getInstance();
         mContext = mDataManager.getContext();
 
         mHouses = new ArrayList<>();
         mCharacters = new ArrayList<>();
-        mUpdateCharacters = new ArrayList<>();
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
@@ -76,7 +84,21 @@ public class HouseFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_houses, container, false);
         mBinding = DataBindingUtil.bind(view);
 
+        setupRecyclerView();
         return view;
+    }
+
+    private void setupRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        mBinding.characters.setLayoutManager(layoutManager);
+        mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse));
+        mBinding.characters.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void showCharacters(List<CharacterOfHouse> characterList) {
+        mAdapter.setCharacter(characterList);
     }
 
     @Override
@@ -117,7 +139,6 @@ public class HouseFragment extends Fragment {
 
     public void showData() {
         loadHousesListFromDb();
-        loadCharacterOfHouseFromDb();
     }
 
     /**
@@ -146,10 +167,12 @@ public class HouseFragment extends Fragment {
      */
     public void onOperationFinished(final LoadHousesListOperation.Result result) {
         mHouses = result.getOutput();
+        loadCharacterOfHouseFromDb();
     }
 
     public void onOperationFinished(final LoadCharacterListByHouseIdOperation.Result result) {
         mCharacters = result.getOutput();
+        showCharacters(mCharacters);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

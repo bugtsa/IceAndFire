@@ -3,7 +3,7 @@
 
     <data>
         <variable
-            name="characterOfHouse"
+            name="character"
             type="com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse"/>
     </data>
 
@@ -64,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/ff_medium"
-                        android:text="@{characterOfHouse.name}"
+                        android:text="@{character.name}"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_large_20"
                         tools:text="name"/>
@@ -90,7 +90,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/ff_medium"
-                        android:text="@{characterOfHouse.gender}"
+                        android:text="@{character.gender}"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_large_20"/>
 
@@ -115,7 +115,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/ff_medium"
-                        android:text="@{characterOfHouse.born}"
+                        android:text="@{character.born}"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_large_20"/>
 
@@ -137,7 +137,7 @@
                 android:maxLines="3"
                 android:paddingLeft="@dimen/spacing_normal_16"
                 android:paddingRight="@dimen/spacing_normal_16"
-                android:text="@{characterOfHouse.died}"
+                android:text="@{character.died}"
                 android:textColor="@color/grey_light"
                 android:textSize="@dimen/font_small_14"/>
 

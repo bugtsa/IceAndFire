@@ -31,8 +31,7 @@ public class CharacterActivity extends AppCompatActivity {
     Toolbar mToolBar;
     @BindView(R.id.user_profile_iv_profile)
     ImageView mProfileImage;
-    @BindView(R.id.fab_user_profile)
-    ImageView mUserLike;
+
     @BindView(R.id.about_me_et_profile)
     EditText mUserBio;
     @BindView(R.id.rating_quantity_static_tv)
@@ -54,7 +53,7 @@ public class CharacterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_user);
+        setContentView(R.layout.item_character);
         ButterKnife.bind(this);
 
         mDataManager = DataManager.getInstance();
