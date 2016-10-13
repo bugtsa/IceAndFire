@@ -30,8 +30,8 @@ public class LoadCharacterListByHouseIdOperation extends ChronosOperation<List<C
 
     @NonNull
     @Override
-    public Class<LoadCharacterListOperation.Result> getResultClass() {
-        return LoadCharacterListOperation.Result.class;
+    public Class<Result> getResultClass() {
+        return Result.class;
     }
 
     public static final class Result extends ChronosOperationResult<List<CharacterOfHouse>> {

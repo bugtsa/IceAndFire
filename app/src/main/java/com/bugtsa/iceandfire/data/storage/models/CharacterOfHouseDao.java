@@ -37,6 +37,7 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         public final static Property Father = new Property(9, String.class, "father", false, "FATHER");
         public final static Property Mother = new Property(10, String.class, "mother", false, "MOTHER");
         public final static Property Spouse = new Property(11, String.class, "spouse", false, "SPOUSE");
+        public final static Property Alias = new Property(12, String.class, "alias", false, "ALIAS");
     };
 
     private DaoSession daoSession;
@@ -67,7 +68,8 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
                 "\"DIED\" TEXT," + // 8: died
                 "\"FATHER\" TEXT," + // 9: father
                 "\"MOTHER\" TEXT," + // 10: mother
-                "\"SPOUSE\" TEXT);"); // 11: spouse
+                "\"SPOUSE\" TEXT," + // 11: spouse
+                "\"ALIAS\" TEXT);"); // 12: alias
     }
 
     /** Drops the underlying database table. */
@@ -139,6 +141,11 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         if (spouse != null) {
             stmt.bindString(12, spouse);
         }
+ 
+        String alias = entity.getAlias();
+        if (alias != null) {
+            stmt.bindString(13, alias);
+        }
     }
 
     @Override
@@ -204,6 +211,11 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         if (spouse != null) {
             stmt.bindString(12, spouse);
         }
+ 
+        String alias = entity.getAlias();
+        if (alias != null) {
+            stmt.bindString(13, alias);
+        }
     }
 
     @Override
@@ -231,7 +243,8 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // died
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // father
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // mother
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // spouse
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // spouse
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // alias
         );
         return entity;
     }
@@ -250,6 +263,7 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         entity.setFather(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setMother(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setSpouse(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setAlias(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
      }
     
     @Override

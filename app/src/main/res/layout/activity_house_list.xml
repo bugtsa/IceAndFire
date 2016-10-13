@@ -10,7 +10,7 @@
         android:id="@+id/navigation_drawer_house_list"
         style="@style/match_double"
         android:fitsSystemWindows="true"
-        tools:context=".ui.activities.HouseListActivity">
+        tools:context=".ui.activities.SplashActivity">
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/coordinator_layout_house_list"

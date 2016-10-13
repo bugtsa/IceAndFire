@@ -32,6 +32,8 @@ public class CharacterOfHouse {
     private String mother;
     private String spouse;
 
+    private String alias;
+
     //    @ToMany(joinProperties = {
 //            @JoinProperty(name = "remoteId", referencedName = "characterRemoteId")
 //    })
@@ -62,6 +64,11 @@ public class CharacterOfHouse {
             if (!characterRes.getAllegiances().isEmpty()) {
                 houseRemoteId = StringUtils.getIdFromUrlApi(characterRes.getAllegiances().get(0));
             }
+        }
+        if (characterRes.getAliases() != null) {
+            alias = characterRes.getAliases().get(0);
+        } else if (characterRes.getTitles() != null) {
+            alias = characterRes.getTitles().get(0);
         }
     }
 
@@ -232,10 +239,18 @@ public class CharacterOfHouse {
         this.id = id;
     }
 
-    @Generated(hash = 1929903012)
+    public String getAlias() {
+        return this.alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    @Generated(hash = 1636845706)
     public CharacterOfHouse(Long id, String remoteId, String houseRemoteId, String url, String name,
             String gender, String culture, String born, String died, String father, String mother,
-            String spouse) {
+            String spouse, String alias) {
         this.id = id;
         this.remoteId = remoteId;
         this.houseRemoteId = houseRemoteId;
@@ -248,6 +263,7 @@ public class CharacterOfHouse {
         this.father = father;
         this.mother = mother;
         this.spouse = spouse;
+        this.alias = alias;
     }
 
     @Generated(hash = 1658210378)

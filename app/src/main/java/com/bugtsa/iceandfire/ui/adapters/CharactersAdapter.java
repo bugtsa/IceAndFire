@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
-import com.bugtsa.iceandfire.databinding.ItemHouseListBinding;
+import com.bugtsa.iceandfire.databinding.ItemCharacterAdapterBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.It
 
     @Override
     public CharactersAdapter.ItemCharacterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemCharacterViewHolder(ItemHouseListBinding
+        return new ItemCharacterViewHolder(ItemCharacterAdapterBinding
                 .inflate(LayoutInflater.from(parent.getContext()), parent, false)
                 .getRoot());
     }
@@ -61,7 +61,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.It
     }
 
     class ItemCharacterViewHolder extends RecyclerView.ViewHolder {
-        ItemHouseListBinding mBinding;
+        ItemCharacterAdapterBinding mBinding;
 
         public ItemCharacterViewHolder(View itemView) {
             super(itemView);

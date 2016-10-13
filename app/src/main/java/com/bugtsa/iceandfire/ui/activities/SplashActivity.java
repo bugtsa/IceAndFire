@@ -50,9 +50,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HouseListActivity extends BaseActivity {
+public class SplashActivity extends BaseActivity {
     public static final String ACTION_BAR_TITLE = "action_bar_title";
-    private static final String TAG = ConstantManager.TAG_PREFIX + HouseListActivity.class.getSimpleName();
+    private static final String TAG = ConstantManager.TAG_PREFIX + SplashActivity.class.getSimpleName();
     private static String VIEWPAGER_VISIBLE = "viewpager_visible";
     private static Fragment targarienFragment;
     private static Fragment lannisterFragment;
