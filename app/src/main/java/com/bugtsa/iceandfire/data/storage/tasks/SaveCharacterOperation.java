@@ -4,12 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.bugtsa.iceandfire.data.managers.DataManager;
-import com.bugtsa.iceandfire.data.network.res.HouseRes;
+import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouseDao;
-import com.bugtsa.iceandfire.data.storage.models.House;
-import com.bugtsa.iceandfire.data.storage.models.HouseDao;
-import com.bugtsa.iceandfire.utils.StringUtils;
 import com.redmadrobot.chronos.ChronosOperation;
 import com.redmadrobot.chronos.ChronosOperationResult;
 
@@ -18,32 +15,32 @@ import java.util.List;
 
 import retrofit2.Response;
 
+public class SaveCharacterOperation extends ChronosOperation<List<CharacterOfHouse>>{
 
-public class SaveHousesListOperation extends ChronosOperation<String> {
-    private Response<HouseRes> mResponse;
+    private Response<List<CharacterRes>> mResponse;
 
-    public SaveHousesListOperation(Response<HouseRes> response) {
+    private String mRemoteCharacterId;
+
+    private String mRemoteHouseId;
+
+    public SaveCharacterOperation(Response<List<CharacterRes>> response) {
         mResponse = response;
     }
 
     @Nullable
     @Override
-    public String run() {
+    public List<CharacterOfHouse> run() {
         DataManager dataManager = DataManager.getInstance();
-        HouseDao houseDao = dataManager.getDaoSession().getHouseDao();
         CharacterOfHouseDao characterOfHouseDao = dataManager.getDaoSession().getCharacterOfHouseDao();
-        HouseRes houseRes = mResponse.body();
-        houseRes.setUrl(StringUtils.getIdFromUrlApi(houseRes.getUrl()));
 
         List<CharacterOfHouse> characterList = new ArrayList<>();
-        for (String memberUrl : houseRes.getSwornMembers()) {
-//            characterList.add(new CharacterOfHouse(StringUtils.getIdFromUrlApi(memberUrl), houseRes.getUrl()));
-        }
 
-        houseDao.insertOrReplaceInTx(new House(houseRes));
+        for (int pos = 0; pos < mResponse.body().size(); pos++) {
+            characterList.add(new CharacterOfHouse(mResponse.body().get(pos)));
+        }
         characterOfHouseDao.insertOrReplaceInTx(characterList);
 
-        return null;
+        return characterList;
     }
 
     @NonNull
@@ -53,7 +50,7 @@ public class SaveHousesListOperation extends ChronosOperation<String> {
     }
 
 
-    public static final class Result extends ChronosOperationResult<String> {
+    public static final class Result extends ChronosOperationResult<List<CharacterOfHouse>> {
 
     }
 }

@@ -22,6 +22,10 @@ import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
+import com.bugtsa.iceandfire.data.network.res.CharacterRes;
+import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
+import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
+import com.bugtsa.iceandfire.data.storage.tasks.SaveCharacterOperation;
 import com.bugtsa.iceandfire.databinding.ActivityHouseListBinding;
 import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
@@ -29,12 +33,19 @@ import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
 import com.bugtsa.iceandfire.utils.AppConfig;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
+import com.bugtsa.iceandfire.utils.NetworkStatusChecker;
 import com.redmadrobot.chronos.ChronosConnector;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HouseListActivity extends BaseActivity {
     public static final String ACTION_BAR_TITLE = "action_bar_title";
@@ -84,6 +95,7 @@ public class HouseListActivity extends BaseActivity {
         setupDrawer();
 //        showSplash();
 //        selectPage(ConstantManager.STARK_MENU_ID);
+        loadCharacterFromDb();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -349,39 +361,55 @@ public class HouseListActivity extends BaseActivity {
             try {
                 Thread.sleep(timeForSleep);
                 hideSplash();
-            }
-            catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    /**
-     * Разрешает осуществлять swipe элементов списка пользователей
-     */
-//    private void setAllowSwipeUser() {
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        mBinding.houseListContent.recyclerViewHouseList.setLayoutManager(linearLayoutManager);
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                final int startPosition = viewHolder.getAdapterPosition();
-//                final int targetPosition = target.getAdapterPosition();
-//
-//                mCharacters.add(targetPosition, mCharacters.remove(startPosition));
-//                mCharactersAdapter.notifyItemMoved(startPosition, targetPosition);
-//
-//                return true;
-//            }
-//
-//            @Override
-//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                int position = viewHolder.getAdapterPosition();
-//                mCharacters.remove(position);
-//                mCharactersAdapter.notifyDataSetChanged();
-//            }
-//        });
-//        itemTouchHelper.attachToRecyclerView(mBinding.houseListContent.recyclerViewHouseList);
-//    }
+    private void loadCharacterFromDb() {
+        try {
+            mConnector.runOperation(new LoadCharacterListOperation(), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onOperationFinished(final LoadCharacterListOperation.Result result) {
+        if(result.getOutput().isEmpty()) {
+            int countPage = 43;
+            int perPage = 50;
+            for (int currentPage = 1; currentPage <= countPage; currentPage++) {
+                loadCharacterFromNetwork(currentPage, perPage);
+            }
+        }
+//        showCharacters();
+    }
+
+    public void onOperationFinished(final SaveCharacterOperation.Result result) {
+        List<CharacterOfHouse> characterOfHouse = result.getOutput();
+    }
+
+    private void loadCharacterFromNetwork(final int currentPage, final int perPage) {
+        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+            Call<List<CharacterRes>> call = mDataManager.getCharacterPageFromNetwork(String.valueOf(currentPage), String.valueOf(perPage));
+            call.enqueue(new Callback<List<CharacterRes>>() {
+                @Override
+                public void onResponse(Call<List<CharacterRes>> call, Response<List<CharacterRes>> response) {
+                    if (response.code() == ConstantManager.RESPONSE_OK) {
+                        mConnector.runOperation(new SaveCharacterOperation(response), false);
+                    } else {
+                        LogUtils.d("response not ok");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<CharacterRes>> call, Throwable t) {
+                    LogUtils.d("failes server");
+                }
+            });
+        } else {
+
+        }
+    }
 }

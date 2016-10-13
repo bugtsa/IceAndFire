@@ -28,14 +28,15 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property RemoteId = new Property(1, String.class, "remoteId", false, "REMOTE_ID");
         public final static Property HouseRemoteId = new Property(2, String.class, "houseRemoteId", false, "HOUSE_REMOTE_ID");
-        public final static Property Name = new Property(3, String.class, "name", false, "NAME");
-        public final static Property Gender = new Property(4, String.class, "gender", false, "GENDER");
-        public final static Property Culture = new Property(5, String.class, "culture", false, "CULTURE");
-        public final static Property Born = new Property(6, String.class, "born", false, "BORN");
-        public final static Property Died = new Property(7, String.class, "died", false, "DIED");
-        public final static Property Father = new Property(8, String.class, "father", false, "FATHER");
-        public final static Property Mother = new Property(9, String.class, "mother", false, "MOTHER");
-        public final static Property Spouse = new Property(10, String.class, "spouse", false, "SPOUSE");
+        public final static Property Url = new Property(3, String.class, "url", false, "URL");
+        public final static Property Name = new Property(4, String.class, "name", false, "NAME");
+        public final static Property Gender = new Property(5, String.class, "gender", false, "GENDER");
+        public final static Property Culture = new Property(6, String.class, "culture", false, "CULTURE");
+        public final static Property Born = new Property(7, String.class, "born", false, "BORN");
+        public final static Property Died = new Property(8, String.class, "died", false, "DIED");
+        public final static Property Father = new Property(9, String.class, "father", false, "FATHER");
+        public final static Property Mother = new Property(10, String.class, "mother", false, "MOTHER");
+        public final static Property Spouse = new Property(11, String.class, "spouse", false, "SPOUSE");
     };
 
     private DaoSession daoSession;
@@ -56,16 +57,17 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"CHARACTERS\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"REMOTE_ID\" TEXT NOT NULL UNIQUE ," + // 1: remoteId
+                "\"REMOTE_ID\" TEXT," + // 1: remoteId
                 "\"HOUSE_REMOTE_ID\" TEXT," + // 2: houseRemoteId
-                "\"NAME\" TEXT," + // 3: name
-                "\"GENDER\" TEXT," + // 4: gender
-                "\"CULTURE\" TEXT," + // 5: culture
-                "\"BORN\" TEXT," + // 6: born
-                "\"DIED\" TEXT," + // 7: died
-                "\"FATHER\" TEXT," + // 8: father
-                "\"MOTHER\" TEXT," + // 9: mother
-                "\"SPOUSE\" TEXT);"); // 10: spouse
+                "\"URL\" TEXT," + // 3: url
+                "\"NAME\" TEXT," + // 4: name
+                "\"GENDER\" TEXT," + // 5: gender
+                "\"CULTURE\" TEXT," + // 6: culture
+                "\"BORN\" TEXT," + // 7: born
+                "\"DIED\" TEXT," + // 8: died
+                "\"FATHER\" TEXT," + // 9: father
+                "\"MOTHER\" TEXT," + // 10: mother
+                "\"SPOUSE\" TEXT);"); // 11: spouse
     }
 
     /** Drops the underlying database table. */
@@ -82,51 +84,60 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindString(2, entity.getRemoteId());
+ 
+        String remoteId = entity.getRemoteId();
+        if (remoteId != null) {
+            stmt.bindString(2, remoteId);
+        }
  
         String houseRemoteId = entity.getHouseRemoteId();
         if (houseRemoteId != null) {
             stmt.bindString(3, houseRemoteId);
         }
  
+        String url = entity.getUrl();
+        if (url != null) {
+            stmt.bindString(4, url);
+        }
+ 
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(4, name);
+            stmt.bindString(5, name);
         }
  
         String gender = entity.getGender();
         if (gender != null) {
-            stmt.bindString(5, gender);
+            stmt.bindString(6, gender);
         }
  
         String culture = entity.getCulture();
         if (culture != null) {
-            stmt.bindString(6, culture);
+            stmt.bindString(7, culture);
         }
  
         String born = entity.getBorn();
         if (born != null) {
-            stmt.bindString(7, born);
+            stmt.bindString(8, born);
         }
  
         String died = entity.getDied();
         if (died != null) {
-            stmt.bindString(8, died);
+            stmt.bindString(9, died);
         }
  
         String father = entity.getFather();
         if (father != null) {
-            stmt.bindString(9, father);
+            stmt.bindString(10, father);
         }
  
         String mother = entity.getMother();
         if (mother != null) {
-            stmt.bindString(10, mother);
+            stmt.bindString(11, mother);
         }
  
         String spouse = entity.getSpouse();
         if (spouse != null) {
-            stmt.bindString(11, spouse);
+            stmt.bindString(12, spouse);
         }
     }
 
@@ -138,51 +149,60 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindString(2, entity.getRemoteId());
+ 
+        String remoteId = entity.getRemoteId();
+        if (remoteId != null) {
+            stmt.bindString(2, remoteId);
+        }
  
         String houseRemoteId = entity.getHouseRemoteId();
         if (houseRemoteId != null) {
             stmt.bindString(3, houseRemoteId);
         }
  
+        String url = entity.getUrl();
+        if (url != null) {
+            stmt.bindString(4, url);
+        }
+ 
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(4, name);
+            stmt.bindString(5, name);
         }
  
         String gender = entity.getGender();
         if (gender != null) {
-            stmt.bindString(5, gender);
+            stmt.bindString(6, gender);
         }
  
         String culture = entity.getCulture();
         if (culture != null) {
-            stmt.bindString(6, culture);
+            stmt.bindString(7, culture);
         }
  
         String born = entity.getBorn();
         if (born != null) {
-            stmt.bindString(7, born);
+            stmt.bindString(8, born);
         }
  
         String died = entity.getDied();
         if (died != null) {
-            stmt.bindString(8, died);
+            stmt.bindString(9, died);
         }
  
         String father = entity.getFather();
         if (father != null) {
-            stmt.bindString(9, father);
+            stmt.bindString(10, father);
         }
  
         String mother = entity.getMother();
         if (mother != null) {
-            stmt.bindString(10, mother);
+            stmt.bindString(11, mother);
         }
  
         String spouse = entity.getSpouse();
         if (spouse != null) {
-            stmt.bindString(11, spouse);
+            stmt.bindString(12, spouse);
         }
     }
 
@@ -201,16 +221,17 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
     public CharacterOfHouse readEntity(Cursor cursor, int offset) {
         CharacterOfHouse entity = new CharacterOfHouse( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getString(offset + 1), // remoteId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // remoteId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // houseRemoteId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // gender
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // culture
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // born
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // died
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // father
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // mother
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // spouse
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // url
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // name
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // gender
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // culture
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // born
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // died
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // father
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // mother
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // spouse
         );
         return entity;
     }
@@ -218,16 +239,17 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
     @Override
     public void readEntity(Cursor cursor, CharacterOfHouse entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setRemoteId(cursor.getString(offset + 1));
+        entity.setRemoteId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setHouseRemoteId(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setGender(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setCulture(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setBorn(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setDied(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setFather(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setMother(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setSpouse(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setGender(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setCulture(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setBorn(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setDied(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setFather(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setMother(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setSpouse(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }
     
     @Override

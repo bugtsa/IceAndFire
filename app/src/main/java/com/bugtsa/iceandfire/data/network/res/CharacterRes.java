@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CharacterRes {
+
     @SerializedName("url")
     @Expose
     private String url;
@@ -57,290 +58,227 @@ public class CharacterRes {
     private List<String> playedBy = new ArrayList<String>();
 
     /**
-     *
-     * @return
-     * The url
+     * @return The url
      */
     public String getUrl() {
         return url;
     }
 
     /**
-     *
-     * @param url
-     * The url
+     * @param url The url
      */
     public void setUrl(String url) {
         this.url = url;
     }
 
     /**
-     *
-     * @return
-     * The name
+     * @return The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     *
-     * @param name
-     * The name
+     * @param name The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     *
-     * @return
-     * The gender
+     * @return The gender
      */
     public String getGender() {
         return gender;
     }
 
     /**
-     *
-     * @param gender
-     * The gender
+     * @param gender The gender
      */
     public void setGender(String gender) {
         this.gender = gender;
     }
 
     /**
-     *
-     * @return
-     * The culture
+     * @return The culture
      */
     public String getCulture() {
         return culture;
     }
 
     /**
-     *
-     * @param culture
-     * The culture
+     * @param culture The culture
      */
     public void setCulture(String culture) {
         this.culture = culture;
     }
 
     /**
-     *
-     * @return
-     * The born
+     * @return The born
      */
     public String getBorn() {
         return born;
     }
 
     /**
-     *
-     * @param born
-     * The born
+     * @param born The born
      */
     public void setBorn(String born) {
         this.born = born;
     }
 
     /**
-     *
-     * @return
-     * The died
+     * @return The died
      */
     public String getDied() {
         return died;
     }
 
     /**
-     *
-     * @param died
-     * The died
+     * @param died The died
      */
     public void setDied(String died) {
         this.died = died;
     }
 
     /**
-     *
-     * @return
-     * The titles
+     * @return The titles
      */
     public List<String> getTitles() {
         return titles;
     }
 
     /**
-     *
-     * @param titles
-     * The titles
+     * @param titles The titles
      */
     public void setTitles(List<String> titles) {
         this.titles = titles;
     }
 
     /**
-     *
-     * @return
-     * The aliases
+     * @return The aliases
      */
     public List<String> getAliases() {
         return aliases;
     }
 
     /**
-     *
-     * @param aliases
-     * The aliases
+     * @param aliases The aliases
      */
     public void setAliases(List<String> aliases) {
         this.aliases = aliases;
     }
 
     /**
-     *
-     * @return
-     * The father
+     * @return The father
      */
     public String getFather() {
         return father;
     }
 
     /**
-     *
-     * @param father
-     * The father
+     * @param father The father
      */
     public void setFather(String father) {
         this.father = father;
     }
 
     /**
-     *
-     * @return
-     * The mother
+     * @return The mother
      */
     public String getMother() {
         return mother;
     }
 
     /**
-     *
-     * @param mother
-     * The mother
+     * @param mother The mother
      */
     public void setMother(String mother) {
         this.mother = mother;
     }
 
     /**
-     *
-     * @return
-     * The spouse
+     * @return The spouse
      */
     public String getSpouse() {
         return spouse;
     }
 
     /**
-     *
-     * @param spouse
-     * The spouse
+     * @param spouse The spouse
      */
     public void setSpouse(String spouse) {
         this.spouse = spouse;
     }
 
     /**
-     *
-     * @return
-     * The allegiances
+     * @return The allegiances
      */
     public List<String> getAllegiances() {
         return allegiances;
     }
 
     /**
-     *
-     * @param allegiances
-     * The allegiances
+     * @param allegiances The allegiances
      */
     public void setAllegiances(List<String> allegiances) {
         this.allegiances = allegiances;
     }
 
     /**
-     *
-     * @return
-     * The books
+     * @return The books
      */
     public List<String> getBooks() {
         return books;
     }
 
     /**
-     *
-     * @param books
-     * The books
+     * @param books The books
      */
     public void setBooks(List<String> books) {
         this.books = books;
     }
 
     /**
-     *
-     * @return
-     * The povBooks
+     * @return The povBooks
      */
     public List<String> getPovBooks() {
         return povBooks;
     }
 
     /**
-     *
-     * @param povBooks
-     * The povBooks
+     * @param povBooks The povBooks
      */
     public void setPovBooks(List<String> povBooks) {
         this.povBooks = povBooks;
     }
 
     /**
-     *
-     * @return
-     * The tvSeries
+     * @return The tvSeries
      */
     public List<String> getTvSeries() {
         return tvSeries;
     }
 
     /**
-     *
-     * @param tvSeries
-     * The tvSeries
+     * @param tvSeries The tvSeries
      */
     public void setTvSeries(List<String> tvSeries) {
         this.tvSeries = tvSeries;
     }
 
     /**
-     *
-     * @return
-     * The playedBy
+     * @return The playedBy
      */
     public List<String> getPlayedBy() {
         return playedBy;
     }
 
     /**
-     *
-     * @param playedBy
-     * The playedBy
+     * @param playedBy The playedBy
      */
     public void setPlayedBy(List<String> playedBy) {
         this.playedBy = playedBy;
     }
+
 }

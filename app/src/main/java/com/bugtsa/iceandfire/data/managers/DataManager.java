@@ -11,6 +11,8 @@ import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.DaoSession;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import retrofit2.Call;
 
 
@@ -71,8 +73,12 @@ public class DataManager {
         return mRestService.getHouse(house);
     }
 
-    public Call<CharacterRes> getCharacterFromNetwork(int character) {
-        return mRestService.getCharacter(character);
+    public Call<CharacterRes> getCharacterFromNetwork(String characterId) {
+        return mRestService.getCharacter(characterId);
+    }
+
+    public Call<List<CharacterRes>> getCharacterPageFromNetwork(String currentPage, String perPage) {
+        return mRestService.getCharacterPage(currentPage, perPage);
     }
 
     //end region

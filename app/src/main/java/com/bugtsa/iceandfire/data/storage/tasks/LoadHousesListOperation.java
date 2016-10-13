@@ -17,7 +17,6 @@ public class LoadHousesListOperation extends ChronosOperation<List<House>> {
     public List<House> run() {
         return IceAndFireApplication.getDaoSession().queryBuilder(House.class)
                 .where(HouseDao.Properties.Id.gt(0))
-//                .orderDesc(HouseDao.Properties.Rating)
                 .build()
                 .list();
     }

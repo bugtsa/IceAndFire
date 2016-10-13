@@ -1,12 +1,12 @@
 package com.bugtsa.iceandfire.data.storage.models;
 
-import android.support.annotation.NonNull;
+import com.bugtsa.iceandfire.data.network.res.CharacterRes;
+import com.bugtsa.iceandfire.utils.StringUtils;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 @Entity(active = true, nameInDb = "CHARACTERS")
 public class CharacterOfHouse {
@@ -14,12 +14,11 @@ public class CharacterOfHouse {
     @Id
     private Long id;
 
-    @NonNull
-    @Unique
     private String remoteId;
 
     private String houseRemoteId;
 
+    private String url;
     private String name;
     private String gender;
     private String culture;
@@ -29,6 +28,7 @@ public class CharacterOfHouse {
     private String mother;
     private String spouse;
 
+
     /** Used for active entity operations. */
     @Generated(hash = 1342124280)
     private transient CharacterOfHouseDao myDao;
@@ -37,9 +37,16 @@ public class CharacterOfHouse {
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    public CharacterOfHouse(String remoteId, String houseRemoteId) {
-        this.remoteId = remoteId;
-        this.houseRemoteId = houseRemoteId;
+    public CharacterOfHouse(CharacterRes characterRes) {
+        name = characterRes.getName();
+        gender = characterRes.getGender();
+        culture = characterRes.getCulture();
+        born = characterRes.getBorn();
+        died = characterRes.getDied();
+        father = characterRes.getFather();
+        mother = characterRes.getMother();
+        spouse = characterRes.getSpouse();
+        houseRemoteId = StringUtils.getIdFromUrlApi(characterRes.getAliases().get(0));
     }
 
     /**
@@ -173,13 +180,22 @@ public class CharacterOfHouse {
         this.id = id;
     }
 
-    @Generated(hash = 1173420797)
-    public CharacterOfHouse(Long id, @NonNull String remoteId,
-            String houseRemoteId, String name, String gender, String culture,
-            String born, String died, String father, String mother, String spouse) {
+    public String getUrl() {
+        return this.url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Generated(hash = 1929903012)
+    public CharacterOfHouse(Long id, String remoteId, String houseRemoteId, String url,
+            String name, String gender, String culture, String born, String died,
+            String father, String mother, String spouse) {
         this.id = id;
         this.remoteId = remoteId;
         this.houseRemoteId = houseRemoteId;
+        this.url = url;
         this.name = name;
         this.gender = gender;
         this.culture = culture;
@@ -193,4 +209,5 @@ public class CharacterOfHouse {
     @Generated(hash = 1658210378)
     public CharacterOfHouse() {
     }
+
 }

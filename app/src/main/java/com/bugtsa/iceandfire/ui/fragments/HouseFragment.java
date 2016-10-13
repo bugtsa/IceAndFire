@@ -13,6 +13,7 @@ import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
+import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.House;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHousesListOperation;
@@ -42,7 +43,8 @@ public class HouseFragment extends Fragment {
 
     private ChronosConnector mConnector;
 
-    private List<Character> mCharacters;
+    private List<CharacterOfHouse> mCharacters;
+    private List<CharacterOfHouse> mUpdateCharacters;
 
     private List<House> mHouses;
 
@@ -64,12 +66,13 @@ public class HouseFragment extends Fragment {
 
         mHouses = new ArrayList<>();
         mCharacters = new ArrayList<>();
+        mUpdateCharacters = new ArrayList<>();
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
 
         mHouseKey = getArguments().getInt(HOUSE_KEY);
-        loadHousesListFromDb();
+//        loadHousesListFromDb();
     }
 
     @Nullable
@@ -145,7 +148,7 @@ public class HouseFragment extends Fragment {
             loadHousesFromNetwork();
         } else {
             mHouses = result.getOutput();
-            showHouses();
+            loadCharacterOfHouse();
         }
     }
 
@@ -153,31 +156,19 @@ public class HouseFragment extends Fragment {
         loadHousesListFromDb();
     }
 
+
+
+    private void showCharacters() {
+
+    }
+
+
+
     /**
      * Отображет список пользователей
      */
-    private void showHouses() {
-//        hideSplash();
-        if (mCharacters.size() == 0) {
-//            SnackBarUtils.show(mBinding.coordinatorLayoutHouseList, getString(R.string.error_load_users_list));
-        } else {
-//            mCharactersAdapter = new CharactersAdapter(mCharacters, getApplicationContext(), new CustomClickListener() {
-//                @Override
-//                public void onUserItemClickListener(String action, int position) {
-//                    if (action.equals(ConstantManager.START_PROFILE_ACTIVITY_KEY)) {
-////                        CharacterDTO characterDTO = new CharacterDTO(mCharacters.get(position));
-////
-////                        Intent profileIntent = new Intent(HouseListActivity.this, CharacterActivity.class);
-////                        profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, characterDTO);
-////                        startActivity(profileIntent);
-//                    } else if (action.equals(ConstantManager.LIKE_USER_KEY)) {
-//
-//                    }
-//                }
-//            });
-//            mBinding.houseListContent.recyclerViewHouseList.swapAdapter(mCharactersAdapter, false);
-        }
-//        EventBus.getDefault().post(new TimeEvent(ConstantManager.END_SHOW_USERS));
+    private void loadCharacterOfHouse() {
+
         EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
     }
 }
