@@ -23,8 +23,11 @@ import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.network.res.CharacterRes;
+import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
+import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveCharacterOperation;
+import com.bugtsa.iceandfire.data.storage.tasks.SaveHousesListOperation;
 import com.bugtsa.iceandfire.databinding.ActivityHouseListBinding;
 import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
@@ -33,6 +36,7 @@ import com.bugtsa.iceandfire.utils.AppConfig;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
 import com.bugtsa.iceandfire.utils.NetworkStatusChecker;
+import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.redmadrobot.chronos.ChronosConnector;
 import com.squareup.picasso.Picasso;
 
@@ -92,9 +96,9 @@ public class HouseListActivity extends BaseActivity {
         initViewPager();
         setupToolbar();
         setupDrawer();
-//        showSplash();
-//        selectPage(ConstantManager.STARK_MENU_ID);
+        showSplash();
         loadCharacterFromDb();
+//        selectPage(ConstantManager.STARK_MENU_ID);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -176,14 +180,6 @@ public class HouseListActivity extends BaseActivity {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-    }
-
-    /**
-     * Обрабатывает событие onDestroy жизненного цикла Activity
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     @Override
@@ -354,16 +350,21 @@ public class HouseListActivity extends BaseActivity {
         Long end = System.currentTimeMillis();
         Long durationApp = timeOfEvent - mStart;
         if (durationApp >= AppConfig.SHOW_SPLASH_DELAY) {
-            hideSplash();
+            loadIsDone();
         } else {
             Long timeForSleep = AppConfig.SHOW_SPLASH_DELAY - durationApp;
             try {
                 Thread.sleep(timeForSleep);
-                hideSplash();
+                loadIsDone();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void loadIsDone() {
+        hideSplash();
+        EventBus.getDefault().post(new TimeEvent(ConstantManager.HIDE_SPLASH));
     }
 
     private void loadCharacterFromDb() {
@@ -375,18 +376,15 @@ public class HouseListActivity extends BaseActivity {
     }
 
     public void onOperationFinished(final LoadCharacterListOperation.Result result) {
-        if(result.getOutput().isEmpty()) {
+        if (result.getOutput().isEmpty()) {
             int countPage = 43;
             int perPage = 50;
             for (int currentPage = 1; currentPage <= countPage; currentPage++) {
                 loadCharacterFromNetwork(currentPage, perPage);
             }
+        } else {
+            loadHousesListFromDb();
         }
-//        showCharacters();
-    }
-
-    public void onOperationFinished(final SaveCharacterOperation.Result result) {
-//        List<CharacterOfHouse> characterOfHouse = result.getOutput();
     }
 
     private void loadCharacterFromNetwork(final int currentPage, final int perPage) {
@@ -396,7 +394,7 @@ public class HouseListActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call<List<CharacterRes>> call, Response<List<CharacterRes>> response) {
                     if (response.code() == ConstantManager.RESPONSE_OK) {
-                        mConnector.runOperation(new SaveCharacterOperation(response), true);
+                        mConnector.runOperation(new SaveCharacterOperation(response), false);
                     } else {
                         LogUtils.d("response not ok");
                     }
@@ -408,7 +406,64 @@ public class HouseListActivity extends BaseActivity {
                 }
             });
         } else {
-
+            SnackBarUtils.show(mBinding.coordinatorLayoutHouseList, getString(R.string.hint_not_connection_inet));
         }
+    }
+
+    private void loadHousesFromNetwork(int houseKey) {
+        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+            Call<HouseRes> call = mDataManager.getHouseFromNetwork(String.valueOf(houseKey));
+            call.enqueue(new Callback<HouseRes>() {
+                @Override
+                public void onResponse(Call<HouseRes> call, Response<HouseRes> response) {
+                    if (response.code() == ConstantManager.RESPONSE_OK) {
+                        mConnector.runOperation(new SaveHousesListOperation(response), false);
+                        LogUtils.d("response ok");
+                    } else {
+                        LogUtils.d("response not ok");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<HouseRes> call, Throwable t) {
+                    LogUtils.d("failed server");
+                }
+            });
+        } else {
+            SnackBarUtils.show(mBinding.coordinatorLayoutHouseList, getString(R.string.hint_not_connection_inet));
+        }
+    }
+
+    /**
+     * Загружает данные о домах из БД
+     */
+    private void loadHousesListFromDb() {
+        try {
+            mConnector.runOperation(new LoadHousesListOperation(), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Обрабатывает результат операции LoadHousesListOperation
+     *
+     * @param result результат операции
+     */
+    public void onOperationFinished(final LoadHousesListOperation.Result result) {
+        if (result.getOutput().isEmpty()) {
+            loadHousesFromNetwork(ConstantManager.STARK_KEY);
+            loadHousesFromNetwork(ConstantManager.TARGARIEN_KEY);
+            loadHousesFromNetwork(ConstantManager.LANNISTER_KEY);
+        } else {
+            if (result.getOutput().size() == 3) {
+                EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
+            }
+//            loadCharacterOfHouse();
+        }
+    }
+
+    public void onOperationFinished(final SaveHousesListOperation.Result result) {
+        loadHousesListFromDb();
     }
 }

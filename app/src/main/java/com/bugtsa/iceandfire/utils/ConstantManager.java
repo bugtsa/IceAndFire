@@ -54,12 +54,13 @@ public interface ConstantManager {
     int NETWORK_NOT_AVAILABLE = 699;
     int END_SHOW_USERS = 711;
     int EDITABLE_ERROR = 722;
-    int USER_LIST_NOT_SAVED = 733;
+    int HIDE_SPLASH = 733;
 
+    int USER_LIST_NOT_SAVED = 733;
     int LANNISTER_KEY = 229;
     int TARGARIEN_KEY = 378;
-    int STARK_KEY = 362;
 
+    int STARK_KEY = 362;
     int STARK_MENU_ID = 0;
     int TARGARIEN_MENU_ID = 1;
     int LANNISTER_MENU_ID = 2;

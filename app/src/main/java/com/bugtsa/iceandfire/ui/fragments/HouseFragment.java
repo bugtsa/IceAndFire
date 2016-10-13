@@ -10,26 +10,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bugtsa.iceandfire.R;
-import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
+import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
-import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.House;
+import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListByHouseIdOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.SaveHousesListOperation;
 import com.bugtsa.iceandfire.databinding.FragmentHousesBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
-import com.bugtsa.iceandfire.utils.LogUtils;
-import com.bugtsa.iceandfire.utils.NetworkStatusChecker;
 import com.redmadrobot.chronos.ChronosConnector;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HouseFragment extends Fragment {
 
@@ -72,7 +68,6 @@ public class HouseFragment extends Fragment {
         mConnector.onCreate(this, savedInstanceState);
 
         mHouseKey = getArguments().getInt(HOUSE_KEY);
-//        loadHousesListFromDb();
     }
 
     @Nullable
@@ -102,29 +97,27 @@ public class HouseFragment extends Fragment {
         mConnector.onSaveInstanceState(outState);
     }
 
-    private void loadHousesFromNetwork() {
-        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
-            Call<HouseRes> call = mDataManager.getHouseFromNetwork(String.valueOf(mHouseKey));
-            call.enqueue(new Callback<HouseRes>() {
-                @Override
-                public void onResponse(Call<HouseRes> call, Response<HouseRes> response) {
-                    if (response.code() == ConstantManager.RESPONSE_OK) {
-                        mConnector.runOperation(new SaveHousesListOperation(response), false);
-                        LogUtils.d("response ok");
-                    } else {
-                        LogUtils.d("response not ok");
-                    }
+    /**
+     * Обрабатывает событие onStart жизненного цикла Activity
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
 
-                }
+    /**
+     * Обрабатывает событие onStop жизненного цикла Activity
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
 
-                @Override
-                public void onFailure(Call<HouseRes> call, Throwable t) {
-                    LogUtils.d("failed server");
-                }
-            });
-        } else {
-//            SnackBarUtils.show(mBinding.coordinatorLayoutHouseList, getString(R.string.hint_not_connection_inet));
-        }
+    public void showData() {
+        loadHousesListFromDb();
+        loadCharacterOfHouseFromDb();
     }
 
     /**
@@ -138,37 +131,33 @@ public class HouseFragment extends Fragment {
         }
     }
 
+    private void loadCharacterOfHouseFromDb() {
+        try {
+            mConnector.runOperation(new LoadCharacterListByHouseIdOperation(mHouseKey), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Обрабатывает результат операции LoadHousesListOperation
      *
      * @param result результат операции
      */
     public void onOperationFinished(final LoadHousesListOperation.Result result) {
-        if (result.getOutput().isEmpty()) {
-            loadHousesFromNetwork();
-        } else {
-            mHouses = result.getOutput();
-            loadCharacterOfHouse();
+        mHouses = result.getOutput();
+    }
+
+    public void onOperationFinished(final LoadCharacterListByHouseIdOperation.Result result) {
+        mCharacters = result.getOutput();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHideSplash(TimeEvent timeEvent) {
+        if (timeEvent.getTimeCode() == ConstantManager.HIDE_SPLASH) {
+            showData();
         }
     }
 
-    public void onOperationFinished(final SaveHousesListOperation.Result result) {
-        loadHousesListFromDb();
-    }
 
-
-
-    private void showCharacters() {
-
-    }
-
-
-
-    /**
-     * Отображет список пользователей
-     */
-    private void loadCharacterOfHouse() {
-
-        EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
-    }
 }
