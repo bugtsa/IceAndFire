@@ -19,6 +19,6 @@ public interface RestService {
     Call<CharacterRes> getCharacter(@Path("character") String characterId);
 
     @GET("characters/")
-    Call<List<CharacterRes>> getCharacterPage(@Query("page") String currentPage, @Query("perPage") String perPage);
+    Call<List<CharacterRes>> getCharacterPage(@Query("page") String currentPage, @Query("pageSize") String perPage);
 
 }

@@ -23,7 +23,6 @@ import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.network.res.CharacterRes;
-import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveCharacterOperation;
 import com.bugtsa.iceandfire.databinding.ActivityHouseListBinding;
@@ -387,7 +386,7 @@ public class HouseListActivity extends BaseActivity {
     }
 
     public void onOperationFinished(final SaveCharacterOperation.Result result) {
-        List<CharacterOfHouse> characterOfHouse = result.getOutput();
+//        List<CharacterOfHouse> characterOfHouse = result.getOutput();
     }
 
     private void loadCharacterFromNetwork(final int currentPage, final int perPage) {
@@ -397,7 +396,7 @@ public class HouseListActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call<List<CharacterRes>> call, Response<List<CharacterRes>> response) {
                     if (response.code() == ConstantManager.RESPONSE_OK) {
-                        mConnector.runOperation(new SaveCharacterOperation(response), false);
+                        mConnector.runOperation(new SaveCharacterOperation(response), true);
                     } else {
                         LogUtils.d("response not ok");
                     }

@@ -7,6 +7,10 @@ import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.ToMany;
+
+import java.util.List;
 
 @Entity(active = true, nameInDb = "CHARACTERS")
 public class CharacterOfHouse {
@@ -28,6 +32,14 @@ public class CharacterOfHouse {
     private String mother;
     private String spouse;
 
+    //    @ToMany(joinProperties = {
+//            @JoinProperty(name = "remoteId", referencedName = "characterRemoteId")
+//    })
+//    private List<String> mAliases;
+    @ToMany(joinProperties = {
+            @JoinProperty(name = "remoteId", referencedName = "characterRemoteId")
+    })
+    private List<Title> mTitles;
 
     /** Used for active entity operations. */
     @Generated(hash = 1342124280)
@@ -46,7 +58,11 @@ public class CharacterOfHouse {
         father = characterRes.getFather();
         mother = characterRes.getMother();
         spouse = characterRes.getSpouse();
-        houseRemoteId = StringUtils.getIdFromUrlApi(characterRes.getAliases().get(0));
+        if (characterRes.getAllegiances() != null) {
+            if (!characterRes.getAllegiances().isEmpty()) {
+                houseRemoteId = StringUtils.getIdFromUrlApi(characterRes.getAllegiances().get(0));
+            }
+        }
     }
 
     /**
@@ -83,6 +99,34 @@ public class CharacterOfHouse {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.delete(this);
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 137022142)
+    public synchronized void resetMTitles() {
+        mTitles = null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1396195957)
+    public List<Title> getMTitles() {
+        if (mTitles == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            TitleDao targetDao = daoSession.getTitleDao();
+            List<Title> mTitlesNew = targetDao._queryCharacterOfHouse_MTitles(remoteId);
+            synchronized (this) {
+                if(mTitles == null) {
+                    mTitles = mTitlesNew;
+                }
+            }
+        }
+        return mTitles;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -156,6 +200,14 @@ public class CharacterOfHouse {
         this.name = name;
     }
 
+    public String getUrl() {
+        return this.url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getHouseRemoteId() {
         return this.houseRemoteId;
     }
@@ -180,18 +232,10 @@ public class CharacterOfHouse {
         this.id = id;
     }
 
-    public String getUrl() {
-        return this.url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     @Generated(hash = 1929903012)
-    public CharacterOfHouse(Long id, String remoteId, String houseRemoteId, String url,
-            String name, String gender, String culture, String born, String died,
-            String father, String mother, String spouse) {
+    public CharacterOfHouse(Long id, String remoteId, String houseRemoteId, String url, String name,
+            String gender, String culture, String born, String died, String father, String mother,
+            String spouse) {
         this.id = id;
         this.remoteId = remoteId;
         this.houseRemoteId = houseRemoteId;
