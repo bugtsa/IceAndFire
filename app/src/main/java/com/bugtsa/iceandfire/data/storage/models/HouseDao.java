@@ -23,7 +23,7 @@ public class HouseDao extends AbstractDao<House, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property RemoteUrl = new Property(1, String.class, "remoteUrl", false, "REMOTE_URL");
+        public final static Property RemoteId = new Property(1, String.class, "remoteId", false, "REMOTE_ID");
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property Region = new Property(3, String.class, "region", false, "REGION");
         public final static Property CoatOfArms = new Property(4, String.class, "coatOfArms", false, "COAT_OF_ARMS");
@@ -47,7 +47,7 @@ public class HouseDao extends AbstractDao<House, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"HOUSES\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"REMOTE_URL\" TEXT NOT NULL UNIQUE ," + // 1: remoteUrl
+                "\"REMOTE_ID\" TEXT NOT NULL UNIQUE ," + // 1: remoteId
                 "\"NAME\" TEXT," + // 2: name
                 "\"REGION\" TEXT," + // 3: region
                 "\"COAT_OF_ARMS\" TEXT," + // 4: coatOfArms
@@ -68,7 +68,7 @@ public class HouseDao extends AbstractDao<House, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindString(2, entity.getRemoteUrl());
+        stmt.bindString(2, entity.getRemoteId());
  
         String name = entity.getName();
         if (name != null) {
@@ -99,7 +99,7 @@ public class HouseDao extends AbstractDao<House, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindString(2, entity.getRemoteUrl());
+        stmt.bindString(2, entity.getRemoteId());
  
         String name = entity.getName();
         if (name != null) {
@@ -137,7 +137,7 @@ public class HouseDao extends AbstractDao<House, Long> {
     public House readEntity(Cursor cursor, int offset) {
         House entity = new House( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getString(offset + 1), // remoteUrl
+            cursor.getString(offset + 1), // remoteId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // region
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // coatOfArms
@@ -149,7 +149,7 @@ public class HouseDao extends AbstractDao<House, Long> {
     @Override
     public void readEntity(Cursor cursor, House entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setRemoteUrl(cursor.getString(offset + 1));
+        entity.setRemoteId(cursor.getString(offset + 1));
         entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setRegion(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setCoatOfArms(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));

@@ -45,7 +45,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Us
      */
     @Override
     public void onBindViewHolder(final CharactersAdapter.UserViewHolder holder, int position) {
-//        final Character character = mCharacters.get(position);
+//        final CharacterOfHouse character = mCharacters.get(position);
 //        final String userPhoto;
 //        if (character.getPhoto().isEmpty()) {
 //            userPhoto = "null";

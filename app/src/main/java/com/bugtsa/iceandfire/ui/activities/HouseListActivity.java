@@ -19,12 +19,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bugtsa.iceandfire.R;
+import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.databinding.ActivityHouseListBinding;
 import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
 import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
+import com.bugtsa.iceandfire.utils.AppConfig;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
 import com.redmadrobot.chronos.ChronosConnector;
@@ -38,7 +40,9 @@ public class HouseListActivity extends BaseActivity {
     public static final String ACTION_BAR_TITLE = "action_bar_title";
     private static final String TAG = ConstantManager.TAG_PREFIX + HouseListActivity.class.getSimpleName();
     private static String VIEWPAGER_VISIBLE = "viewpager_visible";
-    private static Fragment targarienFragment, starkFragment, lannisterFragment;
+    private static Fragment targarienFragment;
+    private static Fragment lannisterFragment;
+    private static Fragment starkFragment;
 
     private ActivityHouseListBinding mBinding;
     private ImageView drawerUserAvatar;
@@ -53,6 +57,9 @@ public class HouseListActivity extends BaseActivity {
     private Handler mHandler;
     private ViewPagerAdapter adapter;
 
+
+    private Long mStart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +73,8 @@ public class HouseListActivity extends BaseActivity {
 
         mHandler = new Handler();
 
+        mStart = System.currentTimeMillis();
+
         if (savedInstanceState != null) {
             Navigator.changeViewPagerVisibility(this, savedInstanceState.getBoolean(VIEWPAGER_VISIBLE));
             getSupportActionBar().setTitle(savedInstanceState.getString(ACTION_BAR_TITLE));
@@ -74,12 +83,13 @@ public class HouseListActivity extends BaseActivity {
         setupToolbar();
         setupDrawer();
 //        showSplash();
+//        selectPage(ConstantManager.STARK_MENU_ID);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         adapter = new ViewPagerAdapter(supportFragmentManager);
-        if (targarienFragment == null) {
+        if (starkFragment == null) {
             starkFragment = HouseFragment.newInstance(ConstantManager.STARK_KEY);
             targarienFragment = HouseFragment.newInstance(ConstantManager.TARGARIEN_KEY);
             lannisterFragment = HouseFragment.newInstance(ConstantManager.LANNISTER_KEY);
@@ -88,6 +98,7 @@ public class HouseListActivity extends BaseActivity {
         adapter.addFragment(targarienFragment, getString(R.string.targarien_title));
         adapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
         viewPager.setAdapter(adapter);
+//        FragmentUtils.addFragment(this, R.id.fragment_container, starkFragment, getString(R.string.stark_title), true);
     }
 
     private void initViewPager() {
@@ -152,8 +163,8 @@ public class HouseListActivity extends BaseActivity {
      */
     @Override
     public void onStop() {
-        EventBus.getDefault().unregister(this);
         super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -217,21 +228,24 @@ public class HouseListActivity extends BaseActivity {
         mBinding.navigationViewHouseList.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
+
                 item.setChecked(true);
                 mBinding.navigationDrawerHouseList.closeDrawer(GravityCompat.START);
-
                 switch (item.getItemId()) {
                     case R.id.stark_menu:
-                        selectPage(0);
+                        selectPage(ConstantManager.STARK_MENU_ID);
+//                        mFragmentContainer = starkFragment;
                         break;
                     case R.id.targarien_menu:
-                        selectPage(1);
+                        selectPage(ConstantManager.TARGARIEN_MENU_ID);
+//                        mFragmentContainer = targarienFragment;
                         break;
                     case R.id.lannister_menu:
-                        selectPage(2);
+                        selectPage(ConstantManager.LANNISTER_MENU_ID);
+//                        mFragmentContainer = lannisterFragment;
                         break;
                 }
-
+//                FragmentUtils.replaceFragment((Activity)mContext, R.id.fragment_container, mFragmentContainer, true);
                 return false;
             }
         });
@@ -320,6 +334,26 @@ public class HouseListActivity extends BaseActivity {
             case ConstantManager.END_SHOW_USERS:
                 hideSplash();
                 break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoadDoneEvent(LoadDoneEvent loadDoneEvent) {
+        Long timeOfEvent = loadDoneEvent.getTimeOfEvent();
+        Long end = System.currentTimeMillis();
+        Long durationApp = timeOfEvent - mStart;
+        if (durationApp >= AppConfig.SHOW_SPLASH_DELAY) {
+            hideSplash();
+        } else {
+            Long timeForSleep = AppConfig.SHOW_SPLASH_DELAY - durationApp;
+            try {
+                Thread.sleep(timeForSleep);
+                hideSplash();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 

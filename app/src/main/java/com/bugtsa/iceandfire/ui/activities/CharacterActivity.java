@@ -1,8 +1,6 @@
 package com.bugtsa.iceandfire.ui.activities;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -76,16 +74,6 @@ public class CharacterActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    /**
-     * Открывает ссылку
-     *
-     * @param link ссылка на веб-адрес
-     */
-    public void browseLink(String link) {
-        Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(ConstantManager.PREFIX_URL_LINK + link));
-        startActivity(browseIntent);
     }
 
     /**

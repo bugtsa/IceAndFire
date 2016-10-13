@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bugtsa.iceandfire.R;
+import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.House;
@@ -24,16 +25,15 @@ import com.redmadrobot.chronos.ChronosConnector;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HouseFragment extends Fragment {
 
-    private FragmentHousesBinding mBinding;
-
     private static final String HOUSE_KEY = "HOUSE_KEY";
-
+    private FragmentHousesBinding mBinding;
     private int mHouseKey;
 
     private DataManager mDataManager;
@@ -65,6 +65,10 @@ public class HouseFragment extends Fragment {
         mHouses = new ArrayList<>();
         mCharacters = new ArrayList<>();
 
+        mConnector = new ChronosConnector();
+        mConnector.onCreate(this, savedInstanceState);
+
+        mHouseKey = getArguments().getInt(HOUSE_KEY);
         loadHousesListFromDb();
     }
 
@@ -73,11 +77,6 @@ public class HouseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_houses, container, false);
         mBinding = DataBindingUtil.bind(view);
-
-        mHouseKey = getArguments().getInt(HOUSE_KEY);
-
-        mConnector = new ChronosConnector();
-        mConnector.onCreate(this, savedInstanceState);
 
         return view;
     }
@@ -154,7 +153,6 @@ public class HouseFragment extends Fragment {
         loadHousesListFromDb();
     }
 
-
     /**
      * Отображет список пользователей
      */
@@ -180,5 +178,6 @@ public class HouseFragment extends Fragment {
 //            mBinding.houseListContent.recyclerViewHouseList.swapAdapter(mCharactersAdapter, false);
         }
 //        EventBus.getDefault().post(new TimeEvent(ConstantManager.END_SHOW_USERS));
+        EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
     }
 }

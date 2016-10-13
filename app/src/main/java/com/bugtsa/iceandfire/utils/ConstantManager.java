@@ -42,8 +42,6 @@ public interface ConstantManager {
     String START_PROFILE_ACTIVITY_KEY = "START_PROFILE_ACTIVITY_KEY";
     String LIKE_USER_KEY = "LIKE_USER_KEY";
 
-    String FORGOT_PASSWORD = "http://devintensive.softdesign-apps.ru/forgotpass";
-    String PREFIX_URL_LINK = "http://";
     int SEARCH_DELAY = 1500;
 
     int SEARCH_WITHOUT_DELAY = 0;
@@ -61,4 +59,8 @@ public interface ConstantManager {
     int LANNISTER_KEY = 229;
     int TARGARIEN_KEY = 378;
     int STARK_KEY = 362;
+
+    int STARK_MENU_ID = 0;
+    int TARGARIEN_MENU_ID = 1;
+    int LANNISTER_MENU_ID = 2;
 }

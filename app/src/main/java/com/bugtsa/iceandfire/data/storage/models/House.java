@@ -6,7 +6,11 @@ import com.bugtsa.iceandfire.data.network.res.HouseRes;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.JoinProperty;
+import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Unique;
+
+import java.util.List;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
@@ -18,12 +22,17 @@ public class House {
 
     @NonNull
     @Unique
-    private String remoteUrl;
+    private String remoteId;
 
     private String name;
     private String region;
     private String coatOfArms;
     private String words;
+
+    @ToMany(joinProperties = {
+            @JoinProperty(name = "remoteId", referencedName = "houseRemoteId")
+    })
+    private List<CharacterOfHouse> mCharacterOfHouses;
 
     /** Used for active entity operations. */
     @Generated(hash = 1167916919)
@@ -34,18 +43,8 @@ public class House {
     private transient DaoSession daoSession;
 
 
-//    @ToMany(joinProperties = {
-//            @JoinProperty(name = "remoteId", referencedName = "userRemoteId")
-//    })
-//    private List<Repository> repositories;
-
-//    @ToMany(joinProperties = {
-//            @JoinProperty(name = "remoteId", referencedName = "userRemoteId")
-//    })
-//    private List<Like> likes;
-
     public House(HouseRes houseRes) {
-        remoteUrl = houseRes.getUrl();
+        remoteId = houseRes.getUrl();
         name = houseRes.getName();
         region = houseRes.getRegion();
         coatOfArms = houseRes.getCoatOfArms();
@@ -89,6 +88,36 @@ public class House {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.delete(this);
+    }
+
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 716191381)
+    public synchronized void resetMCharacterOfHouses() {
+        mCharacterOfHouses = null;
+    }
+
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 221013213)
+    public List<CharacterOfHouse> getMCharacterOfHouses() {
+        if (mCharacterOfHouses == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            CharacterOfHouseDao targetDao = daoSession.getCharacterOfHouseDao();
+            List<CharacterOfHouse> mCharacterOfHousesNew = targetDao._queryHouse_MCharacterOfHouses(remoteId);
+            synchronized (this) {
+                if(mCharacterOfHouses == null) {
+                    mCharacterOfHouses = mCharacterOfHousesNew;
+                }
+            }
+        }
+        return mCharacterOfHouses;
     }
 
 
@@ -140,13 +169,13 @@ public class House {
     }
 
 
-    public String getRemoteUrl() {
-        return this.remoteUrl;
+    public String getRemoteId() {
+        return this.remoteId;
     }
 
 
-    public void setRemoteUrl(String remoteUrl) {
-        this.remoteUrl = remoteUrl;
+    public void setRemoteId(String remoteId) {
+        this.remoteId = remoteId;
     }
 
 
@@ -160,11 +189,11 @@ public class House {
     }
 
 
-    @Generated(hash = 102756475)
-    public House(Long id, @NonNull String remoteUrl, String name, String region,
+    @Generated(hash = 2014911328)
+    public House(Long id, @NonNull String remoteId, String name, String region,
             String coatOfArms, String words) {
         this.id = id;
-        this.remoteUrl = remoteUrl;
+        this.remoteId = remoteId;
         this.name = name;
         this.region = region;
         this.coatOfArms = coatOfArms;

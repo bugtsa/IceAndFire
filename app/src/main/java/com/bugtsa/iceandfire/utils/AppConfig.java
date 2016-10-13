@@ -5,4 +5,5 @@ public interface AppConfig {
     int MAX_CONNECT_TIMEOUT = 10000;
     int MAX_READ_TIMEOUT = 10000;
     int START_DELAY = 1500;
+    int SHOW_SPLASH_DELAY = 3000;
 }
