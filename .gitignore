@@ -8,3 +8,7 @@
 /captures
 .externalNativeBuild
 .idea/
+app/src/main/java/com/bugtsa/iceandfire/data/storage/models/AliaseDao.java
+app/src/main/java/com/bugtsa/iceandfire/data/storage/models/DaoMaster.java
+app/src/main/java/com/bugtsa/iceandfire/data/storage/models/DaoSession.java
+app/src/main/java/com/bugtsa/iceandfire/data/storage/models/TitleDao.java
