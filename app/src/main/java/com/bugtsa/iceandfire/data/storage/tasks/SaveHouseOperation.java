@@ -14,10 +14,10 @@ import com.redmadrobot.chronos.ChronosOperationResult;
 import retrofit2.Response;
 
 
-public class SaveHousesListOperation extends ChronosOperation<String> {
+public class SaveHouseOperation extends ChronosOperation<String> {
     private Response<HouseRes> mResponse;
 
-    public SaveHousesListOperation(Response<HouseRes> response) {
+    public SaveHouseOperation(Response<HouseRes> response) {
         mResponse = response;
     }
 
@@ -37,7 +37,7 @@ public class SaveHousesListOperation extends ChronosOperation<String> {
 //        }
 //        characterOfHouseDao.insertOrReplaceInTx(characterList);
 
-        return null;
+        return "complete";
     }
 
     @NonNull

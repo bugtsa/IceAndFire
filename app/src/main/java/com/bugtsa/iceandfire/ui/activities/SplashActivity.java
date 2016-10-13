@@ -1,18 +1,16 @@
 package com.bugtsa.iceandfire.ui.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,9 +25,8 @@ import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveCharacterOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.SaveHousesListOperation;
+import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
 import com.bugtsa.iceandfire.databinding.ActivityHouseListBinding;
-import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
 import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
 import com.bugtsa.iceandfire.utils.AppConfig;
@@ -54,9 +51,12 @@ public class SplashActivity extends BaseActivity {
     public static final String ACTION_BAR_TITLE = "action_bar_title";
     private static final String TAG = ConstantManager.TAG_PREFIX + SplashActivity.class.getSimpleName();
     private static String VIEWPAGER_VISIBLE = "viewpager_visible";
+
     private static Fragment targarienFragment;
     private static Fragment lannisterFragment;
     private static Fragment starkFragment;
+
+    private Fragment mFragmentContainer;
 
     private ActivityHouseListBinding mBinding;
     private ImageView drawerUserAvatar;
@@ -64,28 +64,22 @@ public class SplashActivity extends BaseActivity {
     private TextView drawerUserEmail;
     private DataManager mDataManager;
     private Context mContext;
-    private CharactersAdapter mCharactersAdapter;
 
-    private MenuItem mSearchItem;
     private ChronosConnector mConnector;
-    private Handler mHandler;
     private ViewPagerAdapter adapter;
-
 
     private Long mStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_house_list);
+        mBinding = DataBindingUtil.setContentView((Activity)this, R.layout.activity_house_list);
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
 
         mDataManager = DataManager.getInstance();
         mContext = mDataManager.getContext();
-
-        mHandler = new Handler();
 
         mStart = System.currentTimeMillis();
 
@@ -98,7 +92,6 @@ public class SplashActivity extends BaseActivity {
         setupDrawer();
         showSplash();
         loadCharacterFromDb();
-//        selectPage(ConstantManager.STARK_MENU_ID);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -113,12 +106,11 @@ public class SplashActivity extends BaseActivity {
         adapter.addFragment(targarienFragment, getString(R.string.targarien_title));
         adapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
         viewPager.setAdapter(adapter);
-//        FragmentUtils.addFragment(this, R.id.fragment_container, starkFragment, getString(R.string.stark_title), true);
     }
 
     private void initViewPager() {
         setupViewPager(mBinding.viewpagerHouseList);
-        mBinding.viewpagerHouseList.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mBinding.viewpagerHouseList.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
@@ -127,9 +119,9 @@ public class SplashActivity extends BaseActivity {
             public void onPageSelected(int position) {
                 Fragment item = adapter.getItem(position);
                 item.onResume();
+                setCheckedItemNavigationView(position);
                 String tag = item.getTag();
                 Navigator.setTabTag(tag);
-//                EventBus.getDefault().post(new CloseActionModeEvent());
                 LogUtils.d("onPageSelected" + tag);
             }
 
@@ -141,10 +133,21 @@ public class SplashActivity extends BaseActivity {
         mBinding.tabsHouseList.setupWithViewPager(mBinding.viewpagerHouseList);
     }
 
-//    private void setupRecyclerView() {
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        mBinding.houseListContent.recyclerViewHouseList.setLayoutManager(linearLayoutManager);
-//    }
+    private void setCheckedItemNavigationView(int position) {
+        switch(position) {
+            case ConstantManager.STARK_MENU_ID:
+                mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
+                break;
+            case ConstantManager.TARGARIEN_MENU_ID:
+                mBinding.navigationViewHouseList.setCheckedItem(R.id.targarien_menu);
+                break;
+            case ConstantManager.LANNISTER_MENU_ID:
+                mBinding.navigationViewHouseList.setCheckedItem(R.id.lannister_menu);
+                break;
+            default:
+                mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
+        }
+    }
 
     /**
      * Обрабатывает событие onResume жизненного цикла Activity
@@ -241,18 +244,14 @@ public class SplashActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.stark_menu:
                         selectPage(ConstantManager.STARK_MENU_ID);
-//                        mFragmentContainer = starkFragment;
                         break;
                     case R.id.targarien_menu:
                         selectPage(ConstantManager.TARGARIEN_MENU_ID);
-//                        mFragmentContainer = targarienFragment;
                         break;
                     case R.id.lannister_menu:
                         selectPage(ConstantManager.LANNISTER_MENU_ID);
-//                        mFragmentContainer = lannisterFragment;
                         break;
                 }
-//                FragmentUtils.replaceFragment((Activity)mContext, R.id.fragment_container, mFragmentContainer, true);
                 return false;
             }
         });
@@ -278,58 +277,6 @@ public class SplashActivity extends BaseActivity {
     }
 
     /**
-     * Устанавливает обработку поиска по имени пользователя в списке
-     *
-     * @param menu
-     * @return
-     */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_menu, menu);
-        mSearchItem = menu.findItem(R.id.search_action);
-        android.widget.SearchView searchView = (android.widget.SearchView) MenuItemCompat.getActionView(mSearchItem);
-        searchView.setQueryHint(getString(R.string.search_input_name_user));
-        searchView.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                showUserByQuery(newText);
-                return false;
-            }
-        });
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    /**
-     * Отображает список пользователей при поиске по имени
-     *
-     * @param query строка поиска
-     */
-    private void showUserByQuery(final String query) {
-        Runnable searchUsers = new Runnable() {
-            @Override
-            public void run() {
-                if (!query.isEmpty()) {
-//                    loadUsersByNameFromDb(query);
-                } else {
-//                    loadHousesListFromDb();
-                }
-            }
-        };
-
-        mHandler.removeCallbacks(searchUsers);
-        if (!query.isEmpty()) {
-            mHandler.postDelayed(searchUsers, ConstantManager.SEARCH_DELAY);
-        } else {
-            mHandler.postDelayed(searchUsers, ConstantManager.SEARCH_WITHOUT_DELAY);
-        }
-    }
-
-    /**
      * Слушает событие TimeEvent
      *
      * @param timeEvent слушает окончание отображение списка пользователей
@@ -347,7 +294,6 @@ public class SplashActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadDoneEvent(LoadDoneEvent loadDoneEvent) {
         Long timeOfEvent = loadDoneEvent.getTimeOfEvent();
-        Long end = System.currentTimeMillis();
         Long durationApp = timeOfEvent - mStart;
         if (durationApp >= AppConfig.SHOW_SPLASH_DELAY) {
             loadIsDone();
@@ -380,14 +326,13 @@ public class SplashActivity extends BaseActivity {
             int countPage = 43;
             int perPage = 50;
             for (int currentPage = 1; currentPage <= countPage; currentPage++) {
-                loadCharacterFromNetwork(currentPage, perPage);
+                loadCharactersFromNetwork(currentPage, perPage);
             }
-        } else {
-            loadHousesListFromDb();
         }
+        loadHousesListFromDb();
     }
 
-    private void loadCharacterFromNetwork(final int currentPage, final int perPage) {
+    private void loadCharactersFromNetwork(final int currentPage, final int perPage) {
         if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
             Call<List<CharacterRes>> call = mDataManager.getCharacterPageFromNetwork(String.valueOf(currentPage), String.valueOf(perPage));
             call.enqueue(new Callback<List<CharacterRes>>() {
@@ -417,7 +362,7 @@ public class SplashActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call<HouseRes> call, Response<HouseRes> response) {
                     if (response.code() == ConstantManager.RESPONSE_OK) {
-                        mConnector.runOperation(new SaveHousesListOperation(response), false);
+                        mConnector.runOperation(new SaveHouseOperation(response), false);
                         LogUtils.d("response ok");
                     } else {
                         LogUtils.d("response not ok");
@@ -459,11 +404,12 @@ public class SplashActivity extends BaseActivity {
             if (result.getOutput().size() == 3) {
                 EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
             }
-//            loadCharacterOfHouse();
         }
     }
 
-    public void onOperationFinished(final SaveHousesListOperation.Result result) {
-        loadHousesListFromDb();
+    public void onOperationFinished(final SaveHouseOperation.Result result) {
+        if (result.getOutput() != null) {
+            loadHousesListFromDb();
+        }
     }
 }

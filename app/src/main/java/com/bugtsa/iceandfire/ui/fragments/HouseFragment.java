@@ -105,6 +105,7 @@ public class HouseFragment extends Fragment implements IHouseView{
     public void onResume() {
         super.onResume();
         mConnector.onResume();
+        showData();
     }
 
     @Override
@@ -178,9 +179,6 @@ public class HouseFragment extends Fragment implements IHouseView{
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideSplash(TimeEvent timeEvent) {
         if (timeEvent.getTimeCode() == ConstantManager.HIDE_SPLASH) {
-            showData();
         }
     }
-
-
 }

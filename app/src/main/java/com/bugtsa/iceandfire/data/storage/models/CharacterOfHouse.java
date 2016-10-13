@@ -66,9 +66,13 @@ public class CharacterOfHouse {
             }
         }
         if (characterRes.getAliases() != null) {
-            alias = characterRes.getAliases().get(0);
+            if (!characterRes.getAliases().isEmpty()) {
+                alias = characterRes.getAliases().get(0);
+            }
         } else if (characterRes.getTitles() != null) {
-            alias = characterRes.getTitles().get(0);
+            if (!characterRes.getTitles().isEmpty()) {
+                alias = characterRes.getTitles().get(0);
+            }
         }
     }
 
