@@ -58,6 +58,7 @@
         <item name="android:layout_gravity">top|left</item>
         <item name="android:layout_marginTop">@dimen/spacing_medial_24</item>
         <item name="android:layout_marginLeft">@dimen/spacing_normal_16</item>
+        <item name="android:src">@drawable/icon_item_property</item>
     </style>
 
     <style name="icon.right" parent="icon">

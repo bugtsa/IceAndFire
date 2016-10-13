@@ -14,6 +14,6 @@ public class CharactersRouter extends Router<FragmentActivity> {
     }
 
     public void routeToAccountDetails(CharacterOfHouse characterOfHouse) {
-        FragmentUtils.replaceFragment(getActivity(), R.id.fragment_container, CharacterFragment.newInstance(characterOfHouse.getDied()), true);
+        FragmentUtils.replaceFragment(getActivity(), R.id.fragment_container, CharacterFragment.newInstance(characterOfHouse), true);
     }
 }

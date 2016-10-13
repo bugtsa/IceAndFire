@@ -1,48 +1,21 @@
 package com.bugtsa.iceandfire.ui.activities;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
+import com.bugtsa.iceandfire.databinding.ItemCharacterBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.squareup.picasso.Picasso;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class CharacterActivity extends AppCompatActivity {
 
-    @BindView(R.id.profile_coordinator_layout)
-    CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.collapsing_toolbar_profile)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-    @BindView(R.id.toolbar_profile)
-    Toolbar mToolBar;
-    @BindView(R.id.user_profile_iv_profile)
-    ImageView mProfileImage;
-
-    @BindView(R.id.about_me_et_profile)
-    EditText mUserBio;
-    @BindView(R.id.rating_quantity_static_tv)
-    TextView mUserRating;
-    @BindView(R.id.lines_code_quantity_static_tv)
-    TextView mUserCodeLines;
-    @BindView(R.id.project_quantity_static_tv)
-    TextView mUserProjects;
-
-    @BindView(R.id.repositories_list)
-    ListView mRepoListView;
+    private ItemCharacterBinding mBinding;
 
     private DataManager mDataManager;
 
@@ -53,8 +26,8 @@ public class CharacterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_character);
-        ButterKnife.bind(this);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.item_character);
+
 
         mDataManager = DataManager.getInstance();
         mContext = mDataManager.getContext();
@@ -67,7 +40,7 @@ public class CharacterActivity extends AppCompatActivity {
      * Устанавливает ToolBar
      */
     private void setupToolBar() {
-        setSupportActionBar(mToolBar);
+        setSupportActionBar(mBinding.toolbarCharacter);
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -82,17 +55,13 @@ public class CharacterActivity extends AppCompatActivity {
         CharacterDTO characterDTO = getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY);
 
         mRemoteIdShowUser = characterDTO.getRemoteId();
-        mUserBio.setText(characterDTO.getBio());
-        mUserRating.setText(characterDTO.getRating());
-        mUserCodeLines.setText(characterDTO.getCodeLines());
-        mUserProjects.setText(characterDTO.getProjects());
 
-        mCollapsingToolbarLayout.setTitle(characterDTO.getFullName());
+        mBinding.collapsingToolbarCharacter.setTitle(characterDTO.getFullName());
 
         Picasso.with(this)
                 .load(characterDTO.getPhoto())
                 .placeholder(R.drawable.user_bg)
                 .error(R.drawable.user_bg)
-                .into(mProfileImage);
+                .into(mBinding.characterImageView);
     }
 }
