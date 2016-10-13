@@ -5,15 +5,15 @@
             android:id="@+id/stark_menu"
             android:checkable="true"
             android:title="@string/menu_stark"></item>
-        <item
-            android:id="@+id/lanister_menu"
-            android:checkable="true"
-            android:title="@string/menu_lanister"></item>
 
         <item
             android:id="@+id/targarien_menu"
             android:checkable="true"
-            android:title="@string/menu_targarien"></item>
+        android:title="@string/menu_targarien"></item>
 
+        <item
+            android:id="@+id/lannister_menu"
+            android:checkable="true"
+            android:title="@string/menu_lanister"></item>
     </group>
 </menu>

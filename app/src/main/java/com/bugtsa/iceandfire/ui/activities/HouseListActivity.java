@@ -1,19 +1,17 @@
 package com.bugtsa.iceandfire.ui.activities;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,16 +21,12 @@ import android.widget.TextView;
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
-import com.bugtsa.iceandfire.data.network.res.HouseRes;
-import com.bugtsa.iceandfire.data.storage.models.House;
-import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.SaveHousesListOperation;
-import com.bugtsa.iceandfire.ui.activities.interfaces.CustomClickListener;
+import com.bugtsa.iceandfire.databinding.ActivityHouseListBinding;
 import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
+import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
+import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
-import com.bugtsa.iceandfire.utils.NetworkStatusChecker;
-import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.redmadrobot.chronos.ChronosConnector;
 import com.squareup.picasso.Picasso;
 
@@ -40,50 +34,29 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class HouseListActivity extends BaseActivity {
+    public static final String ACTION_BAR_TITLE = "action_bar_title";
     private static final String TAG = ConstantManager.TAG_PREFIX + HouseListActivity.class.getSimpleName();
-    @BindView(R.id.coordinator_layout_users_list)
-    CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.navigation_drawer_users_list)
-    DrawerLayout mNavigationDrawer;
-    @BindView(R.id.navigation_view_users_list)
-    NavigationView mNavigationView;
-    @BindView(R.id.toolbar_users_list)
-    Toolbar mToolbar;
-    @BindView(R.id.recycler_view_user_list)
-    RecyclerView mRecyclerView;
+    private static String VIEWPAGER_VISIBLE = "viewpager_visible";
+    private static Fragment targarienFragment, starkFragment, lannisterFragment;
+
+    private ActivityHouseListBinding mBinding;
     private ImageView drawerUserAvatar;
     private TextView drawerUserFullName;
     private TextView drawerUserEmail;
     private DataManager mDataManager;
-
     private Context mContext;
     private CharactersAdapter mCharactersAdapter;
-    private List<Character> mCharacters;
-    private List<House> mHouses;
-
 
     private MenuItem mSearchItem;
-
     private ChronosConnector mConnector;
     private Handler mHandler;
+    private ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_list);
-        ButterKnife.bind(this);
-
-        showSplash();
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_house_list);
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
@@ -91,16 +64,61 @@ public class HouseListActivity extends BaseActivity {
         mDataManager = DataManager.getInstance();
         mContext = mDataManager.getContext();
 
-        mHouses = new ArrayList<>();
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-
         mHandler = new Handler();
+
+        if (savedInstanceState != null) {
+            Navigator.changeViewPagerVisibility(this, savedInstanceState.getBoolean(VIEWPAGER_VISIBLE));
+            getSupportActionBar().setTitle(savedInstanceState.getString(ACTION_BAR_TITLE));
+        }
+        initViewPager();
         setupToolbar();
         setupDrawer();
-        loadHousesListFromDb();
+//        showSplash();
     }
+
+    private void setupViewPager(ViewPager viewPager) {
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        adapter = new ViewPagerAdapter(supportFragmentManager);
+        if (targarienFragment == null) {
+            starkFragment = HouseFragment.newInstance(ConstantManager.STARK_KEY);
+            targarienFragment = HouseFragment.newInstance(ConstantManager.TARGARIEN_KEY);
+            lannisterFragment = HouseFragment.newInstance(ConstantManager.LANNISTER_KEY);
+        }
+        adapter.addFragment(starkFragment, getString(R.string.stark_title));
+        adapter.addFragment(targarienFragment, getString(R.string.targarien_title));
+        adapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
+        viewPager.setAdapter(adapter);
+    }
+
+    private void initViewPager() {
+        setupViewPager(mBinding.viewpagerHouseList);
+        mBinding.viewpagerHouseList.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment item = adapter.getItem(position);
+                item.onResume();
+                String tag = item.getTag();
+                Navigator.setTabTag(tag);
+//                EventBus.getDefault().post(new CloseActionModeEvent());
+                LogUtils.d("onPageSelected" + tag);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        mBinding.tabsHouseList.setupWithViewPager(mBinding.viewpagerHouseList);
+    }
+
+//    private void setupRecyclerView() {
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        mBinding.houseListContent.recyclerViewHouseList.setLayoutManager(linearLayoutManager);
+//    }
 
     /**
      * Обрабатывает событие onResume жизненного цикла Activity
@@ -149,70 +167,20 @@ public class HouseListActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (mBinding.viewpagerHouseList != null) {
+            outState.putBoolean(VIEWPAGER_VISIBLE, mBinding.viewpagerHouseList.getVisibility() == View.VISIBLE);
+        }
+        outState.putString(ACTION_BAR_TITLE, getSupportActionBar().getTitle().toString());
         mConnector.onSaveInstanceState(outState);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            mNavigationDrawer.openDrawer(GravityCompat.START);
+            mBinding.navigationDrawerHouseList.openDrawer(GravityCompat.START);
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Загружает данные о домах из БД
-     */
-    private void loadHousesListFromDb() {
-        try {
-            mConnector.runOperation(new LoadHousesListOperation(), false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Обрабатывает результат операции LoadHousesListOperation
-     *
-     * @param result результат операции
-     */
-    public void onOperationFinished(final LoadHousesListOperation.Result result) {
-        if (result.getOutput().isEmpty()) {
-            loadHousesFromNetwork();
-        } else {
-            mHouses = result.getOutput();
-            showHouses();
-        }
-    }
-
-    public void onOperationFinished(final SaveHousesListOperation.Result result) {
-        loadHousesListFromDb();
-    }
-
-    private void loadHousesFromNetwork() {
-        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
-            Call<HouseRes> call = mDataManager.getHouseFromNetwork(String.valueOf(ConstantManager.TARGARIEN_KEY));
-            call.enqueue(new Callback<HouseRes>() {
-                @Override
-                public void onResponse(Call<HouseRes> call, Response<HouseRes> response) {
-                    if (response.code() == ConstantManager.RESPONSE_OK) {
-                        mConnector.runOperation(new SaveHousesListOperation(response), false);
-                        LogUtils.d("response ok");
-                    } else {
-                        LogUtils.d("response not ok");
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<HouseRes> call, Throwable t) {
-                    LogUtils.d("failed server");
-                }
-            });
-        } else {
-            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.hint_not_connection_inet));
-        }
     }
 
     /**
@@ -233,9 +201,9 @@ public class HouseListActivity extends BaseActivity {
      * инициализирует NavigationDrawer
      */
     private void setupDrawer() {
-        View headerLayout = mNavigationView.getHeaderView(0);
+        View headerLayout = mBinding.navigationViewHouseList.getHeaderView(0);
 
-        drawerUserAvatar = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.drawer_user_avatar_iv);
+        drawerUserAvatar = (ImageView) mBinding.navigationViewHouseList.getHeaderView(0).findViewById(R.id.drawer_user_avatar_iv);
 
         drawerUserFullName = (TextView) headerLayout.findViewById(R.id.drawer_user_name_tv);
         drawerUserEmail = (TextView) headerLayout.findViewById(R.id.drawer_user_email_tv);
@@ -245,22 +213,22 @@ public class HouseListActivity extends BaseActivity {
 
         insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
-        mNavigationView.setCheckedItem(R.id.stark_menu);
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
+        mBinding.navigationViewHouseList.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 item.setChecked(true);
-                mNavigationDrawer.closeDrawer(GravityCompat.START);
+                mBinding.navigationDrawerHouseList.closeDrawer(GravityCompat.START);
 
                 switch (item.getItemId()) {
                     case R.id.stark_menu:
-
+                        selectPage(0);
                         break;
                     case R.id.targarien_menu:
-
+                        selectPage(1);
                         break;
-                    case R.id.lanister_menu:
-
+                    case R.id.lannister_menu:
+                        selectPage(2);
                         break;
                 }
 
@@ -269,11 +237,16 @@ public class HouseListActivity extends BaseActivity {
         });
     }
 
+    void selectPage(int pageIndex) {
+        mBinding.tabsHouseList.setScrollPosition(pageIndex, 0f, true);
+        mBinding.viewpagerHouseList.setCurrentItem(pageIndex);
+    }
+
     /**
      * инициализирует ToolBar
      */
     private void setupToolbar() {
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(mBinding.toolbarHouseList);
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -310,34 +283,6 @@ public class HouseListActivity extends BaseActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-
-    /**
-     * Отображет список пользователей
-     */
-    private void showHouses() {
-        hideSplash();
-        if (mCharacters.size() == 0) {
-            SnackBarUtils.show(mCoordinatorLayout, getString(R.string.error_load_users_list));
-        } else {
-            mCharactersAdapter = new CharactersAdapter(mCharacters, getApplicationContext(), new CustomClickListener() {
-                @Override
-                public void onUserItemClickListener(String action, int position) {
-                    if (action.equals(ConstantManager.START_PROFILE_ACTIVITY_KEY)) {
-//                        CharacterDTO characterDTO = new CharacterDTO(mCharacters.get(position));
-//
-//                        Intent profileIntent = new Intent(HouseListActivity.this, CharacterActivity.class);
-//                        profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, characterDTO);
-//                        startActivity(profileIntent);
-                    } else if (action.equals(ConstantManager.LIKE_USER_KEY)) {
-
-                    }
-                }
-            });
-            mRecyclerView.swapAdapter(mCharactersAdapter, false);
-        }
-        EventBus.getDefault().post(new TimeEvent(ConstantManager.END_SHOW_USERS));
-    }
-
     /**
      * Отображает список пользователей при поиске по имени
      *
@@ -350,7 +295,7 @@ public class HouseListActivity extends BaseActivity {
                 if (!query.isEmpty()) {
 //                    loadUsersByNameFromDb(query);
                 } else {
-                    loadHousesListFromDb();
+//                    loadHousesListFromDb();
                 }
             }
         };
@@ -381,28 +326,28 @@ public class HouseListActivity extends BaseActivity {
     /**
      * Разрешает осуществлять swipe элементов списка пользователей
      */
-    private void setAllowSwipeUser() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                final int startPosition = viewHolder.getAdapterPosition();
-                final int targetPosition = target.getAdapterPosition();
-
-                mCharacters.add(targetPosition, mCharacters.remove(startPosition));
-                mCharactersAdapter.notifyItemMoved(startPosition, targetPosition);
-
-                return true;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                mCharacters.remove(position);
-                mCharactersAdapter.notifyDataSetChanged();
-            }
-        });
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
-    }
+//    private void setAllowSwipeUser() {
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        mBinding.houseListContent.recyclerViewHouseList.setLayoutManager(linearLayoutManager);
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                final int startPosition = viewHolder.getAdapterPosition();
+//                final int targetPosition = target.getAdapterPosition();
+//
+//                mCharacters.add(targetPosition, mCharacters.remove(startPosition));
+//                mCharactersAdapter.notifyItemMoved(startPosition, targetPosition);
+//
+//                return true;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//                int position = viewHolder.getAdapterPosition();
+//                mCharacters.remove(position);
+//                mCharactersAdapter.notifyDataSetChanged();
+//            }
+//        });
+//        itemTouchHelper.attachToRecyclerView(mBinding.houseListContent.recyclerViewHouseList);
+//    }
 }

@@ -33,7 +33,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.Us
 
     @Override
     public CharactersAdapter.UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_list, parent, false);
+        View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_house_list, parent, false);
         return new UserViewHolder(convertView, mCustomClickListener);
     }
 

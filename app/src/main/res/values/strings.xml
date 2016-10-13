@@ -62,5 +62,8 @@
     //End Errors
 
     <string name="hint_not_connection_inet">Проверьте подключение к сети интернет!</string>
+    <string name="lannister_title">Lannister</string>
+    <string name="targarien_title">Targarien</string>
+    <string name="stark_title">Stark</string>
 
 </resources>

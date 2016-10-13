@@ -42,4 +42,7 @@
     <dimen name="spacing_til_item_80">80dp</dimen>
     <dimen name="profile_info_height_112">112dp</dimen>
 
+    <dimen name="spacing_10">10dp</dimen>
+    <dimen name="spacing_5">5dp</dimen>
+
 </resources>

@@ -137,4 +137,14 @@
         <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
+    <style name="texts">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:layout_marginLeft">@dimen/spacing_10</item>
+        <item name="android:layout_marginTop">@dimen/spacing_10</item>
+        <item name="android:layout_marginRight">@dimen/spacing_5</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>
