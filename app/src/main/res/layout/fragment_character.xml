@@ -28,7 +28,7 @@
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar_character"
                 style="@style/match_and_wrap"
-                app:contentScrim="@color/red_dark"
+                app:contentScrim="@color/color_primary_dark"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
@@ -66,22 +66,14 @@
                         style="@style/icon.left"/>
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_normal_16"
+                        style="@style/text_view_left"
                         android:text="@string/character_words"
-                        android:textSize="@dimen/font_big_larger_24"
                         tools:text="@string/character_words"/>
 
                     <TextView
                         android:id="@+id/words_character_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_medium_32"
+                        style="@style/text_view_right"
                         android:text="@string/character_words"
-                        android:textSize="@dimen/font_large_20"
                         tools:ignore="RtlHardcoded"
                         tools:text="@string/character_words"/>
 
@@ -97,22 +89,14 @@
                         style="@style/icon.left"/>
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_normal_16"
+                        style="@style/text_view_left"
                         android:text="@string/character_born"
-                        android:textSize="@dimen/font_big_larger_24"
                         tools:text="@string/character_born"/>
 
                     <TextView
                         android:id="@+id/born_character_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_medium_32"
+                        style="@style/text_view_right"
                         android:text="@{character.born}"
-                        android:textSize="@dimen/font_large_20"
                         tools:ignore="RtlHardcoded"
                         tools:text="@string/character_born"/>
 
@@ -128,24 +112,14 @@
                         style="@style/icon.left"/>
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_normal_16"
+                        style="@style/text_view_left"
                         android:text="@string/character_titles"
-                        android:textSize="@dimen/font_big_larger_24"
                         tools:text="@string/character_titles"/>
 
                     <TextView
                         android:id="@+id/titles_character_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_medium_32"
-                        android:singleLine="false"
+                        style="@style/text_view_right"
                         android:text="@string/character_titles"
-                        android:textSize="@dimen/font_large_20"
-                        tools:ignore="RtlHardcoded"
                         tools:text="@string/character_titles"/>
 
                 </LinearLayout>
@@ -160,23 +134,14 @@
                         style="@style/icon.left"/>
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_normal_16"
+                        style="@style/text_view_left"
                         android:text="@string/character_aliases"
-                        android:textSize="@dimen/font_big_larger_24"
                         tools:text="@string/character_aliases"/>
 
                     <TextView
                         android:id="@+id/aliases_character_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_medium_32"
-                        android:singleLine="false"
+                        style="@style/text_view_right"
                         android:text="@{character.alias}"
-                        android:textSize="@dimen/font_large_20"
                         tools:text="@string/character_aliases"/>
 
                 </LinearLayout>
@@ -194,23 +159,19 @@
 
                     <TextView
                         android:id="@+id/mother_character_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_normal_16"
+                        style="@style/text_view_left"
                         android:text="@string/character_mother"
-                        android:textSize="@dimen/font_big_larger_24"
                         tools:text="@string/character_mother"/>
 
-                    <Button
-                        android:id="@+id/mother_character_button"
-                        style="@style/AppTheme.Button.Dark.Red"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/spacing_medium_32"
-                        android:text="@{character.mother}"
-                        android:textSize="@dimen/font_large_20"
-                        tools:text="@string/character_mother"/>
+                    <LinearLayout
+                        style="@style/text_view_right">
+
+                        <Button
+                            android:id="@+id/mother_character_button"
+                            style="@style/AppTheme.Button.Dark.Red"
+                            android:text="@{character.mother}"
+                            tools:text="@string/character_mother"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -227,24 +188,19 @@
 
                     <TextView
                         android:id="@+id/father_character_text_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_normal_16"
+                        style="@style/text_view_left"
                         android:text="@string/character_father"
-                        android:textSize="@dimen/font_big_larger_24"
                         tools:text="@string/character_father"/>
 
-                    <Button
-                        android:id="@+id/father_character_button"
-                        style="@style/AppTheme.Button.Dark.Red"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/spacing_medium_32"
-                        android:text="@{character.father}"
-                        android:textSize="@dimen/font_large_20"
-                        tools:text="@string/character_father"/>
+                    <LinearLayout
+                        style="@style/text_view_right">
+
+                        <Button
+                            android:id="@+id/father_character_button"
+                            style="@style/AppTheme.Button.Dark.Red"
+                            android:text="@{character.father}"
+                            tools:text="@string/character_father"/>
+                    </LinearLayout>
 
                 </LinearLayout>
             </LinearLayout>

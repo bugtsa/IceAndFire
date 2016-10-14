@@ -9,9 +9,15 @@ import android.view.View;
 
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.managers.DataManager;
+import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.databinding.FragmentCharacterBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
+import com.bugtsa.iceandfire.utils.StringUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CharacterActivity extends AppCompatActivity {
 
@@ -22,6 +28,11 @@ public class CharacterActivity extends AppCompatActivity {
     private Context mContext;
 
     private String mRemoteIdShowUser;
+
+    private String parentMotherName = null;
+    private String parentFatherName = null;
+    private String parentName = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +65,6 @@ public class CharacterActivity extends AppCompatActivity {
     private void initCharacterData() {
         CharacterDTO characterDTO = getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY);
 
-//        mRemoteIdShowUser = characterDTO.getRemoteId();
-
         if (characterDTO.getName() != null) {
             mBinding.collapsingToolbarCharacter.setTitle(characterDTO.getName());
         }
@@ -78,14 +87,36 @@ public class CharacterActivity extends AppCompatActivity {
         mBinding.motherCharacterButton.setVisibility(visibleMotherComponents);
         mBinding.motherCharacterTextView.setVisibility(visibleMotherComponents);
 
-        int visibleFatherComponents;
-        if (characterDTO.getFather().isEmpty()) {
-            visibleFatherComponents = View.INVISIBLE;
-        } else {
-            visibleFatherComponents = View.VISIBLE;
-            mBinding.fatherCharacterButton.setText(characterDTO.getFather());
+        if (!characterDTO.getFather().isEmpty()) {
+            getParentName(characterDTO.getFather());
         }
+
+    }
+
+    private void setFather() {
+        int visibleFatherComponents = View.VISIBLE;
         mBinding.fatherCharacterButton.setVisibility(visibleFatherComponents);
         mBinding.fatherCharacterTextView.setVisibility(visibleFatherComponents);
+        mBinding.fatherCharacterButton.setText(parentFatherName);
+    }
+
+    private void getParentName(String parentUrl) {
+        Call<CharacterRes> call = mDataManager.getCharacterFromNetwork(StringUtils.getIdFromUrlApi(parentUrl));
+        call.enqueue(new Callback<CharacterRes>() {
+            @Override
+            public void onResponse(Call<CharacterRes> call, Response<CharacterRes> response) {
+                if(response.code() == ConstantManager.RESPONSE_OK) {
+                    parentFatherName = response.body().getName();
+                    setFather();
+                } else {
+                    parentFatherName = null;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CharacterRes> call, Throwable t) {
+                parentFatherName = null;
+            }
+        });
     }
 }
