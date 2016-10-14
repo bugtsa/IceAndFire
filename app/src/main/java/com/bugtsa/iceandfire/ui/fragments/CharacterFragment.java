@@ -1,35 +1,36 @@
 package com.bugtsa.iceandfire.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
+import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
+import com.bugtsa.iceandfire.ui.activities.CharacterActivity;
+
+import static com.bugtsa.iceandfire.utils.ConstantManager.PARCELABLE_KEY;
 
 public class CharacterFragment extends Fragment {
 
-    private static final String WORDS_KEY = "WORDS_KEY";
+    private CharacterDTO mCharacter;
 
-    private String mWords;
-
-    public static CharacterFragment newInstance(CharacterOfHouse character) {
+    public static CharacterFragment newInstance(CharacterDTO characterRemoteId) {
 
         Bundle args = new Bundle();
-//        args.putSerializable(WORDS_KEY, character);
+        args.putParcelable(PARCELABLE_KEY, characterRemoteId);
         CharacterFragment fragment = new CharacterFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-//        mWords = getArguments().getString(WORDS_KEY);
+        mCharacter = getArguments().getParcelable(PARCELABLE_KEY);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        Intent intent = new Intent(getActivity(), CharacterActivity.class);
+        intent.putExtra(PARCELABLE_KEY, mCharacter);
+        getActivity().startActivity(intent);
     }
 }

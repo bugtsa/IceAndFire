@@ -5,17 +5,17 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
-import com.bugtsa.iceandfire.databinding.ItemCharacterBinding;
+import com.bugtsa.iceandfire.databinding.FragmentCharacterBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
-import com.squareup.picasso.Picasso;
 
 public class CharacterActivity extends AppCompatActivity {
 
-    private ItemCharacterBinding mBinding;
+    private FragmentCharacterBinding mBinding;
 
     private DataManager mDataManager;
 
@@ -26,14 +26,14 @@ public class CharacterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.item_character);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.fragment_character);
 
 
         mDataManager = DataManager.getInstance();
         mContext = mDataManager.getContext();
 
         setupToolBar();
-        initProfileData();
+        initCharacterData();
     }
 
     /**
@@ -51,17 +51,41 @@ public class CharacterActivity extends AppCompatActivity {
     /**
      * Инициализирует данные пользователя
      */
-    private void initProfileData() {
+    private void initCharacterData() {
         CharacterDTO characterDTO = getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY);
 
-        mRemoteIdShowUser = characterDTO.getRemoteId();
+//        mRemoteIdShowUser = characterDTO.getRemoteId();
 
-        mBinding.collapsingToolbarCharacter.setTitle(characterDTO.getFullName());
+        if (characterDTO.getName() != null) {
+            mBinding.collapsingToolbarCharacter.setTitle(characterDTO.getName());
+        }
 
-        Picasso.with(this)
-                .load(characterDTO.getPhoto())
-                .placeholder(R.drawable.user_bg)
-                .error(R.drawable.user_bg)
-                .into(mBinding.characterImageView);
+        if (characterDTO.getBorn() != null) {
+            mBinding.bornCharacterTextView.setText(characterDTO.getBorn());
+        }
+
+        if (characterDTO.getAlias() != null) {
+            mBinding.aliasesCharacterTextView.setText(characterDTO.getAlias());
+        }
+
+        int visibleMotherComponents;
+        if (characterDTO.getMother().isEmpty()) {
+            visibleMotherComponents = View.INVISIBLE;
+        } else {
+            visibleMotherComponents = View.VISIBLE;
+            mBinding.motherCharacterButton.setText(characterDTO.getMother());
+        }
+        mBinding.motherCharacterButton.setVisibility(visibleMotherComponents);
+        mBinding.motherCharacterTextView.setVisibility(visibleMotherComponents);
+
+        int visibleFatherComponents;
+        if (characterDTO.getFather().isEmpty()) {
+            visibleFatherComponents = View.INVISIBLE;
+        } else {
+            visibleFatherComponents = View.VISIBLE;
+            mBinding.fatherCharacterButton.setText(characterDTO.getFather());
+        }
+        mBinding.fatherCharacterButton.setVisibility(visibleFatherComponents);
+        mBinding.fatherCharacterTextView.setVisibility(visibleFatherComponents);
     }
 }

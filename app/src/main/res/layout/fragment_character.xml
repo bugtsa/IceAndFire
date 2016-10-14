@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="character"
             type="com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse"/>
@@ -30,40 +31,10 @@
                 app:contentScrim="@color/red_dark"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-
                 <ImageView
                     android:id="@+id/character_image_view"
                     style="@style/user_image"
                     android:fitsSystemWindows="true"/>
-
-                <RelativeLayout
-                    android:id="@+id/character_placeholder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/grey_background"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@+id/character_photo_placeholder"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="@dimen/spacing_small_8"
-                        android:fontFamily="sens-serif-medium"
-                        android:text="@string/user_profile_placeholder_image_title"
-                        android:textColor="@color/white"/>
-
-                    <ImageView
-                        android:id="@+id/character_photo_placeholder"
-                        android:layout_width="@dimen/placeholder_photo_90"
-                        android:layout_height="@dimen/placeholder_photo_90"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="@dimen/size_medium_56"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/add_a_photo_48px"/>
-                </RelativeLayout>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar_character"
@@ -166,6 +137,7 @@
                         tools:text="@string/character_titles"/>
 
                     <TextView
+                        android:id="@+id/titles_character_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -197,6 +169,7 @@
                         tools:text="@string/character_aliases"/>
 
                     <TextView
+                        android:id="@+id/aliases_character_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -216,11 +189,11 @@
 
                     <ImageView
                         style="@style/icon.left"
-                        android:src="@drawable/github_circle"
+                        android:src="@drawable/icon_item_property"
                         android:visibility="invisible"/>
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/mother_character_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -230,6 +203,7 @@
                         tools:text="@string/character_mother"/>
 
                     <Button
+                        android:id="@+id/mother_character_button"
                         style="@style/AppTheme.Button.Dark.Red"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -248,10 +222,11 @@
 
                     <ImageView
                         style="@style/icon.left"
-                        android:src="@drawable/github_circle"
+                        android:src="@drawable/icon_item_property"
                         android:visibility="invisible"/>
 
                     <TextView
+                        android:id="@+id/father_character_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -261,6 +236,7 @@
                         tools:text="@string/character_father"/>
 
                     <Button
+                        android:id="@+id/father_character_button"
                         style="@style/AppTheme.Button.Dark.Red"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

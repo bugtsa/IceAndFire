@@ -3,70 +3,54 @@ package com.bugtsa.iceandfire.data.storage.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Передаёт данные о пользователях
  */
 public class CharacterDTO implements Parcelable {
 
     private String mRemoteId;
-    private String mPhoto;
-    private String mFullName;
-    private String mRait;
-    private String mRating;
-    private String mCodeLines;
-    private String mProjects;
-    private String mBio;
-    private List<String> mRepositories;
-    private List<String> mLikes;
 
-    public CharacterDTO(House houseData) {
-//        List<String> repoLink = new ArrayList<>();
-//        List<String> likeIds = new ArrayList<>();
-//
-//        mRemoteId = houseData.getRemoteId();
-//        mPhoto = houseData.getPhoto();
-//        mFullName = houseData.getFullName();
-//        mRait = String.valueOf(houseData.getRait());
-//        mRating = String.valueOf(houseData.getRating());
-//        mCodeLines = String.valueOf(houseData.getCodeLines());
-//        mProjects = String.valueOf(houseData.getProjects());
-//        mBio = houseData.getBio();
-//
-//        for (Repository gitLink : houseData.getRepositories()) {
-//            repoLink.add(gitLink.getRepositoryName());
-//        }
-//        mRepositories = repoLink;
-//
-//        for (Like like : houseData.getLikes()) {
-//            likeIds.add(like.getLikeUserId());
-//        }
-//        mLikes = likeIds;
+    private String houseRemoteId;
+
+    private String url;
+    private String name;
+    private String gender;
+    private String culture;
+    private String born;
+    private String died;
+    private String father;
+    private String mother;
+    private String spouse;
+    private String alias;
+
+    public CharacterDTO(CharacterOfHouse character) {
+        mRemoteId = character.getRemoteId();
+        houseRemoteId = character.getHouseRemoteId();
+        url = character.getUrl();
+        name = character.getName();
+        gender = character.getGender();
+        culture = character.getCulture();
+        born = character.getBorn();
+        died = character.getDied();
+        father = character.getFather();
+        mother = character.getMother();
+        spouse = character.getSpouse();
+        alias = character.getAlias();
     }
 
     protected CharacterDTO(Parcel in) {
         mRemoteId = in.readString();
-        mPhoto = in.readString();
-        mFullName = in.readString();
-        mRait = in.readString();
-        mRating = in.readString();
-        mCodeLines = in.readString();
-        mProjects = in.readString();
-        mBio = in.readString();
-        if (in.readByte() == 0x01) {
-            mRepositories = new ArrayList<String>();
-            in.readList(mRepositories, String.class.getClassLoader());
-        } else {
-            mRepositories = null;
-        }
-        if (in.readByte() == 0x01) {
-            mLikes = new ArrayList<String>();
-            in.readList(mLikes, String.class.getClassLoader());
-        } else {
-            mLikes = null;
-        }
+        houseRemoteId = in.readString();
+        url = in.readString();
+        name = in.readString();
+        gender = in.readString();
+        culture = in.readString();
+        born = in.readString();
+        died = in.readString();
+        father = in.readString();
+        mother = in.readString();
+        spouse = in.readString();
+        alias = in.readString();
     }
 
     @Override
@@ -77,25 +61,17 @@ public class CharacterDTO implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mRemoteId);
-        dest.writeString(mPhoto);
-        dest.writeString(mFullName);
-        dest.writeString(mRait);
-        dest.writeString(mRating);
-        dest.writeString(mCodeLines);
-        dest.writeString(mProjects);
-        dest.writeString(mBio);
-        if (mRepositories == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mRepositories);
-        }
-        if (mLikes == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mLikes);
-        }
+        dest.writeString(houseRemoteId);
+        dest.writeString(url);
+        dest.writeString(name);
+        dest.writeString(gender);
+        dest.writeString(culture);
+        dest.writeString(born);
+        dest.writeString(died);
+        dest.writeString(father);
+        dest.writeString(mother);
+        dest.writeString(spouse);
+        dest.writeString(alias);
     }
 
     @SuppressWarnings("unused")
@@ -113,37 +89,47 @@ public class CharacterDTO implements Parcelable {
 
     public String getRemoteId() { return mRemoteId; }
 
-    public String getPhoto() {
-        return mPhoto;
+    public String getAlias() {
+        return alias;
     }
 
-    public String getFullName() {
-        return mFullName;
+    public String getBorn() {
+        return born;
     }
 
-    public String getRait() {return mRait;}
-
-    public String getRating() {
-        return mRating;
+    public String getCulture() {
+        return culture;
     }
 
-    public String getCodeLines() {
-        return mCodeLines;
+    public String getDied() {
+        return died;
     }
 
-    public String getProjects() {
-        return mProjects;
+    public String getFather() {
+        return father;
     }
 
-    public String getBio() {
-        return mBio;
+    public String getGender() {
+        return gender;
     }
 
-    public List<String> getRepositories() {
-        return mRepositories;
+    public String getHouseRemoteId() {
+        return houseRemoteId;
     }
 
-    public List<String> getLikes() {
-        return mLikes;
+    public String getMother() {
+        return mother;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSpouse() {
+        return spouse;
+    }
+
+    public String getUrl() {
+        return url;
     }
 }

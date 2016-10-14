@@ -39,12 +39,7 @@ public interface ConstantManager {
     String USER_ID_KEY = "USER_ID_KEY";
     String USER_FULL_NAME_KEY = "USER_FULL_NAME_KEY";
     String PARCELABLE_KEY = "PARCELABLE_KEY";
-    String START_PROFILE_ACTIVITY_KEY = "START_PROFILE_ACTIVITY_KEY";
-    String LIKE_USER_KEY = "LIKE_USER_KEY";
 
-    int SEARCH_DELAY = 1500;
-
-    int SEARCH_WITHOUT_DELAY = 0;
     int RESPONSE_OK = 200;
     int USER_NOT_AUTHORIZED = 401;
     int LOGIN_OR_PASSWORD_INCORRECT = 404;
@@ -53,14 +48,13 @@ public interface ConstantManager {
     int USER_LIST_LOADED_AND_SAVED = 688;
     int NETWORK_NOT_AVAILABLE = 699;
     int END_SHOW_USERS = 711;
-    int EDITABLE_ERROR = 722;
     int HIDE_SPLASH = 733;
 
     int USER_LIST_NOT_SAVED = 733;
     int LANNISTER_KEY = 229;
     int TARGARIEN_KEY = 378;
-
     int STARK_KEY = 362;
+
     int STARK_MENU_ID = 0;
     int TARGARIEN_MENU_ID = 1;
     int LANNISTER_MENU_ID = 2;

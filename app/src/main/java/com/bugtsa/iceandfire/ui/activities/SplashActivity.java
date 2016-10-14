@@ -269,7 +269,7 @@ public class SplashActivity extends BaseActivity {
 
         if (actionBar != null) {
             actionBar.setTitle(R.string.my_name);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
