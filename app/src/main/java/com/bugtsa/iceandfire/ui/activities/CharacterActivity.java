@@ -105,6 +105,15 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         return true;
     }
 
+    /**
+     * Обрабатывает событие onBackPressed(нажатие системной клавиши back)
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

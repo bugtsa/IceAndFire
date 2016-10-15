@@ -1,6 +1,5 @@
 package com.bugtsa.iceandfire.ui.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -18,8 +17,8 @@ import android.widget.TextView;
 
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
-import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
+import com.bugtsa.iceandfire.data.managers.PreferencesManager;
 import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
@@ -41,16 +40,20 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.bugtsa.iceandfire.utils.ConstantManager.DONE_SAVE_CHARACTER_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.PER_PAGE;
+import static com.bugtsa.iceandfire.utils.ConstantManager.QUANTITY_PAGE;
+
 public class SplashActivity extends BaseActivity {
-    public static final String ACTION_BAR_TITLE = "action_bar_title";
+
     private static final String TAG = ConstantManager.TAG_PREFIX + SplashActivity.class.getSimpleName();
-    private static String VIEWPAGER_VISIBLE = "viewpager_visible";
 
     private static Fragment targarienFragment;
     private static Fragment lannisterFragment;
@@ -61,6 +64,7 @@ public class SplashActivity extends BaseActivity {
     private TextView drawerUserFullName;
     private TextView drawerUserEmail;
     private DataManager mDataManager;
+    private PreferencesManager mPreferencesManager;
     private Context mContext;
 
     private ChronosConnector mConnector;
@@ -68,25 +72,28 @@ public class SplashActivity extends BaseActivity {
 
     private Long mStart;
 
+    private List<Integer> listResponsePageCharacter = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView((Activity) this, R.layout.activity_splash);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
 
         mDataManager = DataManager.getInstance();
+        mPreferencesManager = mDataManager.getPreferencesManager();
+        if (mPreferencesManager.isFirstLaunch()) {
+            mPreferencesManager.saveFirstLaunch(false);
+        }
         mContext = mDataManager.getContext();
 
-        if (savedInstanceState != null) {
-            Navigator.changeViewPagerVisibility(this, savedInstanceState.getBoolean(VIEWPAGER_VISIBLE));
-            getSupportActionBar().setTitle(savedInstanceState.getString(ACTION_BAR_TITLE));
-        }
         initViewPager();
         setupToolbar();
         setupDrawer();
         showSplash();
+        loadCharacterFromDb();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -101,10 +108,14 @@ public class SplashActivity extends BaseActivity {
         adapter.addFragment(targarienFragment, getString(R.string.targarien_title));
         adapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
         viewPager.setAdapter(adapter);
+        if (mPreferencesManager.isFirstLaunch()) {
+            selectPage(ConstantManager.STARK_MENU_ID);
+        }
     }
 
     private void initViewPager() {
         setupViewPager(mBinding.viewpagerHouseList);
+
         mBinding.viewpagerHouseList.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -151,8 +162,6 @@ public class SplashActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         mConnector.onResume();
-        mStart = System.currentTimeMillis();
-        loadCharacterFromDb();
     }
 
     /**
@@ -185,10 +194,6 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mBinding.viewpagerHouseList != null) {
-            outState.putBoolean(VIEWPAGER_VISIBLE, mBinding.viewpagerHouseList.getVisibility() == View.VISIBLE);
-        }
-        outState.putString(ACTION_BAR_TITLE, getSupportActionBar().getTitle().toString());
         mConnector.onSaveInstanceState(outState);
     }
 
@@ -197,7 +202,6 @@ public class SplashActivity extends BaseActivity {
         if (item.getItemId() == android.R.id.home) {
             mBinding.navigationDrawerHouseList.openDrawer(GravityCompat.START);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -226,10 +230,10 @@ public class SplashActivity extends BaseActivity {
         drawerUserFullName = (TextView) headerLayout.findViewById(R.id.drawer_user_name_tv);
         drawerUserEmail = (TextView) headerLayout.findViewById(R.id.drawer_user_email_tv);
 
-        drawerUserFullName.setText(mDataManager.getPreferencesManager().getUserFullName());
-        drawerUserEmail.setText(mDataManager.getPreferencesManager().getUserEmail());
-
-        insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
+//        drawerUserFullName.setText(mDataManager.getPreferencesManager().getUserFullName());
+//        drawerUserEmail.setText(mDataManager.getPreferencesManager().getUserEmail());
+//
+//        insertDrawerAvatar(mDataManager.getPreferencesManager().loadUserAvatar());
 
         mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
         mBinding.navigationViewHouseList.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -273,21 +277,6 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Слушает событие TimeEvent
-     *
-     * @param timeEvent слушает окончание отображение списка пользователей
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTimeEvent(TimeEvent timeEvent) {
-        switch (timeEvent.getTimeCode()) {
-
-            case ConstantManager.END_SHOW_USERS:
-                hideSplash();
-                break;
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadDoneEvent(LoadDoneEvent loadDoneEvent) {
         Long timeOfEvent = loadDoneEvent.getTimeOfEvent();
@@ -307,10 +296,10 @@ public class SplashActivity extends BaseActivity {
 
     private void loadIsDone() {
         hideSplash();
-        EventBus.getDefault().post(new TimeEvent(ConstantManager.HIDE_SPLASH));
     }
 
     private void loadCharacterFromDb() {
+        mStart = System.currentTimeMillis();
         try {
             mConnector.runOperation(new LoadCharacterListOperation(), false);
         } catch (Exception e) {
@@ -318,15 +307,19 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
+    private void loadAllCharactersFromNetwork() {
+        for (int currentPage = 1; currentPage <= QUANTITY_PAGE; currentPage++) {
+            loadCharactersFromNetwork(currentPage, PER_PAGE);
+        }
+    }
+
     public void onOperationFinished(final LoadCharacterListOperation.Result result) {
         if (result.getOutput().isEmpty()) {
-            int countPage = 43;
-            int perPage = 50;
-            for (int currentPage = 1; currentPage <= countPage; currentPage++) {
-                loadCharactersFromNetwork(currentPage, perPage);
-            }
+            loadAllCharactersFromNetwork();
+            loadHousesListFromDb();
+        } else {
+            EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
         }
-        loadHousesListFromDb();
     }
 
     private void loadCharactersFromNetwork(final int currentPage, final int perPage) {
@@ -397,16 +390,18 @@ public class SplashActivity extends BaseActivity {
             loadHousesFromNetwork(ConstantManager.STARK_KEY);
             loadHousesFromNetwork(ConstantManager.TARGARIEN_KEY);
             loadHousesFromNetwork(ConstantManager.LANNISTER_KEY);
-        } else {
-            if (result.getOutput().size() == 3) {
-                EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
-            }
         }
     }
 
     public void onOperationFinished(final SaveHouseOperation.Result result) {
-        if (result.getOutput() != null) {
-            loadHousesListFromDb();
+    }
+
+    public void onOperationFinished(final SaveCharacterOperation.Result result) {
+        if (result.getOutput().equals(DONE_SAVE_CHARACTER_KEY)) {
+            listResponsePageCharacter.add(1);
+            if (listResponsePageCharacter.size() == QUANTITY_PAGE) {
+                EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
+            }
         }
     }
 }

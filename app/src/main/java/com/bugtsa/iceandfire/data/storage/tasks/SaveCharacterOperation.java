@@ -20,6 +20,8 @@ import java.util.List;
 
 import retrofit2.Response;
 
+import static com.bugtsa.iceandfire.utils.ConstantManager.DONE_SAVE_CHARACTER_KEY;
+
 public class SaveCharacterOperation extends ChronosOperation<String> {
 
     private Response<List<CharacterRes>> mResponse;
@@ -31,6 +33,7 @@ public class SaveCharacterOperation extends ChronosOperation<String> {
     @Nullable
     @Override
     public String run() {
+        String doneString = DONE_SAVE_CHARACTER_KEY;
         CharacterOfHouseDao characterOfHouseDao = IceAndFireApplication.getDaoSession().getCharacterOfHouseDao();
         TitleDao titleDao = IceAndFireApplication.getDaoSession().getTitleDao();
         AliasDao aliasDao = IceAndFireApplication.getDaoSession().getAliasDao();
@@ -54,7 +57,7 @@ public class SaveCharacterOperation extends ChronosOperation<String> {
         }
         characterOfHouseDao.insertOrReplaceInTx(characterList);
 
-        return null;
+        return doneString;
     }
 
     private String getAliasTitle(CharacterRes characterRes) {

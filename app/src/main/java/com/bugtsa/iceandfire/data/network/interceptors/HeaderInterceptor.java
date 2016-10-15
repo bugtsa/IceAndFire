@@ -17,9 +17,6 @@ public class HeaderInterceptor implements Interceptor {
         Request original = chain.request();
 
         Request.Builder requestBuilder = original.newBuilder()
-                .header("X-Access-Token", pm.getAuthToken())
-                .header("Request-House-Id", pm.getUserId())
-                .header("House-Agent", "DevIntensiveApp")
                 .header("Cache-Control", "max-age="+(60 * 60 * 1));
 
         Request request = requestBuilder.build();

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bugtsa.iceandfire.R;
-import com.bugtsa.iceandfire.data.events.TimeEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.House;
@@ -21,12 +20,7 @@ import com.bugtsa.iceandfire.databinding.FragmentHousesBinding;
 import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
 import com.bugtsa.iceandfire.ui.routers.CharactersRouter;
 import com.bugtsa.iceandfire.ui.views.IHouseView;
-import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.redmadrobot.chronos.ChronosConnector;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +79,8 @@ public class HouseFragment extends Fragment implements IHouseView{
         mBinding = DataBindingUtil.bind(view);
 
         setupRecyclerView();
+
+        loadCharacterOfHouseFromDb();
         return view;
     }
 
@@ -119,24 +115,6 @@ public class HouseFragment extends Fragment implements IHouseView{
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mConnector.onSaveInstanceState(outState);
-    }
-
-    /**
-     * Обрабатывает событие onStart жизненного цикла Activity
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    /**
-     * Обрабатывает событие onStop жизненного цикла Activity
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     public void showData() {
@@ -175,11 +153,5 @@ public class HouseFragment extends Fragment implements IHouseView{
     public void onOperationFinished(final LoadCharacterListByHouseIdOperation.Result result) {
         mCharacters = result.getOutput();
         showCharacters(mCharacters);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onHideSplash(TimeEvent timeEvent) {
-        if (timeEvent.getTimeCode() == ConstantManager.HIDE_SPLASH) {
-        }
     }
 }
