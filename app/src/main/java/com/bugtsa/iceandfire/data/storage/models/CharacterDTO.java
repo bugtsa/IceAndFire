@@ -39,6 +39,7 @@ public class CharacterDTO implements Parcelable {
         father = character.getFather();
         mother = character.getMother();
         spouse = character.getSpouse();
+
         for (Title title : character.getTitles()) {
             titleList.add(title.getTitle());
         }

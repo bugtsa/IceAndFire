@@ -60,4 +60,7 @@ public interface ConstantManager {
     int LANNISTER_MENU_ID = 2;
 
     String PRE_ID_SYMBOL = "/";
+    String NEW_STRING_SYMBOL_STR = "\n";
+    char NEW_STRING_SYMBOL_CHAR = '\n';
+
 }

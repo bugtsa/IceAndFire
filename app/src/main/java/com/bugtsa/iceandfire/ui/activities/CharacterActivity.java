@@ -17,8 +17,13 @@ import com.bugtsa.iceandfire.data.storage.tasks.LoadTitleHouseOperation;
 import com.bugtsa.iceandfire.databinding.FragmentCharacterBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
+import com.bugtsa.iceandfire.utils.StringUtils;
 import com.redmadrobot.chronos.ChronosConnector;
 
+import java.util.List;
+
+import static com.bugtsa.iceandfire.utils.ConstantManager.NEW_STRING_SYMBOL_CHAR;
+import static com.bugtsa.iceandfire.utils.ConstantManager.NEW_STRING_SYMBOL_STR;
 import static com.bugtsa.iceandfire.utils.ConstantManager.PARCELABLE_KEY;
 
 public class CharacterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -130,11 +135,11 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         }
 
         if (mCharacterDTO.getTitles() != null) {
-            mBinding.titlesCharacterTextView.setText(mCharacterDTO.getTitles().toString());
+            mBinding.titlesCharacterTextView.setText(getStringList(mCharacterDTO.getTitles()));
         }
 
         if (mCharacterDTO.getAliases() != null) {
-            mBinding.aliasesCharacterTextView.setText(mCharacterDTO.getAliases().toString());
+            mBinding.aliasesCharacterTextView.setText(getStringList(mCharacterDTO.getAliases()));
         }
 
         if (!mCharacterDTO.getMother().isEmpty()) {
@@ -148,6 +153,18 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         } else {
             setVisibleFather(View.INVISIBLE);
         }
+    }
+
+    private String getStringList(List<String> stringList) {
+        String listForOutput = "";
+        if (!stringList.isEmpty()) {
+            for (String title : stringList) {
+                listForOutput += title;
+                listForOutput += NEW_STRING_SYMBOL_STR;
+            }
+            listForOutput = StringUtils.removeLastChar(listForOutput, NEW_STRING_SYMBOL_CHAR);
+        }
+        return listForOutput;
     }
 
     private void getWords(String houseRemoteId) {

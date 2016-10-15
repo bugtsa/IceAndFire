@@ -23,7 +23,7 @@ public class Alias {
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    public Alias(String alias, String characterRemoteId) {
+    public Alias(String characterRemoteId, String alias) {
         this.alias = alias;
         this.characterRemoteId = characterRemoteId;
     }
