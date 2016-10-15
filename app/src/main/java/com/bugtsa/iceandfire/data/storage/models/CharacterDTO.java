@@ -3,15 +3,16 @@ package com.bugtsa.iceandfire.data.storage.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Передаёт данные о пользователях
  */
 public class CharacterDTO implements Parcelable {
 
     private String mRemoteId;
-
     private String houseRemoteId;
-
     private String url;
     private String name;
     private String gender;
@@ -21,9 +22,12 @@ public class CharacterDTO implements Parcelable {
     private String father;
     private String mother;
     private String spouse;
-    private String alias;
+    private List<String> titles;
+    private List<String> aliases;
 
     public CharacterDTO(CharacterOfHouse character) {
+        List<String> titleList = new ArrayList<>();
+        List<String> aliasList = new ArrayList<>();
         mRemoteId = character.getRemoteId();
         houseRemoteId = character.getHouseRemoteId();
         url = character.getUrl();
@@ -35,7 +39,14 @@ public class CharacterDTO implements Parcelable {
         father = character.getFather();
         mother = character.getMother();
         spouse = character.getSpouse();
-        alias = character.getAlias();
+        for (Title title : character.getTitles()) {
+            titleList.add(title.getTitle());
+        }
+        this.titles = titleList;
+        for (Alias alias : character.getAliases()) {
+            aliasList.add(alias.getAlias());
+        }
+        this.aliases = aliasList;
     }
 
     protected CharacterDTO(Parcel in) {
@@ -50,7 +61,18 @@ public class CharacterDTO implements Parcelable {
         father = in.readString();
         mother = in.readString();
         spouse = in.readString();
-        alias = in.readString();
+        if (in.readByte() == 0x01) {
+            titles = new ArrayList<String>();
+            in.readList(titles, String.class.getClassLoader());
+        } else {
+            titles = null;
+        }
+        if (in.readByte() == 0x01) {
+            aliases = new ArrayList<String>();
+            in.readList(aliases, String.class.getClassLoader());
+        } else {
+            aliases = null;
+        }
     }
 
     @Override
@@ -71,7 +93,18 @@ public class CharacterDTO implements Parcelable {
         dest.writeString(father);
         dest.writeString(mother);
         dest.writeString(spouse);
-        dest.writeString(alias);
+        if (titles == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(titles);
+        }
+        if (aliases == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(aliases);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -88,10 +121,6 @@ public class CharacterDTO implements Parcelable {
     };
 
     public String getRemoteId() { return mRemoteId; }
-
-    public String getAlias() {
-        return alias;
-    }
 
     public String getBorn() {
         return born;
@@ -131,5 +160,13 @@ public class CharacterDTO implements Parcelable {
 
     public String getUrl() {
         return url;
+    }
+
+    public List<String> getAliases() {
+        return aliases;
+    }
+
+    public List<String> getTitles() {
+        return titles;
     }
 }

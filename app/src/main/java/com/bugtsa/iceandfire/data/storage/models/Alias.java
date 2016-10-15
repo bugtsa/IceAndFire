@@ -6,12 +6,27 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
 @Entity(active = true, nameInDb = "ALIASES")
-public class Aliase {
+public class Alias {
 
     @Id
     private Long id;
 
+    private String alias;
+
     private String characterRemoteId;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 1571512818)
+    private transient AliasDao myDao;
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    public Alias(String alias, String characterRemoteId) {
+        this.alias = alias;
+        this.characterRemoteId = characterRemoteId;
+    }
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
@@ -50,19 +65,11 @@ public class Aliase {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1907117852)
+    @Generated(hash = 360304207)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getAliaseDao() : null;
+        myDao = daoSession != null ? daoSession.getAliasDao() : null;
     }
-
-    /** Used for active entity operations. */
-    @Generated(hash = 947773599)
-    private transient AliaseDao myDao;
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
 
     public String getCharacterRemoteId() {
         return this.characterRemoteId;
@@ -70,6 +77,14 @@ public class Aliase {
 
     public void setCharacterRemoteId(String characterRemoteId) {
         this.characterRemoteId = characterRemoteId;
+    }
+
+    public String getAlias() {
+        return this.alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public Long getId() {
@@ -80,13 +95,15 @@ public class Aliase {
         this.id = id;
     }
 
-    @Generated(hash = 1016691290)
-    public Aliase(Long id, String characterRemoteId) {
+    @Generated(hash = 1514350672)
+    public Alias(Long id, String alias, String characterRemoteId) {
         this.id = id;
+        this.alias = alias;
         this.characterRemoteId = characterRemoteId;
     }
 
-    @Generated(hash = 1566368553)
-    public Aliase() {
+    @Generated(hash = 1265971347)
+    public Alias() {
     }
+
 }

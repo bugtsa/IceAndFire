@@ -71,15 +71,13 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView((Activity)this, R.layout.activity_splash);
+        mBinding = DataBindingUtil.setContentView((Activity) this, R.layout.activity_splash);
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
 
         mDataManager = DataManager.getInstance();
         mContext = mDataManager.getContext();
-
-        mStart = System.currentTimeMillis();
 
         if (savedInstanceState != null) {
             Navigator.changeViewPagerVisibility(this, savedInstanceState.getBoolean(VIEWPAGER_VISIBLE));
@@ -89,7 +87,6 @@ public class SplashActivity extends BaseActivity {
         setupToolbar();
         setupDrawer();
         showSplash();
-        loadCharacterFromDb();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -132,7 +129,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void setCheckedItemNavigationView(int position) {
-        switch(position) {
+        switch (position) {
             case ConstantManager.STARK_MENU_ID:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
                 break;
@@ -154,6 +151,8 @@ public class SplashActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         mConnector.onResume();
+        mStart = System.currentTimeMillis();
+        loadCharacterFromDb();
     }
 
     /**

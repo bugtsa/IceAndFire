@@ -71,5 +71,7 @@
     <string name="character_aliases">Aliases:</string>
     <string name="character_mother">Mother:</string>
     <string name="character_father">Father:</string>
+    <string name="died">died</string>
+    <string name="allegiances_dont_have">This is character doesn`t have allegiances</string>
 
 </resources>

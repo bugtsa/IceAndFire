@@ -9,17 +9,21 @@ import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouseDao;
 import com.redmadrobot.chronos.ChronosOperation;
 import com.redmadrobot.chronos.ChronosOperationResult;
 
-import java.util.List;
+public class LoadCharacterByRemoteIdOperation extends ChronosOperation<CharacterOfHouse> {
 
-public class LoadCharacterListOperation extends ChronosOperation<List<CharacterOfHouse>> {
+    private String mCharacterRemoteId;
+
+    public LoadCharacterByRemoteIdOperation(String characterRemoteId) {
+        mCharacterRemoteId = characterRemoteId;
+    }
 
     @Nullable
     @Override
-    public List<CharacterOfHouse> run() {
+    public CharacterOfHouse run() {
         return IceAndFireApplication.getDaoSession().queryBuilder(CharacterOfHouse.class)
-                .where(CharacterOfHouseDao.Properties.Id.gt(0))
+                .where(CharacterOfHouseDao.Properties.RemoteId.eq(mCharacterRemoteId))
                 .build()
-                .list();
+                .unique();
     }
 
     @NonNull
@@ -28,6 +32,7 @@ public class LoadCharacterListOperation extends ChronosOperation<List<CharacterO
         return Result.class;
     }
 
-    public static final class Result extends ChronosOperationResult<List<CharacterOfHouse>> {
+    public static final class Result extends ChronosOperationResult<CharacterOfHouse> {
+
     }
 }

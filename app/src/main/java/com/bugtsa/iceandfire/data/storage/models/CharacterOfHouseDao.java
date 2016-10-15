@@ -37,7 +37,8 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         public final static Property Father = new Property(9, String.class, "father", false, "FATHER");
         public final static Property Mother = new Property(10, String.class, "mother", false, "MOTHER");
         public final static Property Spouse = new Property(11, String.class, "spouse", false, "SPOUSE");
-        public final static Property Alias = new Property(12, String.class, "alias", false, "ALIAS");
+        public final static Property Allegiances = new Property(12, String.class, "allegiances", false, "ALLEGIANCES");
+        public final static Property AliasTitle = new Property(13, String.class, "aliasTitle", false, "ALIAS_TITLE");
     };
 
     private DaoSession daoSession;
@@ -69,7 +70,8 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
                 "\"FATHER\" TEXT," + // 9: father
                 "\"MOTHER\" TEXT," + // 10: mother
                 "\"SPOUSE\" TEXT," + // 11: spouse
-                "\"ALIAS\" TEXT);"); // 12: alias
+                "\"ALLEGIANCES\" TEXT," + // 12: allegiances
+                "\"ALIAS_TITLE\" TEXT);"); // 13: aliasTitle
     }
 
     /** Drops the underlying database table. */
@@ -142,9 +144,14 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
             stmt.bindString(12, spouse);
         }
  
-        String alias = entity.getAlias();
-        if (alias != null) {
-            stmt.bindString(13, alias);
+        String allegiances = entity.getAllegiances();
+        if (allegiances != null) {
+            stmt.bindString(13, allegiances);
+        }
+ 
+        String aliasTitle = entity.getAliasTitle();
+        if (aliasTitle != null) {
+            stmt.bindString(14, aliasTitle);
         }
     }
 
@@ -212,9 +219,14 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
             stmt.bindString(12, spouse);
         }
  
-        String alias = entity.getAlias();
-        if (alias != null) {
-            stmt.bindString(13, alias);
+        String allegiances = entity.getAllegiances();
+        if (allegiances != null) {
+            stmt.bindString(13, allegiances);
+        }
+ 
+        String aliasTitle = entity.getAliasTitle();
+        if (aliasTitle != null) {
+            stmt.bindString(14, aliasTitle);
         }
     }
 
@@ -244,7 +256,8 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // father
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // mother
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // spouse
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // alias
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // allegiances
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // aliasTitle
         );
         return entity;
     }
@@ -263,7 +276,8 @@ public class CharacterOfHouseDao extends AbstractDao<CharacterOfHouse, Long> {
         entity.setFather(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setMother(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setSpouse(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setAlias(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setAllegiances(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setAliasTitle(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
      }
     
     @Override

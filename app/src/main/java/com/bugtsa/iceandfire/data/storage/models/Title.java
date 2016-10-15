@@ -14,6 +14,14 @@ public class Title {
 
     private String characterRemoteId;
 
+    /** Used for active entity operations. */
+    @Generated(hash = 1794908068)
+    private transient TitleDao myDao;
+
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
     public Title(String characterRemoteId, String title) {
         this.title = title;
         this.characterRemoteId = characterRemoteId;
@@ -62,14 +70,6 @@ public class Title {
         myDao = daoSession != null ? daoSession.getTitleDao() : null;
     }
 
-    /** Used for active entity operations. */
-    @Generated(hash = 1794908068)
-    private transient TitleDao myDao;
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
     public String getCharacterRemoteId() {
         return this.characterRemoteId;
     }
@@ -78,20 +78,20 @@ public class Title {
         this.characterRemoteId = characterRemoteId;
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return this.title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Generated(hash = 1778743455)

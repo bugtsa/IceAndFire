@@ -73,7 +73,6 @@
                     <TextView
                         android:id="@+id/words_character_text_view"
                         style="@style/text_view_right"
-                        android:text="@string/character_words"
                         tools:ignore="RtlHardcoded"
                         tools:text="@string/character_words"/>
 
@@ -96,7 +95,6 @@
                     <TextView
                         android:id="@+id/born_character_text_view"
                         style="@style/text_view_right"
-                        android:text="@{character.born}"
                         tools:ignore="RtlHardcoded"
                         tools:text="@string/character_born"/>
 
@@ -119,7 +117,6 @@
                     <TextView
                         android:id="@+id/titles_character_text_view"
                         style="@style/text_view_right"
-                        android:text="@string/character_titles"
                         tools:text="@string/character_titles"/>
 
                 </LinearLayout>
@@ -141,7 +138,6 @@
                     <TextView
                         android:id="@+id/aliases_character_text_view"
                         style="@style/text_view_right"
-                        android:text="@{character.alias}"
                         tools:text="@string/character_aliases"/>
 
                 </LinearLayout>
@@ -154,7 +150,7 @@
 
                     <ImageView
                         style="@style/icon.left"
-                        android:src="@drawable/icon_item_property"
+                        android:src="@drawable/ic_item"
                         android:visibility="invisible"/>
 
                     <TextView
@@ -168,8 +164,7 @@
 
                         <Button
                             android:id="@+id/mother_character_button"
-                            style="@style/AppTheme.Button.Dark.Red"
-                            android:text="@{character.mother}"
+                            style="@style/button"
                             tools:text="@string/character_mother"/>
                     </LinearLayout>
 
@@ -183,7 +178,7 @@
 
                     <ImageView
                         style="@style/icon.left"
-                        android:src="@drawable/icon_item_property"
+                        android:src="@drawable/ic_item"
                         android:visibility="invisible"/>
 
                     <TextView
@@ -197,8 +192,7 @@
 
                         <Button
                             android:id="@+id/father_character_button"
-                            style="@style/AppTheme.Button.Dark.Red"
-                            android:text="@{character.father}"
+                            style="@style/button"
                             tools:text="@string/character_father"/>
                     </LinearLayout>
 

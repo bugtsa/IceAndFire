@@ -31,17 +31,18 @@ public class CharacterOfHouse {
     private String father;
     private String mother;
     private String spouse;
+    private String allegiances;
+    private String aliasTitle;
 
-    private String alias;
-
-    //    @ToMany(joinProperties = {
-//            @JoinProperty(name = "remoteId", referencedName = "characterRemoteId")
-//    })
-//    private List<String> mAliases;
     @ToMany(joinProperties = {
             @JoinProperty(name = "remoteId", referencedName = "characterRemoteId")
     })
-    private List<Title> mTitles;
+    private List<Alias> aliases;
+
+    @ToMany(joinProperties = {
+            @JoinProperty(name = "remoteId", referencedName = "characterRemoteId")
+    })
+    private List<Title> titles;
 
     /** Used for active entity operations. */
     @Generated(hash = 1342124280)
@@ -57,21 +58,19 @@ public class CharacterOfHouse {
         culture = characterRes.getCulture();
         born = characterRes.getBorn();
         died = characterRes.getDied();
-        father = characterRes.getFather();
-        mother = characterRes.getMother();
-        spouse = characterRes.getSpouse();
+        father = StringUtils.getIdFromUrlApi(characterRes.getFather());
+        mother = StringUtils.getIdFromUrlApi(characterRes.getMother());
+        spouse = StringUtils.getIdFromUrlApi(characterRes.getSpouse());
+
+        if (characterRes.getUrl() != null) {
+            if (!characterRes.getUrl().isEmpty()) {
+                remoteId = StringUtils.getIdFromUrlApi(characterRes.getUrl());
+            }
+        }
+
         if (characterRes.getAllegiances() != null) {
             if (!characterRes.getAllegiances().isEmpty()) {
                 houseRemoteId = StringUtils.getIdFromUrlApi(characterRes.getAllegiances().get(0));
-            }
-        }
-        if (characterRes.getAliases() != null) {
-            if (!characterRes.getAliases().isEmpty()) {
-                alias = characterRes.getAliases().get(0);
-            }
-        } else if (characterRes.getTitles() != null) {
-            if (!characterRes.getTitles().isEmpty()) {
-                alias = characterRes.getTitles().get(0);
             }
         }
     }
@@ -113,31 +112,59 @@ public class CharacterOfHouse {
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 137022142)
-    public synchronized void resetMTitles() {
-        mTitles = null;
+    @Generated(hash = 1506933621)
+    public synchronized void resetTitles() {
+        titles = null;
     }
 
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.
      */
-    @Generated(hash = 1396195957)
-    public List<Title> getMTitles() {
-        if (mTitles == null) {
+    @Generated(hash = 680630419)
+    public List<Title> getTitles() {
+        if (titles == null) {
             final DaoSession daoSession = this.daoSession;
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
             }
             TitleDao targetDao = daoSession.getTitleDao();
-            List<Title> mTitlesNew = targetDao._queryCharacterOfHouse_MTitles(remoteId);
+            List<Title> titlesNew = targetDao._queryCharacterOfHouse_Titles(remoteId);
             synchronized (this) {
-                if(mTitles == null) {
-                    mTitles = mTitlesNew;
+                if(titles == null) {
+                    titles = titlesNew;
                 }
             }
         }
-        return mTitles;
+        return titles;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 731614754)
+    public synchronized void resetAliases() {
+        aliases = null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 897749690)
+    public List<Alias> getAliases() {
+        if (aliases == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            AliasDao targetDao = daoSession.getAliasDao();
+            List<Alias> aliasesNew = targetDao._queryCharacterOfHouse_Aliases(remoteId);
+            synchronized (this) {
+                if(aliases == null) {
+                    aliases = aliasesNew;
+                }
+            }
+        }
+        return aliases;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -145,6 +172,22 @@ public class CharacterOfHouse {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getCharacterOfHouseDao() : null;
+    }
+
+    public String getAliasTitle() {
+        return this.aliasTitle;
+    }
+
+    public void setAliasTitle(String aliasTitle) {
+        this.aliasTitle = aliasTitle;
+    }
+
+    public String getAllegiances() {
+        return this.allegiances;
+    }
+
+    public void setAllegiances(String allegiances) {
+        this.allegiances = allegiances;
     }
 
     public String getSpouse() {
@@ -243,18 +286,10 @@ public class CharacterOfHouse {
         this.id = id;
     }
 
-    public String getAlias() {
-        return this.alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    @Generated(hash = 1636845706)
+    @Generated(hash = 1079922851)
     public CharacterOfHouse(Long id, String remoteId, String houseRemoteId, String url, String name,
             String gender, String culture, String born, String died, String father, String mother,
-            String spouse, String alias) {
+            String spouse, String allegiances, String aliasTitle) {
         this.id = id;
         this.remoteId = remoteId;
         this.houseRemoteId = houseRemoteId;
@@ -267,11 +302,11 @@ public class CharacterOfHouse {
         this.father = father;
         this.mother = mother;
         this.spouse = spouse;
-        this.alias = alias;
+        this.allegiances = allegiances;
+        this.aliasTitle = aliasTitle;
     }
 
     @Generated(hash = 1658210378)
     public CharacterOfHouse() {
     }
-
 }

@@ -58,4 +58,6 @@ public interface ConstantManager {
     int STARK_MENU_ID = 0;
     int TARGARIEN_MENU_ID = 1;
     int LANNISTER_MENU_ID = 2;
+
+    String PRE_ID_SYMBOL = "/";
 }
