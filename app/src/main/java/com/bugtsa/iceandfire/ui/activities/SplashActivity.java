@@ -1,6 +1,7 @@
 package com.bugtsa.iceandfire.ui.activities;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -78,6 +79,8 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
@@ -295,6 +298,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void loadIsDone() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
         hideSplash();
     }
 

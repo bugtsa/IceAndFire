@@ -58,6 +58,7 @@ public class HouseFragment extends Fragment implements IHouseView{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         mRouter = new CharactersRouter(getActivity());
 
         mDataManager = DataManager.getInstance();
