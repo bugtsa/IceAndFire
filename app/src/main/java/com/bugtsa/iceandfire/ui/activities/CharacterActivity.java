@@ -135,7 +135,7 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
     }
 
     private int getIdDrawable(String houseRemoteId) {
-        int idDrawable = R.drawable.starks;
+        int idDrawable = R.drawable.stark;
         switch (Integer.parseInt(houseRemoteId)) {
             case STARK_KEY:
                 idDrawable = R.drawable.stark;
@@ -147,7 +147,7 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
                 idDrawable = R.drawable.lannister;
                 break;
             default:
-                idDrawable = R.drawable.starks;
+                idDrawable = R.drawable.stark;
         }
         return idDrawable;
     }

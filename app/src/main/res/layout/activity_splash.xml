@@ -60,6 +60,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="left"
             app:headerLayout="@layout/drawer_view"
-            app:menu="@menu/drawer_menu"></android.support.design.widget.NavigationView>
+            android:background="@color/color_primary"
+            app:itemIconTint="@color/white"
+            app:itemTextColor="@color/white"
+            app:menu="@menu/drawer_menu"/>
     </android.support.v4.widget.DrawerLayout>
 </layout>
