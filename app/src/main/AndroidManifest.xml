@@ -20,11 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.CharacterActivity"
-                  android:parentActivityName=".ui.activities.SplashActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.SplashActivity"/>
+        <activity android:name=".ui.activities.CharacterActivity">
         </activity>
     </application>
 

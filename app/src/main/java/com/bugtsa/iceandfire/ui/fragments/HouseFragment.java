@@ -90,7 +90,7 @@ public class HouseFragment extends Fragment implements IHouseView{
 
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setStackFromEnd(true);
+        layoutManager.setStackFromEnd(false);
         mBinding.characters.setLayoutManager(layoutManager);
         mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse));
         mBinding.characters.setAdapter(mAdapter);
@@ -98,6 +98,7 @@ public class HouseFragment extends Fragment implements IHouseView{
 
     @Override
     public void showCharacters(List<CharacterOfHouse> characterList) {
+        mCharacters = characterList;
         mAdapter.setCharacter(characterList);
     }
 
