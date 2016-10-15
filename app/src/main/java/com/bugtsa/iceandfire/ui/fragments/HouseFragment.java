@@ -25,6 +25,10 @@ import com.redmadrobot.chronos.ChronosConnector;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
+
 public class HouseFragment extends Fragment implements IHouseView{
 
     private static final String HOUSE_KEY = "HOUSE_KEY";
@@ -58,7 +62,6 @@ public class HouseFragment extends Fragment implements IHouseView{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         mRouter = new CharactersRouter(getActivity());
 
         mDataManager = DataManager.getInstance();
@@ -69,8 +72,6 @@ public class HouseFragment extends Fragment implements IHouseView{
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
-
-        mHouseKey = getArguments().getInt(HOUSE_KEY);
     }
 
     @Nullable
@@ -79,17 +80,36 @@ public class HouseFragment extends Fragment implements IHouseView{
         View view = inflater.inflate(R.layout.fragment_houses, container, false);
         mBinding = DataBindingUtil.bind(view);
 
+        mHouseKey = getArguments().getInt(HOUSE_KEY);
         setupRecyclerView();
 
         loadCharacterOfHouseFromDb();
         return view;
     }
 
+    private int getIdDrawableIconHouse() {
+        int idDrawable = R.drawable.ic_item;
+        switch (mHouseKey) {
+            case STARK_KEY:
+                idDrawable = R.drawable.ic_stark;
+                break;
+            case TARGARIEN_KEY:
+                idDrawable = R.drawable.ic_targarien;
+                break;
+            case LANNISTER_KEY:
+                idDrawable = R.drawable.ic_lanister;
+                break;
+            default:
+                idDrawable = R.drawable.ic_item;
+        }
+        return idDrawable;
+    }
+
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setStackFromEnd(false);
         mBinding.characters.setLayoutManager(layoutManager);
-        mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse));
+        mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse), mDataManager.getContext(), getIdDrawableIconHouse());
         mBinding.characters.setAdapter(mAdapter);
     }
 

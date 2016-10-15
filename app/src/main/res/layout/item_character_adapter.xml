@@ -15,13 +15,13 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/image_house_character"
             android:layout_width="@dimen/spacing_big_medium_48"
             android:layout_height="@dimen/spacing_big_medium_48"
             android:layout_marginLeft="@dimen/font_normal_16"
             android:layout_marginRight="@dimen/font_normal_16"
             android:layout_marginTop="@dimen/font_normal_16"
             android:layout_marginBottom="@dimen/font_normal_16"
-            android:id="@+id/ivAccount"
             android:src="@drawable/ic_item"/>
 
         <LinearLayout

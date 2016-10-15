@@ -15,7 +15,7 @@ import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterByRemoteIdOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadTitleHouseOperation;
-import com.bugtsa.iceandfire.databinding.FragmentCharacterBinding;
+import com.bugtsa.iceandfire.databinding.ActivityCharacterBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.bugtsa.iceandfire.utils.StringUtils;
@@ -23,13 +23,16 @@ import com.redmadrobot.chronos.ChronosConnector;
 
 import java.util.List;
 
+import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.NEW_STRING_SYMBOL_CHAR;
 import static com.bugtsa.iceandfire.utils.ConstantManager.NEW_STRING_SYMBOL_STR;
 import static com.bugtsa.iceandfire.utils.ConstantManager.PARCELABLE_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
 
 public class CharacterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private FragmentCharacterBinding mBinding;
+    private ActivityCharacterBinding mBinding;
 
     private DataManager mDataManager;
 
@@ -51,7 +54,7 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.fragment_character);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_character);
 
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
@@ -64,7 +67,6 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
 
         setupToolBar();
         initCharacterData();
-
     }
 
     @Override
@@ -132,11 +134,31 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         mConnector.onResume();
     }
 
+    private int getIdDrawable(String houseRemoteId) {
+        int idDrawable = R.drawable.starks;
+        switch (Integer.parseInt(houseRemoteId)) {
+            case STARK_KEY:
+                idDrawable = R.drawable.stark;
+                break;
+            case TARGARIEN_KEY:
+                idDrawable = R.drawable.targarien;
+                break;
+            case LANNISTER_KEY:
+                idDrawable = R.drawable.lannister;
+                break;
+            default:
+                idDrawable = R.drawable.starks;
+        }
+        return idDrawable;
+    }
+
     /**
      * Инициализирует данные пользователя
      */
     private void initCharacterData() {
         mCharacterDTO = getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY);
+
+        mBinding.characterImageView.setImageDrawable(getDrawable(getIdDrawable(mCharacterDTO.getHouseRemoteId())));
 
         if (mCharacterDTO.getName() != null) {
             mBinding.collapsingToolbarCharacter.setTitle(mCharacterDTO.getName());
@@ -208,10 +230,12 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         CharacterOfHouse parentOfCharacter = result.getOutput();
         if (parentOfCharacter.getRemoteId().equals(mCharacterDTO.getMother())) {
             mMotherOfCharacter = parentOfCharacter;
+            mMotherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
             mBinding.motherCharacterButton.setText(parentOfCharacter.getName());
             setVisibleMother(View.VISIBLE);
         } else if (parentOfCharacter.getRemoteId().equals(mCharacterDTO.getFather())) {
             mFatherOfCharacter = parentOfCharacter;
+            mFatherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
             mBinding.fatherCharacterButton.setText(parentOfCharacter.getName());
             setVisibleFather(View.VISIBLE);
         }

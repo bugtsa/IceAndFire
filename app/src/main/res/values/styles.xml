@@ -39,9 +39,10 @@
 
     <style name="user_image">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/profile_image_height_256</item>
+        <item name="android:layout_height">@dimen/character_image_height_540</item>
         <item name="android:scaleType">centerCrop</item>
-        <item name="android:src">@drawable/user_profile</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:src">@drawable/targarien</item>
     </style>
 
     <style name="toolbar">

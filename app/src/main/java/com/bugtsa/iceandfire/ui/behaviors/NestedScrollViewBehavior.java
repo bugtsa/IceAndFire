@@ -18,7 +18,7 @@ public class NestedScrollViewBehavior<V extends LinearLayout> extends AppBarLayo
     public NestedScrollViewBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMinAppbarHeight = UiHelper.getStatusBarHeight() + UiHelper.getActionBarHeight();
-        mMaxAppbarHeight = context.getResources().getDimensionPixelSize(R.dimen.profile_image_height_256);
+        mMaxAppbarHeight = context.getResources().getDimensionPixelSize(R.dimen.character_image_height_540);
         mMaxRatingBarHeight = context.getResources().getDimensionPixelSize(R.dimen.profile_info_height_112);
     }
 

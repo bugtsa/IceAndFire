@@ -35,7 +35,7 @@
     <dimen name="split_height_5">5dp</dimen>
 
 
-    <dimen name="profile_image_height_256">256dp</dimen>
+    <dimen name="character_image_height_540">540dp</dimen>
 
     <dimen name="drawer_header_avatar_60">60dp</dimen>
     <dimen name="placeholder_photo_90">90dp</dimen>
