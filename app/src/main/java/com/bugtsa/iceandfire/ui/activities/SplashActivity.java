@@ -16,15 +16,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bugtsa.iceandfire.IceAndFireApplication;
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.managers.PreferencesManager;
 import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
+import com.bugtsa.iceandfire.data.storage.models.Alias;
+import com.bugtsa.iceandfire.data.storage.models.AliasDao;
+import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
+import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouseDao;
+import com.bugtsa.iceandfire.data.storage.models.Title;
+import com.bugtsa.iceandfire.data.storage.models.TitleDao;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.SaveCharacterOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
 import com.bugtsa.iceandfire.databinding.ActivitySplashBinding;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
@@ -40,6 +46,8 @@ import com.squareup.picasso.Picasso;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.greenrobot.greendao.async.AsyncOperationListener;
+import org.greenrobot.greendao.async.AsyncSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +56,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bugtsa.iceandfire.utils.ConstantManager.DONE_SAVE_CHARACTER_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.PER_PAGE;
 import static com.bugtsa.iceandfire.utils.ConstantManager.QUANTITY_PAGE;
 
@@ -74,6 +81,16 @@ public class SplashActivity extends BaseActivity {
     private Long mStart;
 
     private List<Integer> listResponsePageCharacter = new ArrayList<>();
+    private List<CharacterOfHouse> mCharacterList = new ArrayList<>();
+    private List<Title> mTitleList = new ArrayList<>();
+    private List<Alias> mAliasList = new ArrayList<>();
+    private AsyncSession mAsyncDbSession;
+    private final AsyncOperationListener mDbListener = operation -> {
+        if (operation.isCompletedSucessfully()) {
+
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -319,6 +336,8 @@ public class SplashActivity extends BaseActivity {
 
     public void onOperationFinished(final LoadCharacterListOperation.Result result) {
         if (result.getOutput().isEmpty()) {
+            mAsyncDbSession = mDataManager.getDaoSession().startAsyncSession();
+            mAsyncDbSession.setListenerMainThread(mDbListener);
             loadAllCharactersFromNetwork();
             loadHousesListFromDb();
         } else {
@@ -333,7 +352,10 @@ public class SplashActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call<List<CharacterRes>> call, Response<List<CharacterRes>> response) {
                     if (response.code() == ConstantManager.RESPONSE_OK) {
-                        mConnector.runOperation(new SaveCharacterOperation(response), false);
+                        saveCharactersToLists(response);
+                        if (checkLoadingAllCharacters()) {
+                            saveAllCharactersInDb();
+                        }
                     } else {
                         LogUtils.d("response not ok");
                     }
@@ -348,6 +370,73 @@ public class SplashActivity extends BaseActivity {
             SnackBarUtils.show(mBinding.coordinatorLayoutHouseList, getString(R.string.hint_not_connection_inet));
         }
     }
+
+    private boolean checkLoadingAllCharacters() {
+        listResponsePageCharacter.add(1);
+        if (listResponsePageCharacter.size() == QUANTITY_PAGE) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void saveAllCharactersInDb() {
+        CharacterOfHouseDao characterOfHouseDao = IceAndFireApplication.getDaoSession().getCharacterOfHouseDao();
+        TitleDao titleDao = IceAndFireApplication.getDaoSession().getTitleDao();
+        AliasDao aliasDao = IceAndFireApplication.getDaoSession().getAliasDao();
+        titleDao.insertOrReplaceInTx(mTitleList);
+        aliasDao.insertOrReplaceInTx(mAliasList);
+        characterOfHouseDao.insertOrReplaceInTx(mCharacterList);
+        EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
+    }
+
+    private void saveCharactersToLists(Response<List<CharacterRes>> response) {
+        try {
+            for (int pos = 0; pos < response.body().size(); pos++) {
+                CharacterRes characterRes = response.body().get(pos);
+                CharacterOfHouse characterOfHouse = new CharacterOfHouse(characterRes);
+                mTitleList.addAll(getTitleList(characterOfHouse.getRemoteId(), characterRes));
+                mAliasList.addAll(getAliasList(characterOfHouse.getRemoteId(), characterRes));
+                characterOfHouse.setAliasTitle(getAliasTitle(characterRes));
+                mCharacterList.add(characterOfHouse);
+            }
+        } catch (Exception e) {
+            LogUtils.d("Exception saveCharactersToLists " + e.toString());
+        }
+    }
+
+    private String getAliasTitle(CharacterRes characterRes) {
+        String aliasTitle = "";
+        if (characterRes.getAliases() != null) {
+            if (!characterRes.getAliases().isEmpty()) {
+                aliasTitle = characterRes.getAliases().get(0);
+            }
+        } else if (characterRes.getTitles() != null) {
+            if (!characterRes.getTitles().isEmpty()) {
+                aliasTitle = characterRes.getTitles().get(0);
+            }
+        }
+        return aliasTitle;
+    }
+
+    private List<Title> getTitleList(String characterRemoteId, CharacterRes characterRes) {
+        List<Title> titleList = new ArrayList<>();
+        for (int index = 0; index < characterRes.getTitles().size(); index++) {
+            Title title = new Title(characterRemoteId, characterRes.getTitles().get(index));
+            titleList.add(title);
+        }
+        return titleList;
+    }
+
+    private List<Alias> getAliasList(String characterRemoteId, CharacterRes characterRes) {
+        List<Alias> aliasList = new ArrayList<>();
+        for (int index = 0; index < characterRes.getAliases().size(); index++) {
+            Alias alias = new Alias(characterRemoteId, characterRes.getAliases().get(index));
+            aliasList.add(alias);
+        }
+        return aliasList;
+    }
+
 
     private void loadHousesFromNetwork(int houseKey) {
         if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
@@ -394,18 +483,6 @@ public class SplashActivity extends BaseActivity {
             loadHousesFromNetwork(ConstantManager.STARK_KEY);
             loadHousesFromNetwork(ConstantManager.TARGARIEN_KEY);
             loadHousesFromNetwork(ConstantManager.LANNISTER_KEY);
-        }
-    }
-
-    public void onOperationFinished(final SaveHouseOperation.Result result) {
-    }
-
-    public void onOperationFinished(final SaveCharacterOperation.Result result) {
-        if (result.getOutput().equals(DONE_SAVE_CHARACTER_KEY)) {
-            listResponsePageCharacter.add(1);
-            if (listResponsePageCharacter.size() == QUANTITY_PAGE) {
-                EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
-            }
         }
     }
 }
