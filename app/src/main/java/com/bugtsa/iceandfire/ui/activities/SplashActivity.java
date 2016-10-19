@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bugtsa.iceandfire.IceAndFireApplication;
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
@@ -24,11 +23,8 @@ import com.bugtsa.iceandfire.data.managers.PreferencesManager;
 import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.Alias;
-import com.bugtsa.iceandfire.data.storage.models.AliasDao;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
-import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouseDao;
 import com.bugtsa.iceandfire.data.storage.models.Title;
-import com.bugtsa.iceandfire.data.storage.models.TitleDao;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
@@ -60,7 +56,6 @@ import static com.bugtsa.iceandfire.utils.ConstantManager.PER_PAGE;
 import static com.bugtsa.iceandfire.utils.ConstantManager.QUANTITY_PAGE;
 
 public class SplashActivity extends BaseActivity {
-
     private static final String TAG = ConstantManager.TAG_PREFIX + SplashActivity.class.getSimpleName();
 
     private static Fragment targarienFragment;
@@ -87,10 +82,9 @@ public class SplashActivity extends BaseActivity {
     private AsyncSession mAsyncDbSession;
     private final AsyncOperationListener mDbListener = operation -> {
         if (operation.isCompletedSucessfully()) {
-
+            EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
         }
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -381,13 +375,9 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void saveAllCharactersInDb() {
-        CharacterOfHouseDao characterOfHouseDao = IceAndFireApplication.getDaoSession().getCharacterOfHouseDao();
-        TitleDao titleDao = IceAndFireApplication.getDaoSession().getTitleDao();
-        AliasDao aliasDao = IceAndFireApplication.getDaoSession().getAliasDao();
-        titleDao.insertOrReplaceInTx(mTitleList);
-        aliasDao.insertOrReplaceInTx(mAliasList);
-        characterOfHouseDao.insertOrReplaceInTx(mCharacterList);
-        EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
+        mAsyncDbSession.insertOrReplaceInTx(CharacterOfHouse.class, mCharacterList);
+        mAsyncDbSession.insertOrReplaceInTx(Title.class, mTitleList);
+        mAsyncDbSession.insertOrReplaceInTx(Alias.class, mAliasList);
     }
 
     private void saveCharactersToLists(Response<List<CharacterRes>> response) {
