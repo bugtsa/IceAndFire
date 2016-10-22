@@ -1,7 +1,6 @@
 package com.bugtsa.iceandfire.ui.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -30,7 +29,6 @@ import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
-import com.redmadrobot.chronos.ChronosConnector;
 import com.squareup.picasso.Picasso;
 
 public class SplashActivity extends BaseActivity implements ISplashView {
@@ -48,11 +46,8 @@ public class SplashActivity extends BaseActivity implements ISplashView {
     private TextView drawerUserEmail;
     private DataManager mDataManager;
     private PreferencesManager mPreferencesManager;
-    private Context mContext;
 
     private ViewPagerAdapter adapter;
-
-    private ChronosConnector mConnector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +60,6 @@ public class SplashActivity extends BaseActivity implements ISplashView {
         if (mPreferencesManager.isFirstLaunch()) {
             mPreferencesManager.saveFirstLaunch(false);
         }
-        mContext = mDataManager.getContext();
 
         initViewPager();
         setupToolbar();
@@ -73,9 +67,6 @@ public class SplashActivity extends BaseActivity implements ISplashView {
 
         mPresenter.takeView(this);
         mPresenter.initView(savedInstanceState);
-//        showSplash();
-//
-//        mPresenter.loadCharacterFromDb();
     }
 
     @Override
@@ -250,11 +241,6 @@ public class SplashActivity extends BaseActivity implements ISplashView {
     @Override
     public ISplashPresenter getPresenter() {
         return mPresenter;
-    }
-
-    @Override
-    public ChronosConnector getChronosConnector() {
-        return mConnector;
     }
 
     @Override
