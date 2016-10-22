@@ -49,7 +49,6 @@ public class BaseActivity extends AppCompatActivity {
         if (mProgressDialog != null) {
             if (mProgressDialog.isShowing()) {
                 mProgressDialog.hide();
-//                mProgressDialog.dismiss();
             }
         }
     }

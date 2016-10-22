@@ -21,7 +21,6 @@
                 android:id="@+id/appbar_layout"
                 style="@style/appbar">
 
-
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar_house_list"
                     android:layout_width="match_parent"
