@@ -2,6 +2,7 @@ package com.bugtsa.iceandfire.mvp.models;
 
 import android.os.Bundle;
 
+import com.bugtsa.iceandfire.data.events.CharacterListByHouseEvent;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
@@ -11,6 +12,7 @@ import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.Alias;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.Title;
+import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListByHouseIdOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
@@ -91,6 +93,18 @@ public class SplashModel {
         } else {
             EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
         }
+    }
+
+    public void loadCharactersOfHouseFromDb(int houseKey) {
+        try {
+            mConnector.runOperation(new LoadCharacterListByHouseIdOperation(houseKey), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onOperationFinished(final LoadCharacterListByHouseIdOperation.Result result) {
+        EventBus.getDefault().post(new CharacterListByHouseEvent(result.getOutput()));
     }
 
     private void loadAllCharactersFromNetwork() {

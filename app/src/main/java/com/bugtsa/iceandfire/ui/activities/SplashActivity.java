@@ -36,8 +36,8 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     SplashPresenter mPresenter = SplashPresenter.getInstance();
 
-    private static Fragment targarienFragment;
-    private static Fragment lannisterFragment;
+    private HouseFragment targarienFragment;
+    private HouseFragment lannisterFragment;
     private HouseFragment starkFragment;
 
     private ActivitySplashBinding mBinding;
@@ -104,15 +104,15 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     private void setupViewPager(ViewPager mViewPager) {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        mViewPagerAdapter = new ViewPagerAdapter(supportFragmentManager);
+        mViewPagerAdapter = new ViewPagerAdapter(supportFragmentManager, this);
         if (starkFragment == null) {
             starkFragment = new HouseFragment();
-            targarienFragment = new HouseFragment();
-            lannisterFragment = new HouseFragment();
+//            targarienFragment = new HouseFragment();
+//            lannisterFragment = new HouseFragment();
         }
-        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.stark_title));
-        mViewPagerAdapter.addFragment(targarienFragment, getString(R.string.targarien_title));
-        mViewPagerAdapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
+        mViewPagerAdapter.addFragments(starkFragment, getString(R.string.stark_title));
+//        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.targarien_title));
+//        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.lannister_title));
         mViewPager.setAdapter(mViewPagerAdapter);
     }
 
@@ -127,7 +127,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
             @Override
             public void onPageSelected(int position) {
                 Fragment item = mViewPagerAdapter.getItem(position);
-                item.onResume();
+//                item.onResume();
                 setCheckedItemNavigationView(position);
                 String tag = item.getTag();
                 Navigator.setTabTag(tag);
@@ -156,6 +156,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
             default:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
         }
+        starkFragment.showPage(position);
     }
 
     /**
@@ -214,7 +215,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     public void selectPage(int pageIndex) {
         mBinding.tabsHouseList.setScrollPosition(pageIndex, 0f, true);
         mBinding.viewpagerHouseList.setCurrentItem(pageIndex);
-        starkFragment.showPage(pageIndex);
     }
 
     /**
