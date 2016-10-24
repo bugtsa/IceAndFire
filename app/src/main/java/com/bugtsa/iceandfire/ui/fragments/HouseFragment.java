@@ -101,7 +101,9 @@ public class HouseFragment extends Fragment implements IHouseView {
         mBinding.characters.setLayoutManager(layoutManager);
         mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse), mDataManager.getContext(), getIdDrawableIconHouse());
         mBinding.characters.setAdapter(mAdapter);
+//        if (mCharacterList != null) {
         mAdapter.setCharacter(mCharacterList);
+//        }
     }
 
     @Override

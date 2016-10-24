@@ -19,17 +19,17 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int i) {
+    public Fragment getItem(int index) {
         HouseFragment fragment = new HouseFragment();
         Bundle args = new Bundle();
-        args.putInt(ConstantManager.KEY_HOUSE_INDEX, i);
+        args.putInt(ConstantManager.KEY_HOUSE_INDEX, index);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return ConstantManager.QUANTITY_VIEW_PAGE;
     }
 
 

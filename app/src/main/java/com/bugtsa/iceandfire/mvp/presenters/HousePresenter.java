@@ -3,7 +3,7 @@ package com.bugtsa.iceandfire.mvp.presenters;
 import android.support.annotation.Nullable;
 
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
-import com.bugtsa.iceandfire.mvp.models.SplashModel;
+import com.bugtsa.iceandfire.mvp.models.DataModel;
 import com.bugtsa.iceandfire.mvp.views.IHouseView;
 
 import java.util.List;
@@ -21,10 +21,10 @@ public class HousePresenter implements IHousePresenter {
 
     private IHouseView mHouseView;
 
-    private SplashModel mSplashModel;
+    private DataModel mDataModel;
 
     private HousePresenter() {
-        mSplashModel = new SplashModel();
+        mDataModel = new DataModel();
     }
 
     public static HousePresenter getInstance() {
@@ -54,7 +54,7 @@ public class HousePresenter implements IHousePresenter {
 
     @Override
     public void setCallBack() {
-        mSplashModel.setLoadCharacterListByHouseId(listCharacter -> showCharacterList(listCharacter));
+        mDataModel.setLoadCharacterListByHouseId(listCharacter -> showCharacterList(listCharacter));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class HousePresenter implements IHousePresenter {
             default:
                 houseKey = STARK_KEY;
         }
-        mSplashModel.loadCharactersByHouseIdFromDb(houseKey);
+        mDataModel.loadCharactersByHouseIdFromDb(houseKey);
     }
 
     public void showCharacterList(List<CharacterOfHouse> characterList) {

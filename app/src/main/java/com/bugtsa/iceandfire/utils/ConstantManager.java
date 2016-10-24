@@ -28,9 +28,10 @@ public interface ConstantManager {
     int STARK_PAGE_ID = 0;
     int LANNISTER_PAGE_ID = 1;
     int TARGARIEN_PAGE_ID = 2;
+    int QUANTITY_VIEW_PAGE = 3;
+
 
     int[] HOUSE_NAME_RES = new int[]{R.string.house_starks, R.string.house_lannisters, R.string.house_targaryens};
-
     int QUANTITY_PAGE = 43;
     int PER_PAGE = 50;
 

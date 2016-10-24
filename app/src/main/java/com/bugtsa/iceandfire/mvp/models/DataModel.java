@@ -36,7 +36,7 @@ import retrofit2.Response;
 import static com.bugtsa.iceandfire.utils.ConstantManager.PER_PAGE;
 import static com.bugtsa.iceandfire.utils.ConstantManager.QUANTITY_PAGE;
 
-public class SplashModel {
+public class DataModel {
 
     private static DataManager sDataManager;
 
@@ -61,7 +61,7 @@ public class SplashModel {
     private List<Title> mTitleList = new ArrayList<>();
     private List<Alias> mAliasList = new ArrayList<>();
 
-    public SplashModel() {
+    public DataModel() {
         sDataManager = DataManager.getInstance();
         mPreferencesManager = sDataManager.getPreferencesManager();
 

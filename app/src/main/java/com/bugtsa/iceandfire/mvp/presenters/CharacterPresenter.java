@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
-import com.bugtsa.iceandfire.mvp.models.SplashModel;
+import com.bugtsa.iceandfire.mvp.models.DataModel;
 import com.bugtsa.iceandfire.mvp.views.ICharacterView;
 import com.bugtsa.iceandfire.utils.StringUtils;
 
@@ -21,7 +21,7 @@ public class CharacterPresenter implements ICharacterPresenter {
 
     private ICharacterView mCharacterView;
 
-    private SplashModel mSplashModel;
+    private DataModel mDataModel;
 
     private CharacterOfHouse mFatherOfCharacter;
 
@@ -34,7 +34,7 @@ public class CharacterPresenter implements ICharacterPresenter {
     private String mDiedCharacterMessage;
 
     private CharacterPresenter() {
-        mSplashModel = new SplashModel();
+        mDataModel = new DataModel();
     }
 
     public static CharacterPresenter getInstance() {
@@ -63,8 +63,8 @@ public class CharacterPresenter implements ICharacterPresenter {
     }
 
     private void setCallbacks() {
-        mSplashModel.setLoadTitleHouse(titleHouse -> setTitleHouse(titleHouse));
-        mSplashModel.setLoadCharacterByRemoteId(character -> setCharacterFatherAndMother(character));
+        mDataModel.setLoadTitleHouse(titleHouse -> setTitleHouse(titleHouse));
+        mDataModel.setLoadCharacterByRemoteId(character -> setCharacterFatherAndMother(character));
     }
 
     /**
@@ -80,7 +80,7 @@ public class CharacterPresenter implements ICharacterPresenter {
                 getView().setNameCharacter(mCharacterDTO.getName());
             }
 
-            mSplashModel.getWords(mCharacterDTO.getHouseRemoteId());
+            mDataModel.getWords(mCharacterDTO.getHouseRemoteId());
 
             if (!TextUtils.isEmpty(mCharacterDTO.getBorn())) {
                 getView().setDateBorn(mCharacterDTO.getBorn());
@@ -99,13 +99,13 @@ public class CharacterPresenter implements ICharacterPresenter {
             }
 
             if (!mCharacterDTO.getMother().isEmpty()) {
-                mSplashModel.getParentName(mCharacterDTO.getMother());
+                mDataModel.getParentName(mCharacterDTO.getMother());
             } else {
                 getView().setVisibleMother(View.INVISIBLE);
             }
 
             if (!mCharacterDTO.getFather().isEmpty()) {
-                mSplashModel.getParentName(mCharacterDTO.getFather());
+                mDataModel.getParentName(mCharacterDTO.getFather());
             } else {
                 getView().setVisibleFather(View.INVISIBLE);
             }

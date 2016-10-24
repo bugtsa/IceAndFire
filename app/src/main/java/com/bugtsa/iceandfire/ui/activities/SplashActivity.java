@@ -26,6 +26,7 @@ import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.squareup.picasso.Picasso;
 
+import static com.bugtsa.iceandfire.utils.ConstantManager.QUANTITY_VIEW_PAGE;
 import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_PAGE_ID;
 
 public class SplashActivity extends AppCompatActivity implements ISplashView {
@@ -79,7 +80,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     private void setupViewPager() {
         mBinding.tabsHouseList.setupWithViewPager(mBinding.viewpagerHouseList);
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
-        mBinding.viewpagerHouseList.setOffscreenPageLimit(3);
+        mBinding.viewpagerHouseList.setOffscreenPageLimit(QUANTITY_VIEW_PAGE);
         mBinding.viewpagerHouseList.setAdapter(pagerAdapter);
     }
 
@@ -222,7 +223,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
                 mProgressDialog.hide();
             }
         }
-        selectPage(ConstantManager.STARK_PAGE_ID);
+//        selectPage(ConstantManager.STARK_PAGE_ID);
     }
 
     @Override
