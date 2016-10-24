@@ -89,24 +89,6 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         this.finish();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mCharacterPresenter.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mCharacterPresenter.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mCharacterPresenter.onResume();
-    }
-
     private int getIdDrawable(String houseRemoteId) {
         int idDrawable = R.drawable.stark;
         switch (Integer.parseInt(houseRemoteId)) {

@@ -7,10 +7,4 @@ public interface IIceAndFirePresenter {
     void dropView();
 
     void initView(Bundle savedInstanceState);
-
-    void onResume();
-
-    void onPause();
-
-    void onSaveInstanceState(Bundle outState);
 }

@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.bugtsa.iceandfire.mvp.views.IHouseView;
 
-public interface IHousePresenter extends IIceAndFirePresenter{
+public interface IHousePresenter extends IIceAndFirePresenter {
 
     void takeView(IHouseView splashView);
 

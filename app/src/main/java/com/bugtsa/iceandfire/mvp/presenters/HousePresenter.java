@@ -38,7 +38,6 @@ public class HousePresenter implements IHousePresenter {
     @Override
     public void initView(Bundle savedInstanceState) {
         setCallBack();
-        mSplashModel.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -51,29 +50,13 @@ public class HousePresenter implements IHousePresenter {
         mSplashModel.setLoadCharacterListByHouseId(listCharacter -> showCharacterList(listCharacter));
     }
 
-    @Override
-    public void onResume() {
-        mSplashModel.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mSplashModel.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        mSplashModel.onSavedInstanceState(outState);
-    }
-
     public void loadCharactersOfHouseFromDb(int houseKey) {
         mSplashModel.loadCharactersByHouseIdFromDb(houseKey);
     }
 
-    private void showCharacterList (List<CharacterOfHouse> characterList) {
+    private void showCharacterList(List<CharacterOfHouse> characterList) {
         if (getView() != null) {
             getView().showCharacters(characterList);
         }
     }
-
 }

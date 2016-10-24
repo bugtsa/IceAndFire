@@ -77,30 +77,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         super.onDestroy();
     }
 
-    /**
-     * Обрабатывает событие onResume жизненного цикла Activity
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mPresenter.onResume();
-    }
-
-    /**
-     * Обрабатывает событие onPause жизненного цикла Activity
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mPresenter.onPause();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mPresenter.onSaveInstanceState(outState);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

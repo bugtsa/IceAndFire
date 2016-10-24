@@ -80,25 +80,6 @@ public class HouseFragment extends Fragment implements IHouseView {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mHousePresenter.onResume();
-//        showData();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mHousePresenter.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mHousePresenter.onSaveInstanceState(outState);
-    }
-
     private int getIdDrawableIconHouse() {
         int idDrawable = R.drawable.ic_item;
         switch (mHouseKey) {

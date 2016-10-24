@@ -10,7 +10,6 @@ import com.bugtsa.iceandfire.mvp.views.ISplashView;
 import com.bugtsa.iceandfire.utils.AppConfig;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -45,40 +44,20 @@ public class SplashPresenter implements ISplashPresenter {
     @Override
     public void initView(Bundle savedInstanceState) {
         if (getView() != null) {
-            mSplashModel.onCreate(savedInstanceState);
-
             getView().showSplash();
             setCallBacks();
             loadCharacterFromDb();
         }
     }
 
-    private void setCallBacks() {
-        mSplashModel.setOnLoadAllCharacterListListener(time -> loadAllCharactersDone(time)
-        );
-    }
-
-    @Override
-    public void onResume() {
-        mSplashModel.onResume();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        mSplashModel.onPause();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        mSplashModel.onSavedInstanceState(outState);
-    }
-
     @Nullable
     @Override
     public ISplashView getView() {
         return mSplashView;
+    }
+
+    private void setCallBacks() {
+        mSplashModel.setOnLoadAllCharacterListListener(time -> loadAllCharactersDone(time));
     }
 
     private void loadCharacterFromDb() {
@@ -115,11 +94,4 @@ public class SplashPresenter implements ISplashPresenter {
             getView().selectPage(ConstantManager.STARK_PAGE_ID);
         }
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void getCharacterListByHouseEvent(CharacterListByHouseEvent characterListByHouseEvent) {
-//        if (getView() != null) {
-//            getView().showCharacters(characterListByHouseEvent.getCharactersList());
-//        }
-//    }
 }

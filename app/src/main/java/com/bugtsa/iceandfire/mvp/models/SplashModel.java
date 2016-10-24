@@ -1,12 +1,11 @@
 package com.bugtsa.iceandfire.mvp.models;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.bugtsa.iceandfire.data.callbacks.LoadCharacterListByHouseId;
+import com.bugtsa.iceandfire.data.callbacks.LoadCharacterByRemoteId;
 import com.bugtsa.iceandfire.data.callbacks.LoadCharacterList;
-import com.bugtsa.iceandfire.data.events.LoadCharacterByRemoterIdEvent;
-import com.bugtsa.iceandfire.data.events.LoadTitleHouseEvent;
+import com.bugtsa.iceandfire.data.callbacks.LoadCharacterListByHouseId;
+import com.bugtsa.iceandfire.data.callbacks.LoadTitleHouse;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.managers.PreferencesManager;
@@ -16,19 +15,16 @@ import com.bugtsa.iceandfire.data.storage.models.Alias;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouseDao;
 import com.bugtsa.iceandfire.data.storage.models.DaoSession;
+import com.bugtsa.iceandfire.data.storage.models.House;
+import com.bugtsa.iceandfire.data.storage.models.HouseDao;
 import com.bugtsa.iceandfire.data.storage.models.Title;
-import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterByRemoteIdOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.LoadTitleHouseOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
-import com.redmadrobot.chronos.ChronosConnector;
+import com.bugtsa.iceandfire.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.async.AsyncOperationListener;
 import org.greenrobot.greendao.async.AsyncSession;
-import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +43,9 @@ public class SplashModel {
     private PreferencesManager mPreferencesManager;
 
     private LoadCharacterList mLoadCharactersListListener;
-
     private LoadCharacterListByHouseId mLoadCharacterListByHouseId;
+    private LoadTitleHouse mLoadTitleHouse;
+    private LoadCharacterByRemoteId mLoadCharacterByRemoteId;
 
     private DaoSession syncDaoSession;
     private AsyncSession mAsyncDbSession;
@@ -57,39 +54,22 @@ public class SplashModel {
             mLoadCharactersListListener.LoadingIsDone(System.currentTimeMillis());
         }
     };
+    private AsyncSession mAsyncHouseSession;
 
     private List<Integer> listResponsePageCharacter = new ArrayList<>();
     private List<CharacterOfHouse> mCharacterList = new ArrayList<>();
     private List<Title> mTitleList = new ArrayList<>();
     private List<Alias> mAliasList = new ArrayList<>();
 
-    private ChronosConnector mConnector;
-
     public SplashModel() {
         sDataManager = DataManager.getInstance();
         mPreferencesManager = sDataManager.getPreferencesManager();
-    }
-
-    public void onCreate(Bundle savedInstanceState) {
-        mConnector = new ChronosConnector();
-        mConnector.onCreate(this, savedInstanceState);
 
         syncDaoSession = sDataManager.getDaoSession();
 
         mAsyncDbSession = sDataManager.getDaoSession().startAsyncSession();
+        mAsyncHouseSession = sDataManager.getDaoSession().startAsyncSession();
         mAsyncDbSession.setListenerMainThread(mDbListener);
-    }
-
-    public void onPause() {
-        mConnector.onPause();
-    }
-
-    public void onResume() {
-        mConnector.onResume();
-    }
-
-    public void onSavedInstanceState(Bundle outState) {
-        mConnector.onSaveInstanceState(outState);
     }
 
     public void setOnLoadAllCharacterListListener(LoadCharacterList loadCharactersListListener) {
@@ -100,11 +80,20 @@ public class SplashModel {
         mLoadCharacterListByHouseId = loadCharacterListByHouseId;
     }
 
+    public void setLoadTitleHouse(LoadTitleHouse loadTitleHouse) {
+        mLoadTitleHouse = loadTitleHouse;
+    }
+
+    public void setLoadCharacterByRemoteId(LoadCharacterByRemoteId loadCharacterByRemoteId) {
+        mLoadCharacterByRemoteId = loadCharacterByRemoteId;
+    }
+
     public void loadCharacterFromDb() {
         try {
-            CharacterOfHouseDao characterOfHouseDao = syncDaoSession.getCharacterOfHouseDao();
-            QueryBuilder<CharacterOfHouse> qbi = characterOfHouseDao.queryBuilder();
-            List<CharacterOfHouse> list = qbi.where(CharacterOfHouseDao.Properties.Id.gt(0)).build().list();
+            List<CharacterOfHouse> list = syncDaoSession.getCharacterOfHouseDao().queryBuilder()
+                    .where(CharacterOfHouseDao.Properties.Id.gt(0))
+                    .build()
+                    .list();
             if (list.isEmpty()) {
                 loadAllCharactersFromNetwork();
                 loadHousesListFromDb();
@@ -229,25 +218,19 @@ public class SplashModel {
      */
     private void loadHousesListFromDb() {
         try {
-            mConnector.runOperation(new LoadHousesListOperation(), false);
+            List<House> listHouse = syncDaoSession.queryBuilder(House.class)
+                    .where(HouseDao.Properties.Id.gt(0))
+                    .build()
+                    .list();
+            if (listHouse.isEmpty()) {
+                loadHousesFromNetwork(ConstantManager.STARK_KEY);
+                loadHousesFromNetwork(ConstantManager.TARGARIEN_KEY);
+                loadHousesFromNetwork(ConstantManager.LANNISTER_KEY);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Обрабатывает результат операции LoadHousesListOperation
-     *
-     * @param result результат операции
-     */
-    public void onOperationFinished(final LoadHousesListOperation.Result result) {
-        if (result.getOutput().isEmpty()) {
-            loadHousesFromNetwork(ConstantManager.STARK_KEY);
-            loadHousesFromNetwork(ConstantManager.TARGARIEN_KEY);
-            loadHousesFromNetwork(ConstantManager.LANNISTER_KEY);
-        }
-    }
-
 
     private void loadHousesFromNetwork(int houseKey) {
         if (sDataManager.isNetworkAvailable()) {
@@ -256,7 +239,7 @@ public class SplashModel {
                 @Override
                 public void onResponse(Call<HouseRes> call, Response<HouseRes> response) {
                     if (response.code() == ConstantManager.RESPONSE_OK) {
-                        mConnector.runOperation(new SaveHouseOperation(response), false);
+                        saveHouseInDb(response);
                         LogUtils.d("response ok");
                     } else {
                         LogUtils.d("response not ok");
@@ -273,21 +256,28 @@ public class SplashModel {
         }
     }
 
+    private void saveHouseInDb(Response<HouseRes> response) {
+        HouseRes houseRes = response.body();
+        houseRes.setUrl(StringUtils.getIdFromUrlApi(houseRes.getUrl()));
+        mAsyncHouseSession.insertOrReplaceInTx(House.class, new House(houseRes));
+    }
+
     public void getWords(String houseRemoteId) {
         if(!TextUtils.isEmpty(houseRemoteId)) {
-            mConnector.runOperation(new LoadTitleHouseOperation(houseRemoteId), false);
+            String titleHouse = syncDaoSession.queryBuilder(House.class)
+                    .where(HouseDao.Properties.RemoteId.eq(houseRemoteId))
+                    .build()
+                    .unique()
+                    .getWords();
+            mLoadTitleHouse.getTitleHouse(titleHouse);
         }
     }
 
-    public void onOperationFinished(final LoadTitleHouseOperation.Result result) {
-        EventBus.getDefault().post(new LoadTitleHouseEvent(result.getOutput()));
-    }
-
     public void getParentName(String parentRemoteId) {
-        mConnector.runOperation(new LoadCharacterByRemoteIdOperation(parentRemoteId), false);
-    }
-
-    public void onOperationFinished(final LoadCharacterByRemoteIdOperation.Result result) {
-        EventBus.getDefault().post(new LoadCharacterByRemoterIdEvent(result.getOutput()));
+        CharacterOfHouse character = syncDaoSession.queryBuilder(CharacterOfHouse.class)
+                .where(CharacterOfHouseDao.Properties.RemoteId.eq(parentRemoteId))
+                .build()
+                .unique();
+        mLoadCharacterByRemoteId.getCharacterByRemoteId(character);
     }
 }

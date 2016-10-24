@@ -5,18 +5,12 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.bugtsa.iceandfire.data.events.LoadCharacterByRemoterIdEvent;
-import com.bugtsa.iceandfire.data.events.LoadTitleHouseEvent;
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.ICharacterView;
 import com.bugtsa.iceandfire.utils.StringUtils;
 import com.redmadrobot.chronos.ChronosConnector;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -64,27 +58,8 @@ public class CharacterPresenter implements ICharacterPresenter {
     @Override
     public void initView(Bundle savedInstanceState) {
         if (getView() != null) {
-            mSplashModel.onCreate(savedInstanceState);
-
-            mSplashModel.onCreate(savedInstanceState);
+            setCallbacks();
         }
-    }
-
-    @Override
-    public void onResume() {
-        mSplashModel.onResume();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onPause() {
-        mSplashModel.onPause();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        mSplashModel.onSavedInstanceState(outState);
     }
 
     @Nullable
@@ -93,6 +68,10 @@ public class CharacterPresenter implements ICharacterPresenter {
         return mCharacterView;
     }
 
+    private void setCallbacks() {
+        mSplashModel.setLoadTitleHouse(titleHouse -> setTitleHouse(titleHouse));
+        mSplashModel.setLoadCharacterByRemoteId(character -> setCharacterFatherAndMother(character));
+    }
 
     /**
      * Инициализирует данные персонажа
@@ -151,18 +130,16 @@ public class CharacterPresenter implements ICharacterPresenter {
         return listForOutput;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getTitleHouseEvent(LoadTitleHouseEvent loadTitleHouseEvent) {
+    public void setTitleHouse(String titleHouse) {
         String resultString = "";
-        if (!loadTitleHouseEvent.getTitleHouse().isEmpty()) {
-            resultString = loadTitleHouseEvent.getTitleHouse();
+        if (!titleHouse.isEmpty()) {
+            resultString = titleHouse;
         }
         getView().setWoodsCharacter(resultString);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getCharacterByRemoteIdEvent(LoadCharacterByRemoterIdEvent characterByRemoterId) {
-        CharacterOfHouse parentOfCharacter = characterByRemoterId.getCharacter();
+    public void setCharacterFatherAndMother(CharacterOfHouse character) {
+        CharacterOfHouse parentOfCharacter = character;
         if (parentOfCharacter.getRemoteId().equals(mCharacterDTO.getMother())) {
             mMotherOfCharacter = parentOfCharacter;
             mMotherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
@@ -175,6 +152,4 @@ public class CharacterPresenter implements ICharacterPresenter {
             getView().setVisibleFather(View.VISIBLE);
         }
     }
-
-
 }
