@@ -74,5 +74,7 @@
     <string name="died">died</string>
     <string name="allegiances_dont_have">This is character doesn`t have allegiances</string>
     <string name="not_correct_working_app">Извините, что-то пошло не так</string>
+    <string name="season">season</string>
+    <string name="wood_not_found">Woods not Found</string>
 
 </resources>

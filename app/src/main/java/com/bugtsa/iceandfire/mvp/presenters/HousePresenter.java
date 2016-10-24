@@ -3,13 +3,8 @@ package com.bugtsa.iceandfire.mvp.presenters;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.bugtsa.iceandfire.data.events.CharacterListByHouseEvent;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.IHouseView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 public class HousePresenter implements IHousePresenter {
 
@@ -51,13 +46,13 @@ public class HousePresenter implements IHousePresenter {
     @Override
     public void onResume() {
         mSplashModel.onResume();
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
         mSplashModel.onPause();
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -69,10 +64,4 @@ public class HousePresenter implements IHousePresenter {
         mSplashModel.loadCharactersOfHouseFromDb(houseKey);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getCharacterListByHouseEvent(CharacterListByHouseEvent characterListByHouseEvent) {
-        if (getView() != null) {
-            getView().showCharacters(characterListByHouseEvent.getCharactersList());
-        }
-    }
 }

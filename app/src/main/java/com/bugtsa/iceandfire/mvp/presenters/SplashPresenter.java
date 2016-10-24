@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.bugtsa.iceandfire.data.events.CharacterListByHouseEvent;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
@@ -110,6 +111,13 @@ public class SplashPresenter implements ISplashPresenter {
             getView().setOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
             getView().hideSplash();
             getView().selectPage(ConstantManager.STARK_PAGE_ID);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getCharacterListByHouseEvent(CharacterListByHouseEvent characterListByHouseEvent) {
+        if (getView() != null) {
+            getView().showCharacters(characterListByHouseEvent.getCharactersList());
         }
     }
 }

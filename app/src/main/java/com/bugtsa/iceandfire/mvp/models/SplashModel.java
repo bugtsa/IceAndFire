@@ -1,9 +1,12 @@
 package com.bugtsa.iceandfire.mvp.models;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.bugtsa.iceandfire.data.events.CharacterListByHouseEvent;
+import com.bugtsa.iceandfire.data.events.LoadCharacterByRemoterIdEvent;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
+import com.bugtsa.iceandfire.data.events.LoadTitleHouseEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.managers.PreferencesManager;
@@ -12,9 +15,11 @@ import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.Alias;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.Title;
+import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterByRemoteIdOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListByHouseIdOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
+import com.bugtsa.iceandfire.data.storage.tasks.LoadTitleHouseOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
@@ -248,5 +253,23 @@ public class SplashModel {
         } else {
             EventBus.getDefault().post((new ShowMessageEvent(ConstantManager.NETWORK_IS_NOT_AVAILABLE)));
         }
+    }
+
+    public void getWords(String houseRemoteId) {
+        if(!TextUtils.isEmpty(houseRemoteId)) {
+            mConnector.runOperation(new LoadTitleHouseOperation(houseRemoteId), false);
+        }
+    }
+
+    public void onOperationFinished(final LoadTitleHouseOperation.Result result) {
+        EventBus.getDefault().post(new LoadTitleHouseEvent(result.getOutput()));
+    }
+
+    public void getParentName(String parentRemoteId) {
+        mConnector.runOperation(new LoadCharacterByRemoteIdOperation(parentRemoteId), false);
+    }
+
+    public void onOperationFinished(final LoadCharacterByRemoteIdOperation.Result result) {
+        EventBus.getDefault().post(new LoadCharacterByRemoterIdEvent(result.getOutput()));
     }
 }

@@ -5,8 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.bugtsa.iceandfire.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +29,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return mFragmentList.size();
     }
 
-    public void addFragments(Fragment fragment, String title) {
+    public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
-        mFragmentTitleList.add(mContext.getString(R.string.stark_title));
-        mFragmentList.add(fragment);
-        mFragmentTitleList.add(mContext.getString(R.string.stark_title));
-        mFragmentList.add(fragment);
-        mFragmentTitleList.add(mContext.getString(R.string.stark_title));
+        mFragmentTitleList.add(title);
+//        mFragmentTitleList.add(mContext.getString(R.string.stark_title));
+//        mFragmentList.add(fragment);
+//        mFragmentTitleList.add(mContext.getString(R.string.stark_title));
+//        mFragmentList.add(fragment);
+//        mFragmentTitleList.add(mContext.getString(R.string.stark_title));
     }
 
     @Override

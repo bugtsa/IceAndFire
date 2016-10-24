@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bugtsa.iceandfire.BuildConfig;
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.managers.PreferencesManager;
+import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.databinding.ActivitySplashBinding;
 import com.bugtsa.iceandfire.mvp.presenters.ISplashPresenter;
 import com.bugtsa.iceandfire.mvp.presenters.SplashPresenter;
@@ -30,6 +31,10 @@ import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_PAGE_ID;
 
 public class SplashActivity extends AppCompatActivity implements ISplashView {
     private static final String TAG = ConstantManager.TAG_PREFIX + SplashActivity.class.getSimpleName();
@@ -49,6 +54,8 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     private ViewPagerAdapter mViewPagerAdapter;
 
     protected ProgressDialog mProgressDialog;
+
+    private int currentIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +114,12 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         mViewPagerAdapter = new ViewPagerAdapter(supportFragmentManager, this);
         if (starkFragment == null) {
             starkFragment = new HouseFragment();
-//            targarienFragment = new HouseFragment();
-//            lannisterFragment = new HouseFragment();
+            targarienFragment = new HouseFragment();
+            lannisterFragment = new HouseFragment();
         }
-        mViewPagerAdapter.addFragments(starkFragment, getString(R.string.stark_title));
-//        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.targarien_title));
-//        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.lannister_title));
+        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.stark_title));
+        mViewPagerAdapter.addFragment(targarienFragment, getString(R.string.targarien_title));
+        mViewPagerAdapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
         mViewPager.setAdapter(mViewPagerAdapter);
     }
 
@@ -130,6 +137,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 //                item.onResume();
                 setCheckedItemNavigationView(position);
                 String tag = item.getTag();
+                currentIndex = position;
                 Navigator.setTabTag(tag);
                 LogUtils.d("onPageSelected" + tag);
             }
@@ -147,7 +155,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
             case ConstantManager.STARK_PAGE_ID:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
                 break;
-            case ConstantManager.TARGARIEN_PAGE_ID:
+            case TARGARIEN_PAGE_ID:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.targarien_menu);
                 break;
             case ConstantManager.LANNISTER_PAGE_ID:
@@ -200,7 +208,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
                         selectPage(ConstantManager.STARK_PAGE_ID);
                         break;
                     case R.id.targarien_menu:
-                        selectPage(ConstantManager.TARGARIEN_PAGE_ID);
+                        selectPage(TARGARIEN_PAGE_ID);
                         break;
                     case R.id.lannister_menu:
                         selectPage(ConstantManager.LANNISTER_PAGE_ID);
@@ -286,5 +294,18 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     @Override
     public void setOrientation(int ActivityInfo) {
         setRequestedOrientation(ActivityInfo);
+    }
+
+    public void showCharacters(List<CharacterOfHouse> characterOfHouseList) {
+        if (currentIndex == ConstantManager.STARK_PAGE_ID) {
+            starkFragment.showCharacters(characterOfHouseList);
+        }
+        if (currentIndex == ConstantManager.TARGARIEN_PAGE_ID)
+        {
+            targarienFragment.showCharacters(characterOfHouseList);
+        }
+        if (currentIndex == ConstantManager.LANNISTER_PAGE_ID) {
+            lannisterFragment.showCharacters(characterOfHouseList);
+        }
     }
 }
