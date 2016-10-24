@@ -3,8 +3,11 @@ package com.bugtsa.iceandfire.mvp.presenters;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.IHouseView;
+
+import java.util.List;
 
 public class HousePresenter implements IHousePresenter {
 
@@ -34,6 +37,7 @@ public class HousePresenter implements IHousePresenter {
 
     @Override
     public void initView(Bundle savedInstanceState) {
+        setCallBack();
         mSplashModel.onCreate(savedInstanceState);
     }
 
@@ -43,16 +47,18 @@ public class HousePresenter implements IHousePresenter {
         return mHouseView;
     }
 
+    public void setCallBack() {
+        mSplashModel.setLoadCharacterListByHouseId(listCharacter -> showCharacterList(listCharacter));
+    }
+
     @Override
     public void onResume() {
         mSplashModel.onResume();
-//        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
         mSplashModel.onPause();
-//        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -61,7 +67,13 @@ public class HousePresenter implements IHousePresenter {
     }
 
     public void loadCharactersOfHouseFromDb(int houseKey) {
-        mSplashModel.loadCharactersOfHouseFromDb(houseKey);
+        mSplashModel.loadCharactersByHouseIdFromDb(houseKey);
+    }
+
+    private void showCharacterList (List<CharacterOfHouse> characterList) {
+        if (getView() != null) {
+            getView().showCharacters(characterList);
+        }
     }
 
 }

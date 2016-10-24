@@ -4,8 +4,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.bugtsa.iceandfire.data.events.CharacterListByHouseEvent;
-import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.ISplashView;
@@ -50,8 +48,14 @@ public class SplashPresenter implements ISplashPresenter {
             mSplashModel.onCreate(savedInstanceState);
 
             getView().showSplash();
+            setCallBacks();
             loadCharacterFromDb();
         }
+    }
+
+    private void setCallBacks() {
+        mSplashModel.setOnLoadAllCharacterListListener(time -> loadAllCharactersDone(time)
+        );
     }
 
     @Override
@@ -89,10 +93,8 @@ public class SplashPresenter implements ISplashPresenter {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoadDoneEvent(LoadDoneEvent loadDoneEvent) {
-        Long timeOfEvent = loadDoneEvent.getTimeOfEvent();
-        Long durationApp = timeOfEvent - mStart;
+    private void loadAllCharactersDone(long time) {
+        long durationApp = time - mStart;
         if (durationApp >= AppConfig.SHOW_SPLASH_DELAY) {
             loadIsDone();
         } else {
@@ -114,10 +116,10 @@ public class SplashPresenter implements ISplashPresenter {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getCharacterListByHouseEvent(CharacterListByHouseEvent characterListByHouseEvent) {
-        if (getView() != null) {
-            getView().showCharacters(characterListByHouseEvent.getCharactersList());
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void getCharacterListByHouseEvent(CharacterListByHouseEvent characterListByHouseEvent) {
+//        if (getView() != null) {
+//            getView().showCharacters(characterListByHouseEvent.getCharactersList());
+//        }
+//    }
 }

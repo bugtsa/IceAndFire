@@ -3,9 +3,9 @@ package com.bugtsa.iceandfire.mvp.models;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.bugtsa.iceandfire.data.events.CharacterListByHouseEvent;
+import com.bugtsa.iceandfire.data.callbacks.LoadCharacterListByHouseId;
+import com.bugtsa.iceandfire.data.callbacks.LoadCharacterList;
 import com.bugtsa.iceandfire.data.events.LoadCharacterByRemoterIdEvent;
-import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.LoadTitleHouseEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
@@ -14,10 +14,10 @@ import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.Alias;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
+import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouseDao;
+import com.bugtsa.iceandfire.data.storage.models.DaoSession;
 import com.bugtsa.iceandfire.data.storage.models.Title;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterByRemoteIdOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListByHouseIdOperation;
-import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadTitleHouseOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
@@ -28,6 +28,7 @@ import com.redmadrobot.chronos.ChronosConnector;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.async.AsyncOperationListener;
 import org.greenrobot.greendao.async.AsyncSession;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +46,15 @@ public class SplashModel {
 
     private PreferencesManager mPreferencesManager;
 
+    private LoadCharacterList mLoadCharactersListListener;
+
+    private LoadCharacterListByHouseId mLoadCharacterListByHouseId;
+
+    private DaoSession syncDaoSession;
     private AsyncSession mAsyncDbSession;
     private final AsyncOperationListener mDbListener = operation -> {
         if (operation.isCompletedSucessfully()) {
-            EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
+            mLoadCharactersListListener.LoadingIsDone(System.currentTimeMillis());
         }
     };
 
@@ -67,6 +73,11 @@ public class SplashModel {
     public void onCreate(Bundle savedInstanceState) {
         mConnector = new ChronosConnector();
         mConnector.onCreate(this, savedInstanceState);
+
+        syncDaoSession = sDataManager.getDaoSession();
+
+        mAsyncDbSession = sDataManager.getDaoSession().startAsyncSession();
+        mAsyncDbSession.setListenerMainThread(mDbListener);
     }
 
     public void onPause() {
@@ -81,35 +92,42 @@ public class SplashModel {
         mConnector.onSaveInstanceState(outState);
     }
 
+    public void setOnLoadAllCharacterListListener(LoadCharacterList loadCharactersListListener) {
+        mLoadCharactersListListener = loadCharactersListListener;
+    }
+
+    public void setLoadCharacterListByHouseId(LoadCharacterListByHouseId loadCharacterListByHouseId) {
+        mLoadCharacterListByHouseId = loadCharacterListByHouseId;
+    }
+
     public void loadCharacterFromDb() {
         try {
-            mConnector.runOperation(new LoadCharacterListOperation(), false);
+            CharacterOfHouseDao characterOfHouseDao = syncDaoSession.getCharacterOfHouseDao();
+            QueryBuilder<CharacterOfHouse> qbi = characterOfHouseDao.queryBuilder();
+            List<CharacterOfHouse> list = qbi.where(CharacterOfHouseDao.Properties.Id.gt(0)).build().list();
+            if (list.isEmpty()) {
+                loadAllCharactersFromNetwork();
+                loadHousesListFromDb();
+            } else {
+                mLoadCharactersListListener.LoadingIsDone(System.currentTimeMillis());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void onOperationFinished(final LoadCharacterListOperation.Result result) {
-        if (result.getOutput().isEmpty()) {
-            mAsyncDbSession = sDataManager.getDaoSession().startAsyncSession();
-            mAsyncDbSession.setListenerMainThread(mDbListener);
-            loadAllCharactersFromNetwork();
-            loadHousesListFromDb();
-        } else {
-            EventBus.getDefault().post(new LoadDoneEvent(System.currentTimeMillis()));
-        }
-    }
-
-    public void loadCharactersOfHouseFromDb(int houseKey) {
+    public void loadCharactersByHouseIdFromDb(int houseKey) {
         try {
-            mConnector.runOperation(new LoadCharacterListByHouseIdOperation(houseKey), false);
+            List<CharacterOfHouse> list = syncDaoSession.queryBuilder(CharacterOfHouse.class)
+                    .where(CharacterOfHouseDao.Properties.HouseRemoteId.eq(houseKey))
+                    .build()
+                    .list();
+            if (!list.isEmpty()) {
+                mLoadCharacterListByHouseId.getCharactersList(list);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void onOperationFinished(final LoadCharacterListByHouseIdOperation.Result result) {
-        EventBus.getDefault().post(new CharacterListByHouseEvent(result.getOutput()));
     }
 
     private void loadAllCharactersFromNetwork() {
