@@ -2,13 +2,13 @@ package com.bugtsa.iceandfire.data.events;
 
 public class ShowMessageEvent {
 
-    private String mMessage;
+    private int mMessageKey;
 
-    public ShowMessageEvent(String message) {
-        mMessage = message;
+    public ShowMessageEvent(int messageKey) {
+        mMessageKey = messageKey;
     }
 
-    public String getMessage() {
-        return mMessage;
+    public int getMessageKey() {
+        return mMessageKey;
     }
 }

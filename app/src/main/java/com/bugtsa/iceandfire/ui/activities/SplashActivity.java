@@ -244,6 +244,18 @@ public class SplashActivity extends BaseActivity implements ISplashView {
     }
 
     @Override
+    public void showMessage(int messageKey) {
+        String message = "";
+        switch (messageKey) {
+            case ConstantManager.NETWORK_IS_NOT_AVAILABLE:
+                message = getString(R.string.hint_not_connection_inet);
+                break;
+
+        }
+        showMessage(message);
+    }
+
+    @Override
     public void showMessage(String message) {
         SnackBarUtils.show(mBinding.coordinatorLayoutHouseList, message);
     }

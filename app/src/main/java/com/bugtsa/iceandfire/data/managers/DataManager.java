@@ -9,6 +9,7 @@ import com.bugtsa.iceandfire.data.network.ServiceGenerator;
 import com.bugtsa.iceandfire.data.network.res.CharacterRes;
 import com.bugtsa.iceandfire.data.network.res.HouseRes;
 import com.bugtsa.iceandfire.data.storage.models.DaoSession;
+import com.bugtsa.iceandfire.utils.NetworkStatusChecker;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -68,6 +69,14 @@ public class DataManager {
     }
 
     //region ============Network=================
+
+    public boolean isNetworkAvailable() {
+        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public Call<HouseRes> getHouseFromNetwork(String house) {
         return mRestService.getHouse(house);

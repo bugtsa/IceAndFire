@@ -3,7 +3,7 @@ package com.bugtsa.iceandfire.utils;
 import android.util.Log;
 
 public class LogUtils {
-    public static final String TAG = "DevIntensive";
+    public static final String TAG = "IceAndFireApp";
     private static boolean isDebug = true;
 
     /**

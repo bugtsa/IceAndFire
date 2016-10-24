@@ -1,8 +1,7 @@
 package com.bugtsa.iceandfire.mvp.models;
 
-import android.content.Context;
+import android.os.Bundle;
 
-import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
@@ -17,7 +16,7 @@ import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.SaveHouseOperation;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.LogUtils;
-import com.bugtsa.iceandfire.utils.NetworkStatusChecker;
+import com.redmadrobot.chronos.ChronosConnector;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.async.AsyncOperationListener;
@@ -37,11 +36,7 @@ public class SplashModel {
 
     private static DataManager sDataManager;
 
-    private Context mContext;
-
     private PreferencesManager mPreferencesManager;
-
-    private Long mStart;
 
     private AsyncSession mAsyncDbSession;
     private final AsyncOperationListener mDbListener = operation -> {
@@ -55,13 +50,31 @@ public class SplashModel {
     private List<Title> mTitleList = new ArrayList<>();
     private List<Alias> mAliasList = new ArrayList<>();
 
+    private ChronosConnector mConnector;
+
     public SplashModel(DataManager dataManager) {
         sDataManager = dataManager;
         mPreferencesManager = sDataManager.getPreferencesManager();
     }
 
+    public void onCreate(Bundle savedInstanceState) {
+        mConnector = new ChronosConnector();
+        mConnector.onCreate(this, savedInstanceState);
+    }
+
+    public void onPause() {
+        mConnector.onPause();
+    }
+
+    public void onResume() {
+        mConnector.onResume();
+    }
+
+    public void onSavedInstanceState(Bundle outState) {
+        mConnector.onSaveInstanceState(outState);
+    }
+
     public void loadCharacterFromDb() {
-        mStart = System.currentTimeMillis();
         try {
             mConnector.runOperation(new LoadCharacterListOperation(), false);
         } catch (Exception e) {
@@ -87,7 +100,7 @@ public class SplashModel {
     }
 
     private void loadCharactersFromNetwork(final int currentPage, final int perPage) {
-        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+        if (sDataManager.isNetworkAvailable()) {
             Call<List<CharacterRes>> call = sDataManager.getCharacterPageFromNetwork(String.valueOf(currentPage), String.valueOf(perPage));
             call.enqueue(new Callback<List<CharacterRes>>() {
                 @Override
@@ -108,7 +121,7 @@ public class SplashModel {
                 }
             });
         } else {
-            EventBus.getDefault().post(new ShowMessageEvent(mContext.getString(R.string.hint_not_connection_inet)));
+            EventBus.getDefault().post(new ShowMessageEvent(ConstantManager.NETWORK_IS_NOT_AVAILABLE));
         }
     }
 
@@ -200,7 +213,7 @@ public class SplashModel {
 
 
     private void loadHousesFromNetwork(int houseKey) {
-        if (NetworkStatusChecker.isNetworkAvailable(mContext)) {
+        if (sDataManager.isNetworkAvailable()) {
             Call<HouseRes> call = sDataManager.getHouseFromNetwork(String.valueOf(houseKey));
             call.enqueue(new Callback<HouseRes>() {
                 @Override
@@ -219,7 +232,7 @@ public class SplashModel {
                 }
             });
         } else {
-            EventBus.getDefault().post((new ShowMessageEvent(mContext.getString(R.string.hint_not_connection_inet)));
+            EventBus.getDefault().post((new ShowMessageEvent(ConstantManager.NETWORK_IS_NOT_AVAILABLE)));
         }
     }
 }

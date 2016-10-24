@@ -1,18 +1,15 @@
 package com.bugtsa.iceandfire.mvp.presenters;
 
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.ISplashView;
 import com.bugtsa.iceandfire.utils.AppConfig;
-import com.redmadrobot.chronos.ChronosConnector;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -28,13 +25,10 @@ public class SplashPresenter implements ISplashPresenter {
 
     private static DataManager sDataManager;
 
-    private Context mContext;
-
-    private ChronosConnector mConnector;
+    private Long mStart;
 
     private SplashPresenter(DataManager dataManager) {
         sDataManager = dataManager;
-        mContext = sDataManager.getContext();
         mSplashModel = new SplashModel(sDataManager);
     }
 
@@ -55,8 +49,7 @@ public class SplashPresenter implements ISplashPresenter {
     @Override
     public void initView(Bundle savedInstanceState) {
         if (getView() != null) {
-            mConnector = new ChronosConnector();
-            mConnector.onCreate(this, savedInstanceState);
+            mSplashModel.onCreate(savedInstanceState);
 
             getView().showSplash();
             loadCharacterFromDb();
@@ -65,19 +58,19 @@ public class SplashPresenter implements ISplashPresenter {
 
     @Override
     public void onResume() {
-        mConnector.onResume();
+        mSplashModel.onResume();
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
-        mConnector.onPause();
+        mSplashModel.onPause();
         EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        mConnector.onSaveInstanceState(outState);
+        mSplashModel.onSavedInstanceState(outState);
     }
 
     @Nullable
@@ -87,13 +80,14 @@ public class SplashPresenter implements ISplashPresenter {
     }
 
     private void loadCharacterFromDb() {
+        mStart = System.currentTimeMillis();
         mSplashModel.loadCharacterFromDb();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowMessageEvent(ShowMessageEvent showMessageEvent) {
         if (getView() != null) {
-            getView().showMessage(showMessageEvent.getMessage());
+            getView().showMessage(showMessageEvent.getMessageKey());
         }
     }
 

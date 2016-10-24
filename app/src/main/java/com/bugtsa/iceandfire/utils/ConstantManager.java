@@ -21,6 +21,8 @@ public interface ConstantManager {
     int TARGARIEN_KEY = 378;
     int STARK_KEY = 362;
 
+    int NETWORK_IS_NOT_AVAILABLE = 1011;
+
     int STARK_MENU_ID = 0;
     int TARGARIEN_MENU_ID = 1;
     int LANNISTER_MENU_ID = 2;
