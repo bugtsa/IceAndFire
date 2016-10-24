@@ -101,28 +101,7 @@ public class HouseFragment extends Fragment implements IHouseView {
         mBinding.characters.setLayoutManager(layoutManager);
         mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse), mDataManager.getContext(), getIdDrawableIconHouse());
         mBinding.characters.setAdapter(mAdapter);
-//        if (mCharacterList != null) {
         mAdapter.setCharacter(mCharacterList);
-//        }
-    }
-
-    @Override
-    public void showPage(int pageKey) {
-//        int HouseKey;
-//        switch (pageKey) {
-//            case ConstantManager.STARK_PAGE_ID:
-//                mHouseKey = ConstantManager.STARK_KEY;
-//                break;
-//            case ConstantManager.TARGARIEN_PAGE_ID:
-//                mHouseKey = ConstantManager.TARGARIEN_KEY;
-//                break;
-//            case ConstantManager.LANNISTER_PAGE_ID:
-//                mHouseKey = ConstantManager.LANNISTER_KEY;
-//                break;
-//            default:
-//                mHouseKey = ConstantManager.STARK_KEY;
-//        }
-//        mHousePresenter.loadCharactersOfHouseFromDb(mHouseKey);
     }
 
     @Override

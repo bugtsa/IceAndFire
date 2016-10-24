@@ -7,7 +7,6 @@ import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
 import com.bugtsa.iceandfire.mvp.models.DataModel;
 import com.bugtsa.iceandfire.mvp.views.ISplashView;
 import com.bugtsa.iceandfire.utils.AppConfig;
-import com.bugtsa.iceandfire.utils.ConstantManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -90,7 +89,6 @@ public class SplashPresenter implements ISplashPresenter {
         if (getView() != null) {
             getView().setOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
             getView().hideSplash();
-            getView().selectPage(ConstantManager.STARK_PAGE_ID);
         }
     }
 }

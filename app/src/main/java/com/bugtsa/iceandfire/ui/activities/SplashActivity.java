@@ -21,12 +21,13 @@ import com.bugtsa.iceandfire.mvp.presenters.ISplashPresenter;
 import com.bugtsa.iceandfire.mvp.presenters.SplashPresenter;
 import com.bugtsa.iceandfire.mvp.views.ISplashView;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
-import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
 import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.squareup.picasso.Picasso;
 
+import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_PAGE_ID;
 import static com.bugtsa.iceandfire.utils.ConstantManager.QUANTITY_VIEW_PAGE;
+import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_PAGE_ID;
 import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_PAGE_ID;
 
 public class SplashActivity extends AppCompatActivity implements ISplashView {
@@ -34,20 +35,12 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     SplashPresenter mPresenter = SplashPresenter.getInstance();
 
-    private HouseFragment targarienFragment;
-    private HouseFragment lannisterFragment;
-    private HouseFragment starkFragment;
-
     private ActivitySplashBinding mBinding;
     private ImageView drawerUserAvatar;
     private TextView drawerUserFullName;
     private TextView drawerUserEmail;
 
-    private ViewPagerAdapter mViewPagerAdapter;
-
     protected ProgressDialog mProgressDialog;
-
-    private int currentIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +48,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
         setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        setupViewPager();
         setupToolbar();
         setupDrawer();
 
@@ -82,23 +74,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
         mBinding.viewpagerHouseList.setOffscreenPageLimit(QUANTITY_VIEW_PAGE);
         mBinding.viewpagerHouseList.setAdapter(pagerAdapter);
-    }
-
-    private void setCheckedItemNavigationView(int position) {
-        switch (position) {
-            case ConstantManager.STARK_PAGE_ID:
-                mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
-                break;
-            case TARGARIEN_PAGE_ID:
-                mBinding.navigationViewHouseList.setCheckedItem(R.id.targarien_menu);
-                break;
-            case ConstantManager.LANNISTER_PAGE_ID:
-                mBinding.navigationViewHouseList.setCheckedItem(R.id.lannister_menu);
-                break;
-            default:
-                mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
-        }
-        selectPage(position);
     }
 
     /**
@@ -139,13 +114,13 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
                 mBinding.navigationDrawerHouseList.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.stark_menu:
-                        selectPage(ConstantManager.STARK_PAGE_ID);
+                        selectPage(STARK_PAGE_ID);
+                        break;
+                    case R.id.lannister_menu:
+                        selectPage(LANNISTER_PAGE_ID);
                         break;
                     case R.id.targarien_menu:
                         selectPage(TARGARIEN_PAGE_ID);
-                        break;
-                    case R.id.lannister_menu:
-                        selectPage(ConstantManager.LANNISTER_PAGE_ID);
                         break;
                 }
                 return false;
@@ -155,7 +130,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     @Override
     public void selectPage(int pageIndex) {
-//        mBinding.tabsHouseList.setScrollPosition(pageIndex, 0f, true);
         mBinding.viewpagerHouseList.setCurrentItem(pageIndex);
     }
 
@@ -223,7 +197,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
                 mProgressDialog.hide();
             }
         }
-//        selectPage(ConstantManager.STARK_PAGE_ID);
+        setupViewPager();
     }
 
     @Override
