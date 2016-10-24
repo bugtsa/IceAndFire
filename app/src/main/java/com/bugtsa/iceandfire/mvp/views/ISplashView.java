@@ -17,4 +17,6 @@ public interface ISplashView {
     void hideSplash();
 
     void setOrientation(int ActivityInfo);
+
+    void selectPage(int pageIndex);
 }

@@ -52,8 +52,8 @@ public class SplashModel {
 
     private ChronosConnector mConnector;
 
-    public SplashModel(DataManager dataManager) {
-        sDataManager = dataManager;
+    public SplashModel() {
+        sDataManager = DataManager.getInstance();
         mPreferencesManager = sDataManager.getPreferencesManager();
     }
 

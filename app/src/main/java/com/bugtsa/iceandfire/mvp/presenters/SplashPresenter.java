@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 
 import com.bugtsa.iceandfire.data.events.LoadDoneEvent;
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
-import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.ISplashView;
 import com.bugtsa.iceandfire.utils.AppConfig;
+import com.bugtsa.iceandfire.utils.ConstantManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -17,19 +17,16 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class SplashPresenter implements ISplashPresenter {
 
-    private static SplashPresenter ourInstance = new SplashPresenter(DataManager.getInstance());
+    private static SplashPresenter ourInstance = new SplashPresenter();
 
     private ISplashView mSplashView;
 
     private SplashModel mSplashModel;
 
-    private static DataManager sDataManager;
-
     private Long mStart;
 
-    private SplashPresenter(DataManager dataManager) {
-        sDataManager = dataManager;
-        mSplashModel = new SplashModel(sDataManager);
+    private SplashPresenter() {
+        mSplashModel = new SplashModel();
     }
 
     public static SplashPresenter getInstance() {
@@ -112,6 +109,7 @@ public class SplashPresenter implements ISplashPresenter {
         if (getView() != null) {
             getView().setOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
             getView().hideSplash();
+            getView().selectPage(ConstantManager.STARK_PAGE_ID);
         }
     }
 }

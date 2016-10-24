@@ -23,9 +23,9 @@ public interface ConstantManager {
 
     int NETWORK_IS_NOT_AVAILABLE = 1011;
 
-    int STARK_MENU_ID = 0;
-    int TARGARIEN_MENU_ID = 1;
-    int LANNISTER_MENU_ID = 2;
+    int STARK_PAGE_ID = 0;
+    int TARGARIEN_PAGE_ID = 1;
+    int LANNISTER_PAGE_ID = 2;
 
     int QUANTITY_PAGE = 43;
     int PER_PAGE = 50;

@@ -17,9 +17,10 @@ import com.bugtsa.iceandfire.data.storage.models.House;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadCharacterListByHouseIdOperation;
 import com.bugtsa.iceandfire.data.storage.tasks.LoadHousesListOperation;
 import com.bugtsa.iceandfire.databinding.FragmentHousesBinding;
+import com.bugtsa.iceandfire.mvp.views.IHouseView;
 import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
 import com.bugtsa.iceandfire.ui.routers.CharactersRouter;
-import com.bugtsa.iceandfire.ui.views.IHouseView;
+import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.redmadrobot.chronos.ChronosConnector;
 
 import java.util.ArrayList;
@@ -29,11 +30,11 @@ import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
 
-public class HouseFragment extends Fragment implements IHouseView{
+public class HouseFragment extends Fragment implements IHouseView {
 
     private static final String HOUSE_KEY = "HOUSE_KEY";
+    private static String TITLE_HOUSE_KEY = "TITLE_HOUSE_KEY";
     private FragmentHousesBinding mBinding;
-    private int mHouseKey;
 
     private DataManager mDataManager;
 
@@ -49,14 +50,7 @@ public class HouseFragment extends Fragment implements IHouseView{
 
     private List<House> mHouses;
 
-    public static HouseFragment newInstance(int houseKey) {
-
-        Bundle args = new Bundle();
-        args.putInt(HOUSE_KEY, houseKey);
-        HouseFragment fragment = new HouseFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private int mHouseKey;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,13 +72,31 @@ public class HouseFragment extends Fragment implements IHouseView{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_houses, container, false);
+
         mBinding = DataBindingUtil.bind(view);
 
-        mHouseKey = getArguments().getInt(HOUSE_KEY);
         setupRecyclerView();
 
-        loadCharacterOfHouseFromDb();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mConnector.onResume();
+        showData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mConnector.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mConnector.onSaveInstanceState(outState);
     }
 
     private int getIdDrawableIconHouse() {
@@ -114,28 +126,28 @@ public class HouseFragment extends Fragment implements IHouseView{
     }
 
     @Override
+    public void showPage(int pageKey) {
+//        int HouseKey;
+        switch (pageKey) {
+            case ConstantManager.STARK_PAGE_ID:
+                mHouseKey = ConstantManager.STARK_KEY;
+                break;
+            case ConstantManager.TARGARIEN_PAGE_ID:
+                mHouseKey = ConstantManager.TARGARIEN_KEY;
+                break;
+            case ConstantManager.LANNISTER_PAGE_ID:
+                mHouseKey = ConstantManager.LANNISTER_KEY;
+                break;
+            default:
+                mHouseKey = ConstantManager.STARK_KEY;
+        }
+        loadHousesListFromDb();
+    }
+
+    @Override
     public void showCharacters(List<CharacterOfHouse> characterList) {
         mCharacters = characterList;
         mAdapter.setCharacter(characterList);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mConnector.onResume();
-        showData();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mConnector.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mConnector.onSaveInstanceState(outState);
     }
 
     public void showData() {

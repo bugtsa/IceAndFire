@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 import com.bugtsa.iceandfire.BuildConfig;
 import com.bugtsa.iceandfire.R;
-import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.managers.PreferencesManager;
 import com.bugtsa.iceandfire.databinding.ActivitySplashBinding;
 import com.bugtsa.iceandfire.mvp.presenters.ISplashPresenter;
@@ -31,35 +31,30 @@ import com.bugtsa.iceandfire.utils.LogUtils;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.squareup.picasso.Picasso;
 
-public class SplashActivity extends BaseActivity implements ISplashView {
+public class SplashActivity extends AppCompatActivity implements ISplashView {
     private static final String TAG = ConstantManager.TAG_PREFIX + SplashActivity.class.getSimpleName();
 
     SplashPresenter mPresenter = SplashPresenter.getInstance();
 
     private static Fragment targarienFragment;
     private static Fragment lannisterFragment;
-    private static Fragment starkFragment;
+    private HouseFragment starkFragment;
 
     private ActivitySplashBinding mBinding;
     private ImageView drawerUserAvatar;
     private TextView drawerUserFullName;
     private TextView drawerUserEmail;
-    private DataManager mDataManager;
     private PreferencesManager mPreferencesManager;
 
-    private ViewPagerAdapter adapter;
+    private ViewPagerAdapter mViewPagerAdapter;
+
+    protected ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
         setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        mDataManager = DataManager.getInstance();
-        mPreferencesManager = mDataManager.getPreferencesManager();
-        if (mPreferencesManager.isFirstLaunch()) {
-            mPreferencesManager.saveFirstLaunch(false);
-        }
 
         initViewPager();
         setupToolbar();
@@ -107,21 +102,18 @@ public class SplashActivity extends BaseActivity implements ISplashView {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager mViewPager) {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        adapter = new ViewPagerAdapter(supportFragmentManager);
+        mViewPagerAdapter = new ViewPagerAdapter(supportFragmentManager);
         if (starkFragment == null) {
-            starkFragment = HouseFragment.newInstance(ConstantManager.STARK_KEY);
-            targarienFragment = HouseFragment.newInstance(ConstantManager.TARGARIEN_KEY);
-            lannisterFragment = HouseFragment.newInstance(ConstantManager.LANNISTER_KEY);
+            starkFragment = new HouseFragment();
+            targarienFragment = new HouseFragment();
+            lannisterFragment = new HouseFragment();
         }
-        adapter.addFragment(starkFragment, getString(R.string.stark_title));
-        adapter.addFragment(targarienFragment, getString(R.string.targarien_title));
-        adapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
-        viewPager.setAdapter(adapter);
-        if (mPreferencesManager.isFirstLaunch()) {
-            selectPage(ConstantManager.STARK_MENU_ID);
-        }
+        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.stark_title));
+        mViewPagerAdapter.addFragment(targarienFragment, getString(R.string.targarien_title));
+        mViewPagerAdapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
+        mViewPager.setAdapter(mViewPagerAdapter);
     }
 
     private void initViewPager() {
@@ -134,7 +126,7 @@ public class SplashActivity extends BaseActivity implements ISplashView {
 
             @Override
             public void onPageSelected(int position) {
-                Fragment item = adapter.getItem(position);
+                Fragment item = mViewPagerAdapter.getItem(position);
                 item.onResume();
                 setCheckedItemNavigationView(position);
                 String tag = item.getTag();
@@ -152,13 +144,13 @@ public class SplashActivity extends BaseActivity implements ISplashView {
 
     private void setCheckedItemNavigationView(int position) {
         switch (position) {
-            case ConstantManager.STARK_MENU_ID:
+            case ConstantManager.STARK_PAGE_ID:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
                 break;
-            case ConstantManager.TARGARIEN_MENU_ID:
+            case ConstantManager.TARGARIEN_PAGE_ID:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.targarien_menu);
                 break;
-            case ConstantManager.LANNISTER_MENU_ID:
+            case ConstantManager.LANNISTER_PAGE_ID:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.lannister_menu);
                 break;
             default:
@@ -200,18 +192,17 @@ public class SplashActivity extends BaseActivity implements ISplashView {
         mBinding.navigationViewHouseList.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-
                 item.setChecked(true);
                 mBinding.navigationDrawerHouseList.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.stark_menu:
-                        selectPage(ConstantManager.STARK_MENU_ID);
+                        selectPage(ConstantManager.STARK_PAGE_ID);
                         break;
                     case R.id.targarien_menu:
-                        selectPage(ConstantManager.TARGARIEN_MENU_ID);
+                        selectPage(ConstantManager.TARGARIEN_PAGE_ID);
                         break;
                     case R.id.lannister_menu:
-                        selectPage(ConstantManager.LANNISTER_MENU_ID);
+                        selectPage(ConstantManager.LANNISTER_PAGE_ID);
                         break;
                 }
                 return false;
@@ -219,9 +210,11 @@ public class SplashActivity extends BaseActivity implements ISplashView {
         });
     }
 
-    void selectPage(int pageIndex) {
+    @Override
+    public void selectPage(int pageIndex) {
         mBinding.tabsHouseList.setScrollPosition(pageIndex, 0f, true);
         mBinding.viewpagerHouseList.setCurrentItem(pageIndex);
+        starkFragment.showPage(pageIndex);
     }
 
     /**
