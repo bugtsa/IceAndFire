@@ -1,6 +1,5 @@
 package com.bugtsa.iceandfire.mvp.presenters;
 
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,7 +9,6 @@ import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.ICharacterView;
 import com.bugtsa.iceandfire.utils.StringUtils;
-import com.redmadrobot.chronos.ChronosConnector;
 
 import java.util.List;
 
@@ -35,8 +33,6 @@ public class CharacterPresenter implements ICharacterPresenter {
 
     private String mDiedCharacterMessage;
 
-    private ChronosConnector mConnector;
-
     private CharacterPresenter() {
         mSplashModel = new SplashModel();
     }
@@ -56,10 +52,8 @@ public class CharacterPresenter implements ICharacterPresenter {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
-        if (getView() != null) {
-            setCallbacks();
-        }
+    public void initView() {
+        setCallbacks();
     }
 
     @Nullable
@@ -139,16 +133,15 @@ public class CharacterPresenter implements ICharacterPresenter {
     }
 
     public void setCharacterFatherAndMother(CharacterOfHouse character) {
-        CharacterOfHouse parentOfCharacter = character;
-        if (parentOfCharacter.getRemoteId().equals(mCharacterDTO.getMother())) {
-            mMotherOfCharacter = parentOfCharacter;
+        if (character.getRemoteId().equals(mCharacterDTO.getMother())) {
+            mMotherOfCharacter = character;
             mMotherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
-            getView().setMotherName(parentOfCharacter.getName());
+            getView().setMotherName(character.getName());
             getView().setVisibleMother(View.VISIBLE);
-        } else if (parentOfCharacter.getRemoteId().equals(mCharacterDTO.getFather())) {
-            mFatherOfCharacter = parentOfCharacter;
+        } else if (character.getRemoteId().equals(mCharacterDTO.getFather())) {
+            mFatherOfCharacter = character;
             mFatherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
-            getView().setFatherName(parentOfCharacter.getName());
+            getView().setFatherName(character.getName());
             getView().setVisibleFather(View.VISIBLE);
         }
     }

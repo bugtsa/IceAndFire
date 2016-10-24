@@ -1,6 +1,5 @@
 package com.bugtsa.iceandfire.mvp.presenters;
 
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
@@ -8,6 +7,13 @@ import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.IHouseView;
 
 import java.util.List;
+
+import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_PAGE_ID;
+import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_PAGE_ID;
+import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_PAGE_ID;
 
 public class HousePresenter implements IHousePresenter {
 
@@ -36,7 +42,7 @@ public class HousePresenter implements IHousePresenter {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
+    public void initView() {
         setCallBack();
     }
 
@@ -46,15 +52,31 @@ public class HousePresenter implements IHousePresenter {
         return mHouseView;
     }
 
+    @Override
     public void setCallBack() {
         mSplashModel.setLoadCharacterListByHouseId(listCharacter -> showCharacterList(listCharacter));
     }
 
-    public void loadCharactersOfHouseFromDb(int houseKey) {
+    @Override
+    public void loadCharactersOfHouseFromDb(int housePageId) {
+        int houseKey;
+        switch (housePageId) {
+            case STARK_PAGE_ID:
+                houseKey = STARK_KEY;
+                break;
+            case LANNISTER_PAGE_ID:
+                houseKey = LANNISTER_KEY;
+                break;
+            case TARGARIEN_PAGE_ID:
+                houseKey = TARGARIEN_KEY;
+                break;
+            default:
+                houseKey = STARK_KEY;
+        }
         mSplashModel.loadCharactersByHouseIdFromDb(houseKey);
     }
 
-    private void showCharacterList(List<CharacterOfHouse> characterList) {
+    public void showCharacterList(List<CharacterOfHouse> characterList) {
         if (getView() != null) {
             getView().showCharacters(characterList);
         }

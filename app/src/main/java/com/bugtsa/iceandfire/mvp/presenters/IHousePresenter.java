@@ -10,4 +10,8 @@ public interface IHousePresenter extends IIceAndFirePresenter {
 
     @Nullable
     IHouseView getView();
+
+    void setCallBack();
+
+    void loadCharactersOfHouseFromDb(int houseKey);
 }

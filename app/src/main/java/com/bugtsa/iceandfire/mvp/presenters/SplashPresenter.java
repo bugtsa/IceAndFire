@@ -1,7 +1,6 @@
 package com.bugtsa.iceandfire.mvp.presenters;
 
 import android.content.pm.ActivityInfo;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
@@ -42,7 +41,7 @@ public class SplashPresenter implements ISplashPresenter {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
+    public void initView() {
         if (getView() != null) {
             getView().showSplash();
             setCallBacks();

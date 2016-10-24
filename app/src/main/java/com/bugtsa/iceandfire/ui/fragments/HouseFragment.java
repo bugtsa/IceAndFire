@@ -12,17 +12,15 @@ import android.view.ViewGroup;
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.managers.DataManager;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
-import com.bugtsa.iceandfire.data.storage.models.House;
 import com.bugtsa.iceandfire.databinding.FragmentHousesBinding;
 import com.bugtsa.iceandfire.mvp.presenters.HousePresenter;
 import com.bugtsa.iceandfire.mvp.views.IHouseView;
 import com.bugtsa.iceandfire.ui.adapters.CharactersAdapter;
 import com.bugtsa.iceandfire.ui.routers.CharactersRouter;
-import com.bugtsa.iceandfire.utils.ConstantManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.bugtsa.iceandfire.utils.ConstantManager.KEY_HOUSE_INDEX;
 import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
@@ -39,15 +37,16 @@ public class HouseFragment extends Fragment implements IHouseView {
 
     private CharactersAdapter mAdapter;
 
-    private List<CharacterOfHouse> mCharacters;
-
-    private List<House> mHouses;
+    private List<CharacterOfHouse> mCharacterList;
 
     private int mHouseKey;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
+        mHouseKey = getArguments().getInt(KEY_HOUSE_INDEX);
 
         mHousePresenter = HousePresenter.getInstance();
 
@@ -55,11 +54,9 @@ public class HouseFragment extends Fragment implements IHouseView {
 
         mDataManager = DataManager.getInstance();
 
-        mHouses = new ArrayList<>();
-        mCharacters = new ArrayList<>();
-
         mHousePresenter.takeView(this);
-        mHousePresenter.initView(savedInstanceState);
+        mHousePresenter.initView();
+        mHousePresenter.loadCharactersOfHouseFromDb(mHouseKey);
     }
 
     @Override
@@ -104,30 +101,30 @@ public class HouseFragment extends Fragment implements IHouseView {
         mBinding.characters.setLayoutManager(layoutManager);
         mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse), mDataManager.getContext(), getIdDrawableIconHouse());
         mBinding.characters.setAdapter(mAdapter);
+        mAdapter.setCharacter(mCharacterList);
     }
 
     @Override
     public void showPage(int pageKey) {
 //        int HouseKey;
-        switch (pageKey) {
-            case ConstantManager.STARK_PAGE_ID:
-                mHouseKey = ConstantManager.STARK_KEY;
-                break;
-            case ConstantManager.TARGARIEN_PAGE_ID:
-                mHouseKey = ConstantManager.TARGARIEN_KEY;
-                break;
-            case ConstantManager.LANNISTER_PAGE_ID:
-                mHouseKey = ConstantManager.LANNISTER_KEY;
-                break;
-            default:
-                mHouseKey = ConstantManager.STARK_KEY;
-        }
-        mHousePresenter.loadCharactersOfHouseFromDb(mHouseKey);
+//        switch (pageKey) {
+//            case ConstantManager.STARK_PAGE_ID:
+//                mHouseKey = ConstantManager.STARK_KEY;
+//                break;
+//            case ConstantManager.TARGARIEN_PAGE_ID:
+//                mHouseKey = ConstantManager.TARGARIEN_KEY;
+//                break;
+//            case ConstantManager.LANNISTER_PAGE_ID:
+//                mHouseKey = ConstantManager.LANNISTER_KEY;
+//                break;
+//            default:
+//                mHouseKey = ConstantManager.STARK_KEY;
+//        }
+//        mHousePresenter.loadCharactersOfHouseFromDb(mHouseKey);
     }
 
     @Override
     public void showCharacters(List<CharacterOfHouse> characterList) {
-        mCharacters = characterList;
-        mAdapter.setCharacter(characterList);
+        mCharacterList = characterList;
     }
 }

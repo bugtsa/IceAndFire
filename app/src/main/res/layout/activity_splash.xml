@@ -31,9 +31,7 @@
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs_house_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabGravity="fill"
-                    app:tabMode="fixed"/>
+                    android:layout_height="wrap_content"/>
 
             </android.support.design.widget.AppBarLayout>
 

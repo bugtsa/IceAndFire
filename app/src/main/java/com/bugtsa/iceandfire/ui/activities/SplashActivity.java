@@ -6,10 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -19,8 +16,6 @@ import android.widget.TextView;
 
 import com.bugtsa.iceandfire.BuildConfig;
 import com.bugtsa.iceandfire.R;
-import com.bugtsa.iceandfire.data.managers.PreferencesManager;
-import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.databinding.ActivitySplashBinding;
 import com.bugtsa.iceandfire.mvp.presenters.ISplashPresenter;
 import com.bugtsa.iceandfire.mvp.presenters.SplashPresenter;
@@ -28,11 +23,8 @@ import com.bugtsa.iceandfire.mvp.views.ISplashView;
 import com.bugtsa.iceandfire.ui.adapters.ViewPagerAdapter;
 import com.bugtsa.iceandfire.ui.fragments.HouseFragment;
 import com.bugtsa.iceandfire.utils.ConstantManager;
-import com.bugtsa.iceandfire.utils.LogUtils;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_PAGE_ID;
 
@@ -49,7 +41,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     private ImageView drawerUserAvatar;
     private TextView drawerUserFullName;
     private TextView drawerUserEmail;
-    private PreferencesManager mPreferencesManager;
 
     private ViewPagerAdapter mViewPagerAdapter;
 
@@ -63,12 +54,12 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
         setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        initViewPager();
+        setupViewPager();
         setupToolbar();
         setupDrawer();
 
         mPresenter.takeView(this);
-        mPresenter.initView(savedInstanceState);
+        mPresenter.initView();
     }
 
     @Override
@@ -85,45 +76,11 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupViewPager(ViewPager mViewPager) {
-        FragmentManager supportFragmentManager = getSupportFragmentManager();
-        mViewPagerAdapter = new ViewPagerAdapter(supportFragmentManager, this);
-        if (starkFragment == null) {
-            starkFragment = new HouseFragment();
-            targarienFragment = new HouseFragment();
-            lannisterFragment = new HouseFragment();
-        }
-        mViewPagerAdapter.addFragment(starkFragment, getString(R.string.stark_title));
-        mViewPagerAdapter.addFragment(targarienFragment, getString(R.string.targarien_title));
-        mViewPagerAdapter.addFragment(lannisterFragment, getString(R.string.lannister_title));
-        mViewPager.setAdapter(mViewPagerAdapter);
-    }
-
-    private void initViewPager() {
-        setupViewPager(mBinding.viewpagerHouseList);
-
-        mBinding.viewpagerHouseList.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Fragment item = mViewPagerAdapter.getItem(position);
-//                item.onResume();
-                setCheckedItemNavigationView(position);
-                String tag = item.getTag();
-                currentIndex = position;
-                Navigator.setTabTag(tag);
-                LogUtils.d("onPageSelected" + tag);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+    private void setupViewPager() {
         mBinding.tabsHouseList.setupWithViewPager(mBinding.viewpagerHouseList);
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
+        mBinding.viewpagerHouseList.setOffscreenPageLimit(3);
+        mBinding.viewpagerHouseList.setAdapter(pagerAdapter);
     }
 
     private void setCheckedItemNavigationView(int position) {
@@ -140,7 +97,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
             default:
                 mBinding.navigationViewHouseList.setCheckedItem(R.id.stark_menu);
         }
-        starkFragment.showPage(position);
+        selectPage(position);
     }
 
     /**
@@ -197,7 +154,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     @Override
     public void selectPage(int pageIndex) {
-        mBinding.tabsHouseList.setScrollPosition(pageIndex, 0f, true);
+//        mBinding.tabsHouseList.setScrollPosition(pageIndex, 0f, true);
         mBinding.viewpagerHouseList.setCurrentItem(pageIndex);
     }
 
@@ -265,23 +222,11 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
                 mProgressDialog.hide();
             }
         }
+        selectPage(ConstantManager.STARK_PAGE_ID);
     }
 
     @Override
     public void setOrientation(int ActivityInfo) {
         setRequestedOrientation(ActivityInfo);
-    }
-
-    public void showCharacters(List<CharacterOfHouse> characterOfHouseList) {
-        if (currentIndex == ConstantManager.STARK_PAGE_ID) {
-            starkFragment.showCharacters(characterOfHouseList);
-        }
-        if (currentIndex == ConstantManager.TARGARIEN_PAGE_ID)
-        {
-            targarienFragment.showCharacters(characterOfHouseList);
-        }
-        if (currentIndex == ConstantManager.LANNISTER_PAGE_ID) {
-            lannisterFragment.showCharacters(characterOfHouseList);
-        }
     }
 }

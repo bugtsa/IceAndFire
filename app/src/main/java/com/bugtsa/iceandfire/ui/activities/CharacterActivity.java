@@ -31,14 +31,12 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_character);
 
-//        mDataManager = DataManager.getInstance();
-
         mBinding.fatherCharacterButton.setOnClickListener(this);
         mBinding.motherCharacterButton.setOnClickListener(this);
 
         setupToolBar();
         mCharacterPresenter.takeView(this);
-        mCharacterPresenter.initView(savedInstanceState);
+        mCharacterPresenter.initView();
         mCharacterPresenter.initCharacterData(getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY));
     }
 
