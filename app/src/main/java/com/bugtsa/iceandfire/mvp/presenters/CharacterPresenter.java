@@ -2,7 +2,6 @@ package com.bugtsa.iceandfire.mvp.presenters;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.mvp.models.CharacterModel;
@@ -93,30 +92,36 @@ public class CharacterPresenter implements ICharacterPresenter {
 
             if (!TextUtils.isEmpty(mCharacterDTO.getBorn())) {
                 getView().setDateBorn(mCharacterDTO.getBorn());
+            } else {
+                getView().setInvisibleDateBorn();
             }
 
             if (!TextUtils.isEmpty(mCharacterDTO.getDied())) {
                 getView().showSeasonDiedCharacter(mCharacterDTO.getName(), getLastSeason(mCharacterDTO.getSeasons()), mCharacterDTO.getDied());
             }
 
-            if (mCharacterDTO.getTitles() != null) {
+            if (mCharacterDTO.getTitles() != null && mCharacterDTO.getTitles().size() > 0) {
                 getView().setTitlesCharacter(getStringList(mCharacterDTO.getTitles()));
+            } else {
+                getView().setInvisibleTitles();
             }
 
-            if (mCharacterDTO.getAliases() != null) {
+            if (mCharacterDTO.getAliases() != null && mCharacterDTO.getAliases().size() > 0) {
                 getView().setAliasesCharacter(getStringList(mCharacterDTO.getAliases()));
+            } else {
+                getView().setInvisibleAliases();
             }
 
             if (!mCharacterDTO.getMother().isEmpty()) {
                 mCharacterModel.getParent(mCharacterDTO.getMother());
             } else {
-                getView().setVisibleMother(View.INVISIBLE);
+                getView().setInvisibleMother();
             }
 
             if (!mCharacterDTO.getFather().isEmpty()) {
                 mCharacterModel.getParent(mCharacterDTO.getFather());
             } else {
-                getView().setVisibleFather(View.INVISIBLE);
+                getView().setInvisibleFather();
             }
         }
     }
@@ -154,13 +159,11 @@ public class CharacterPresenter implements ICharacterPresenter {
             mMotherOfCharacterDTO = character;
             mMotherOfCharacterDTO.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
             getView().setMotherName(character.getName());
-            getView().setVisibleMother(View.VISIBLE);
         } else if (character.getRemoteId().equals(mCharacterDTO.getFather())) {
             character.getSeasons();
             mFatherOfCharacterDTO = character;
             mFatherOfCharacterDTO.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
             getView().setFatherName(character.getName());
-            getView().setVisibleFather(View.VISIBLE);
         }
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.managers.DataManager;
@@ -119,17 +120,35 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
 
     @Override
     public void setDateBorn(String dateBorn) {
+        mBinding.bornLayout.setVisibility(View.VISIBLE);
         mBinding.bornCharacterTextView.setText(dateBorn);
     }
 
     @Override
+    public void setInvisibleDateBorn() {
+        mBinding.bornLayout.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     public void setAliasesCharacter(String aliases) {
+        mBinding.aliasesLayout.setVisibility(View.VISIBLE);
         mBinding.aliasesCharacterTextView.setText(aliases);
     }
 
     @Override
+    public void setInvisibleAliases() {
+        mBinding.aliasesLayout.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     public void setTitlesCharacter(String titles) {
+        mBinding.titlesLayout.setVisibility(View.VISIBLE);
         mBinding.titlesCharacterTextView.setText(titles);
+    }
+
+    @Override
+    public void setInvisibleTitles() {
+        mBinding.titlesLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -159,24 +178,24 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
     }
 
     @Override
-    public void setVisibleFather(int stateVisible) {
-        mBinding.fatherCharacterButton.setVisibility(stateVisible);
-        mBinding.fatherCharacterTextView.setVisibility(stateVisible);
+    public void setInvisibleFather() {
+        mBinding.fatherLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void setVisibleMother(int stateVisible) {
-        mBinding.motherCharacterButton.setVisibility(stateVisible);
-        mBinding.motherCharacterTextView.setVisibility(stateVisible);
+    public void setInvisibleMother() {
+        mBinding.motherLayout.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void setFatherName(String nameFather) {
+        mBinding.fatherLayout.setVisibility(View.VISIBLE);
         mBinding.fatherCharacterButton.setText(nameFather);
     }
 
     @Override
     public void setMotherName(String nameMother) {
+        mBinding.motherLayout.setVisibility(View.VISIBLE);
         mBinding.motherCharacterButton.setText(nameMother);
     }
 

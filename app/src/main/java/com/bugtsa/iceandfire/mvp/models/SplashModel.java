@@ -138,14 +138,10 @@ public class SplashModel {
 
     private String getAliasTitle(CharacterRes characterRes) {
         String aliasTitle = "";
-        if (characterRes.getAliases() != null) {
-            if (!characterRes.getAliases().isEmpty()) {
-                aliasTitle = characterRes.getAliases().get(0);
-            }
-        } else if (characterRes.getTitles() != null) {
-            if (!characterRes.getTitles().isEmpty()) {
-                aliasTitle = characterRes.getTitles().get(0);
-            }
+        if (characterRes.getAliases() != null && characterRes.getAliases().size() > 0) {
+            aliasTitle = characterRes.getAliases().get(0);
+        } else if (characterRes.getTitles() != null && characterRes.getTitles().size() > 0) {
+            aliasTitle = characterRes.getTitles().get(0);
         }
         return aliasTitle;
     }

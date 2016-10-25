@@ -18,13 +18,19 @@ public interface ICharacterView {
 
     void setAliasesCharacter(String aliases);
 
-    void setVisibleFather(int stateVisible);
+    void setInvisibleFather();
 
     void setFatherName(String nameFather);
 
-    void setVisibleMother(int stateVisible);
+    void setInvisibleMother();
 
     void setMotherName(String nameMother);
 
     void openParentOfCharacter(CharacterDTO parentOfCharacter);
+
+    void setInvisibleDateBorn();
+
+    void setInvisibleTitles();
+
+    void setInvisibleAliases();
 }
