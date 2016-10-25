@@ -42,8 +42,10 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
     protected ProgressDialog mProgressDialog;
 
+    //region Life cycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
         setOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -60,7 +62,9 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         mPresenter.dropView();
         super.onDestroy();
     }
+    //endregion
 
+    //region AppCompatActivity methods
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -68,14 +72,9 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         }
         return super.onOptionsItemSelected(item);
     }
+    //endregion
 
-    private void setupViewPager() {
-        mBinding.tabsHouseList.setupWithViewPager(mBinding.viewpagerHouseList);
-        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
-        mBinding.viewpagerHouseList.setOffscreenPageLimit(QUANTITY_VIEW_PAGE);
-        mBinding.viewpagerHouseList.setAdapter(pagerAdapter);
-    }
-
+    //region Init ui components
     /**
      * Устанавливает аватар пользователя со скруглёнными краями в Navigation Drawer
      *
@@ -88,6 +87,13 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
                 .centerCrop()
                 .placeholder(R.drawable.avatar_bg)
                 .into(drawerUserAvatar);
+    }
+
+    private void setupViewPager() {
+        mBinding.tabsHouseList.setupWithViewPager(mBinding.viewpagerHouseList);
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
+        mBinding.viewpagerHouseList.setOffscreenPageLimit(QUANTITY_VIEW_PAGE);
+        mBinding.viewpagerHouseList.setAdapter(pagerAdapter);
     }
 
     /**
@@ -128,11 +134,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
         });
     }
 
-    @Override
-    public void selectPage(int pageIndex) {
-        mBinding.viewpagerHouseList.setCurrentItem(pageIndex);
-    }
-
     /**
      * инициализирует ToolBar
      */
@@ -145,6 +146,13 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+    //endregion
+
+    //region ISplashView methods
+    @Override
+    public void selectPage(int pageIndex) {
+        mBinding.viewpagerHouseList.setCurrentItem(pageIndex);
     }
 
     @Override
@@ -204,4 +212,5 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     public void setOrientation(int ActivityInfo) {
         setRequestedOrientation(ActivityInfo);
     }
+    //endregion
 }

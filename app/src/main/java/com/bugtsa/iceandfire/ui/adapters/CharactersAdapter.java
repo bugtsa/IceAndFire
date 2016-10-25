@@ -1,13 +1,12 @@
 package com.bugtsa.iceandfire.ui.adapters;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bugtsa.iceandfire.R;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.databinding.ItemCharacterAdapterBinding;
 import com.bugtsa.iceandfire.utils.ConstantManager;
@@ -20,13 +19,11 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.It
 
     private List<CharacterOfHouse> mCharacter = new ArrayList<>();
     private Listener mListener;
-    private Context mContext;
-    private int mDrawableId;
+    private Drawable mDrawable;
 
-    public CharactersAdapter(Listener listener, Context context, int drawableId) {
+    public CharactersAdapter(Listener listener, Drawable drawable) {
         mListener = listener;
-        mContext = context;
-        mDrawableId = drawableId;
+        mDrawable = drawable;
     }
 
     /**
@@ -57,7 +54,7 @@ public class CharactersAdapter extends RecyclerView.Adapter<CharactersAdapter.It
         CharacterOfHouse character = mCharacter.get(position);
 
         holder.mBinding.setCharacter(character);
-        holder.mBinding.imageHouseCharacter.setImageDrawable(mContext.getDrawable(mDrawableId));
+        holder.mBinding.imageHouseCharacter.setImageDrawable(mDrawable);
         holder.mBinding.getRoot().setOnClickListener(view -> mListener.showCosts(character));
     }
 

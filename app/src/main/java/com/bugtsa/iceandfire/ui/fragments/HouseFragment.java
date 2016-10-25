@@ -1,6 +1,8 @@
 package com.bugtsa.iceandfire.ui.fragments;
 
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,9 +23,9 @@ import com.bugtsa.iceandfire.ui.routers.CharactersRouter;
 import java.util.List;
 
 import static com.bugtsa.iceandfire.utils.ConstantManager.KEY_HOUSE_INDEX;
-import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
-import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
-import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_PAGE_ID;
+import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_PAGE_ID;
+import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_PAGE_ID;
 
 public class HouseFragment extends Fragment implements IHouseView {
 
@@ -41,6 +43,7 @@ public class HouseFragment extends Fragment implements IHouseView {
 
     private int mHouseKey;
 
+    //region Life cycle
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,18 +79,20 @@ public class HouseFragment extends Fragment implements IHouseView {
 
         return view;
     }
+    //endregion
 
+    //region Show ui components
     private int getIdDrawableIconHouse() {
         int idDrawable = R.drawable.ic_item;
         switch (mHouseKey) {
-            case STARK_KEY:
+            case STARK_PAGE_ID:
                 idDrawable = R.drawable.ic_stark;
                 break;
-            case TARGARIEN_KEY:
-                idDrawable = R.drawable.ic_targarien;
-                break;
-            case LANNISTER_KEY:
+            case LANNISTER_PAGE_ID:
                 idDrawable = R.drawable.ic_lanister;
+                break;
+            case TARGARIEN_PAGE_ID:
+                idDrawable = R.drawable.ic_targarien;
                 break;
             default:
                 idDrawable = R.drawable.ic_item;
@@ -95,17 +100,28 @@ public class HouseFragment extends Fragment implements IHouseView {
         return idDrawable;
     }
 
+    private Drawable getDrawable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return getResources().getDrawable(getIdDrawableIconHouse(), DataManager.getInstance().getContext().getTheme());
+        } else {
+            return getResources().getDrawable(getIdDrawableIconHouse());
+        }
+    }
+
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setStackFromEnd(false);
         mBinding.characters.setLayoutManager(layoutManager);
-        mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse), mDataManager.getContext(), getIdDrawableIconHouse());
+        mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse), getDrawable());
         mBinding.characters.setAdapter(mAdapter);
         mAdapter.setCharacter(mCharacterList);
     }
+    //endregion
 
+    //region IHouseView
     @Override
     public void showCharacters(List<CharacterOfHouse> characterList) {
         mCharacterList = characterList;
     }
+    //endregion
 }
