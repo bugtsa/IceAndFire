@@ -52,11 +52,18 @@ public class HousePresenter implements IHousePresenter {
         return mHouseView;
     }
 
+    /**
+     * устанавливает callback with HouseModel
+     */
     @Override
     public void setCallBack() {
         mHouseModel.setCharacterListByHouseIdCallback(listCharacter -> showCharacterList(listCharacter));
     }
 
+    /**
+     * преобразует индекс view Pager`a в удалённый ключ дома
+     * @param housePageId индекс текущей страницы view Pager`a
+     */
     @Override
     public void loadCharactersOfHouseFromDb(int housePageId) {
         int houseKey;
@@ -76,6 +83,10 @@ public class HousePresenter implements IHousePresenter {
         mHouseModel.loadCharactersByHouseIdFromDb(houseKey);
     }
 
+    /**
+     * посылает инициативу по отображению списка героев дома
+     * @param characterList список персонажей дома
+     */
     public void showCharacterList(List<CharacterOfHouse> characterList) {
         if (getView() != null) {
             getView().showCharacters(characterList);

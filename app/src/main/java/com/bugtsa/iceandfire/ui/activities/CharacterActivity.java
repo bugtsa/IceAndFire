@@ -15,6 +15,7 @@ import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.databinding.ActivityCharacterBinding;
 import com.bugtsa.iceandfire.mvp.presenters.CharacterPresenter;
 import com.bugtsa.iceandfire.mvp.views.ICharacterView;
+import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 
 import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
@@ -53,7 +54,7 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
                 onBackPressed();
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -62,7 +63,7 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.finish();
+        finish();
     }
 
     /**
@@ -140,8 +141,20 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
     }
 
     @Override
-    public void showSeasonDiedCharacter(String nameCharacter, String season) {
-        String diedCharacterMessage = nameCharacter + " " + getString(R.string.died) + " " + season + " " + getString(R.string.season);
+    public void showSeasonDiedCharacter(String nameCharacter, String season, String characterDateDied) {
+        String seasonDied = " on: ";
+        String dateDied = " ";
+        if (season.equals("")) {
+            seasonDied += getString(R.string.unknown_season);
+        } else {
+            seasonDied += season;
+        }
+        if (characterDateDied.contains(ConstantManager.WORD_IN_DIED_CHARACTER)) {
+            dateDied += characterDateDied;
+        } else {
+            dateDied += getString(R.string.word_in) + characterDateDied;
+        }
+        String diedCharacterMessage = nameCharacter + " " + getString(R.string.died) + seasonDied + dateDied;
         SnackBarUtils.show(mBinding.coordinatorLayoutCharacter, diedCharacterMessage);
     }
 

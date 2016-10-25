@@ -12,7 +12,7 @@ public interface ICharacterView {
 
     void setDateBorn(String dateBorn);
 
-    void showSeasonDiedCharacter(String nameCharacter, String season);
+    void showSeasonDiedCharacter(String nameCharacter, String season, String dateDied);
 
     void setTitlesCharacter(String titles);
 

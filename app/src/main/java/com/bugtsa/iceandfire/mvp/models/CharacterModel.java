@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.bugtsa.iceandfire.data.callbacks.CharacterByRemoteIdCallback;
 import com.bugtsa.iceandfire.data.callbacks.TitleHouseCallback;
 import com.bugtsa.iceandfire.data.managers.DataManager;
+import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouseDao;
 import com.bugtsa.iceandfire.data.storage.models.DaoSession;
@@ -47,7 +48,7 @@ public class CharacterModel {
         CharacterOfHouse character = syncDaoSession.queryBuilder(CharacterOfHouse.class)
                 .where(CharacterOfHouseDao.Properties.RemoteId.eq(parentRemoteId))
                 .build()
-                .unique();
-        mCharacterByRemoteIdCallback.getCharacterByRemoteId(character);
+                .uniqueOrThrow();
+        mCharacterByRemoteIdCallback.getCharacterByRemoteId(new CharacterDTO(character));
     }
 }

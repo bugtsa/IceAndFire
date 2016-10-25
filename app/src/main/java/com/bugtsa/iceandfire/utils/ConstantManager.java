@@ -8,10 +8,12 @@ public interface ConstantManager {
     String FIRST_LAUNCH_KEY = "FIRST_LAUNCH_KEY";
     String PARCELABLE_KEY = "PARCELABLE_KEY";
 
-    int RESPONSE_OK = 200;
+    String RESPONSE_OK = "Response ok";
+    String RESPONSE_NOT_OK = "Response not ok";
+    String FAILED_SERVER = "Server is failed";
+    String EXCEPTION_PREPARE_CHARACTERSLIST = "Exception in prepareCharactersList ";
     int USER_NOT_AUTHORIZED = 401;
     int LOGIN_OR_PASSWORD_INCORRECT = 404;
-    int RESPONSE_NOT_OK = 666;
     int SERVER_ERROR = 677;
     int USER_LIST_LOADED_AND_SAVED = 688;
     int NETWORK_NOT_AVAILABLE = 699;
@@ -40,4 +42,5 @@ public interface ConstantManager {
     char NEW_STRING_SYMBOL_CHAR = '\n';
 
     String KEY_HOUSE_INDEX = "KEY_HOUSE_INDEX";
+    String WORD_IN_DIED_CHARACTER = "In";
 }

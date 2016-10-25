@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
-import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 import com.bugtsa.iceandfire.mvp.models.CharacterModel;
 import com.bugtsa.iceandfire.mvp.views.ICharacterView;
 import com.bugtsa.iceandfire.utils.StringUtils;
@@ -23,13 +22,11 @@ public class CharacterPresenter implements ICharacterPresenter {
 
     private CharacterModel mCharacterModel;
 
-    private CharacterOfHouse mFatherOfCharacter;
+    private CharacterDTO mFatherOfCharacterDTO;
 
-    private CharacterOfHouse mMotherOfCharacter;
+    private CharacterDTO mMotherOfCharacterDTO;
 
     private CharacterDTO mCharacterDTO;
-
-    private String mDiedCharacterMessage;
 
     private CharacterPresenter() {
         mCharacterModel = new CharacterModel();
@@ -63,20 +60,20 @@ public class CharacterPresenter implements ICharacterPresenter {
     @Override
     public void onFatherButtonClick() {
         if (getView() != null) {
-            getView().openParentOfCharacter(new CharacterDTO(mFatherOfCharacter));
+            getView().openParentOfCharacter(mFatherOfCharacterDTO);
         }
     }
 
     @Override
     public void onMotherButtonClick() {
         if (getView() != null) {
-            getView().openParentOfCharacter(new CharacterDTO(mMotherOfCharacter));
+            getView().openParentOfCharacter(mMotherOfCharacterDTO);
         }
     }
 
     private void setCallbacks() {
         mCharacterModel.setTitleHouseCallback(titleHouse -> setTitleHouse(titleHouse));
-        mCharacterModel.setCharacterByRemoteIdCallback(character -> setParentOfCharacter(character));
+        mCharacterModel.setCharacterByRemoteIdCallback(characterDTO -> setParentOfCharacter(characterDTO));
     }
 
     /**
@@ -99,7 +96,7 @@ public class CharacterPresenter implements ICharacterPresenter {
             }
 
             if (!TextUtils.isEmpty(mCharacterDTO.getDied())) {
-                getView().showSeasonDiedCharacter(mCharacterDTO.getName(), mCharacterDTO.getDied());
+                getView().showSeasonDiedCharacter(mCharacterDTO.getName(), getLastSeason(mCharacterDTO.getSeasons()), mCharacterDTO.getDied());
             }
 
             if (mCharacterDTO.getTitles() != null) {
@@ -124,6 +121,14 @@ public class CharacterPresenter implements ICharacterPresenter {
         }
     }
 
+    private String getLastSeason(List<String> seasonList) {
+        String dateDied = "";
+        if (seasonList != null && seasonList.size() > 0) {
+            dateDied = seasonList.get(seasonList.size() - 1);
+        }
+        return dateDied;
+    }
+
     private String getStringList(List<String> stringList) {
         String listForOutput = "";
         if (!stringList.isEmpty()) {
@@ -144,15 +149,16 @@ public class CharacterPresenter implements ICharacterPresenter {
         getView().setWoodsCharacter(resultString);
     }
 
-    public void setParentOfCharacter(CharacterOfHouse character) {
+    public void setParentOfCharacter(CharacterDTO character) {
         if (character.getRemoteId().equals(mCharacterDTO.getMother())) {
-            mMotherOfCharacter = character;
-            mMotherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
+            mMotherOfCharacterDTO = character;
+            mMotherOfCharacterDTO.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
             getView().setMotherName(character.getName());
             getView().setVisibleMother(View.VISIBLE);
         } else if (character.getRemoteId().equals(mCharacterDTO.getFather())) {
-            mFatherOfCharacter = character;
-            mFatherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
+            character.getSeasons();
+            mFatherOfCharacterDTO = character;
+            mFatherOfCharacterDTO.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());
             getView().setFatherName(character.getName());
             getView().setVisibleFather(View.VISIBLE);
         }

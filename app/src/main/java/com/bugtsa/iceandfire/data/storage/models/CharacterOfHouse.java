@@ -44,6 +44,11 @@ public class CharacterOfHouse {
     })
     private List<Title> titles;
 
+    @ToMany(joinProperties ={
+            @JoinProperty(name = "remoteId", referencedName = "characterRemoteId")
+    })
+    private List<Season> seasons;
+
     /** Used for active entity operations. */
     @Generated(hash = 1342124280)
     private transient CharacterOfHouseDao myDao;
@@ -109,6 +114,34 @@ public class CharacterOfHouse {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.delete(this);
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 159001741)
+    public synchronized void resetSeasons() {
+        seasons = null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1323759821)
+    public List<Season> getSeasons() {
+        if (seasons == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            SeasonDao targetDao = daoSession.getSeasonDao();
+            List<Season> seasonsNew = targetDao._queryCharacterOfHouse_Seasons(remoteId);
+            synchronized (this) {
+                if(seasons == null) {
+                    seasons = seasonsNew;
+                }
+            }
+        }
+        return seasons;
     }
 
     /** Resets a to-many relationship, making the next get call to query for a fresh result. */

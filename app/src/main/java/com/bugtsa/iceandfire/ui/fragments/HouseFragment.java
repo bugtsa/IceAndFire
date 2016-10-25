@@ -31,8 +31,6 @@ public class HouseFragment extends Fragment implements IHouseView {
 
     private FragmentHousesBinding mBinding;
 
-    private DataManager mDataManager;
-
     private HousePresenter mHousePresenter;
 
     private CharactersRouter mRouter;
@@ -54,8 +52,6 @@ public class HouseFragment extends Fragment implements IHouseView {
         mHousePresenter = HousePresenter.getInstance();
 
         mRouter = new CharactersRouter(getActivity());
-
-        mDataManager = DataManager.getInstance();
 
         mHousePresenter.takeView(this);
         mHousePresenter.initView();
@@ -112,7 +108,7 @@ public class HouseFragment extends Fragment implements IHouseView {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setStackFromEnd(false);
         mBinding.characters.setLayoutManager(layoutManager);
-        mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToAccountDetails(characterOfHouse), getDrawable());
+        mAdapter = new CharactersAdapter(characterOfHouse -> mRouter.routeToCharacterDetails(characterOfHouse), getDrawable());
         mBinding.characters.setAdapter(mAdapter);
         mAdapter.setCharacter(mCharacterList);
     }

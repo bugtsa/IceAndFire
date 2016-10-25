@@ -5,26 +5,26 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 
-@Entity(active = true, nameInDb = "ALIASES")
-public class Alias {
+@Entity(active = true, nameInDb = "SEASONS")
+public class Season {
 
     @Id
     private Long id;
 
-    private String alias;
+    private String season;
 
     private String characterRemoteId;
 
     /** Used for active entity operations. */
-    @Generated(hash = 1571512818)
-    private transient AliasDao myDao;
+    @Generated(hash = 950520542)
+    private transient SeasonDao myDao;
 
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
 
-    public Alias(String characterRemoteId, String alias) {
-        this.alias = alias;
+    public Season(String characterRemoteId, String season) {
+        this.season = season;
         this.characterRemoteId = characterRemoteId;
     }
 
@@ -65,10 +65,10 @@ public class Alias {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 360304207)
+    @Generated(hash = 1913934215)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getAliasDao() : null;
+        myDao = daoSession != null ? daoSession.getSeasonDao() : null;
     }
 
     public String getCharacterRemoteId() {
@@ -79,12 +79,12 @@ public class Alias {
         this.characterRemoteId = characterRemoteId;
     }
 
-    public String getAlias() {
-        return this.alias;
+    public String getSeason() {
+        return this.season;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public void setSeason(String season) {
+        this.season = season;
     }
 
     public Long getId() {
@@ -95,14 +95,14 @@ public class Alias {
         this.id = id;
     }
 
-    @Generated(hash = 1514350672)
-    public Alias(Long id, String alias, String characterRemoteId) {
+    @Generated(hash = 1143704611)
+    public Season(Long id, String season, String characterRemoteId) {
         this.id = id;
-        this.alias = alias;
+        this.season = season;
         this.characterRemoteId = characterRemoteId;
     }
 
-    @Generated(hash = 1265971347)
-    public Alias() {
+    @Generated(hash = 1022390091)
+    public Season() {
     }
 }

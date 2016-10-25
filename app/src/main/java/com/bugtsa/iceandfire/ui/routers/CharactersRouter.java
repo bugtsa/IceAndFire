@@ -14,7 +14,7 @@ public class CharactersRouter extends Router<FragmentActivity> {
         super(activity);
     }
 
-    public void routeToAccountDetails(CharacterOfHouse character) {
+    public void routeToCharacterDetails(CharacterOfHouse character) {
         CharacterDTO characterDTO = new CharacterDTO(character);
         FragmentUtils.replaceFragment(getActivity(), R.id.fragment_container, CharacterFragment.newInstance(characterDTO), true);
     }

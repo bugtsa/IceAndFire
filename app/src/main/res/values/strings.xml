@@ -58,5 +58,7 @@
     <string name="not_correct_working_app">Извините, что-то пошло не так</string>
     <string name="season">season</string>
     <string name="wood_not_found">Woods not Found</string>
+    <string name="word_in">"in "</string>
+    <string name="unknown_season">unknown season</string>
 
 </resources>

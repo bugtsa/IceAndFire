@@ -24,10 +24,12 @@ public class CharacterDTO implements Parcelable {
     private String spouse;
     private List<String> titles;
     private List<String> aliases;
+    private List<String> seasons;
 
     public CharacterDTO(CharacterOfHouse character) {
         List<String> titleList = new ArrayList<>();
         List<String> aliasList = new ArrayList<>();
+        List<String> seasonList = new ArrayList<>();
         mRemoteId = character.getRemoteId();
         houseRemoteId = character.getHouseRemoteId();
         url = character.getUrl();
@@ -48,6 +50,10 @@ public class CharacterDTO implements Parcelable {
             aliasList.add(alias.getAlias());
         }
         this.aliases = aliasList;
+        for (Season season : character.getSeasons()) {
+            seasonList.add(season.getSeason());
+        }
+        this.seasons = seasonList;
     }
 
     protected CharacterDTO(Parcel in) {
@@ -73,6 +79,10 @@ public class CharacterDTO implements Parcelable {
             in.readList(aliases, String.class.getClassLoader());
         } else {
             aliases = null;
+        }
+        if (in.readByte() == 0x01) {
+            seasons = new ArrayList<String>();
+            in.readList(seasons, String.class.getClassLoader());
         }
     }
 
@@ -106,6 +116,12 @@ public class CharacterDTO implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(aliases);
         }
+        if (seasons == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(seasons);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -122,6 +138,10 @@ public class CharacterDTO implements Parcelable {
     };
 
     public String getRemoteId() { return mRemoteId; }
+
+    public void setHouseRemoteId(String houseRemoteId) {
+        this.houseRemoteId = houseRemoteId;
+    }
 
     public String getBorn() {
         return born;
@@ -167,7 +187,23 @@ public class CharacterDTO implements Parcelable {
         return aliases;
     }
 
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
+    }
+
     public List<String> getTitles() {
         return titles;
+    }
+
+    public void setTitles(List<String> titles) {
+        this.titles = titles;
+    }
+
+    public List<String> getSeasons() {
+        return seasons;
+    }
+
+    public void setSeasons(List<String> seasons) {
+        this.seasons = seasons;
     }
 }
