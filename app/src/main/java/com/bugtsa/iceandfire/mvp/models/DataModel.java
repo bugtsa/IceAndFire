@@ -273,7 +273,7 @@ public class DataModel {
         }
     }
 
-    public void getParentName(String parentRemoteId) {
+    public void getParent(String parentRemoteId) {
         CharacterOfHouse character = syncDaoSession.queryBuilder(CharacterOfHouse.class)
                 .where(CharacterOfHouseDao.Properties.RemoteId.eq(parentRemoteId))
                 .build()

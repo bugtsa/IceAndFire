@@ -10,4 +10,8 @@ public interface ICharacterPresenter extends IIceAndFirePresenter {
 
     @Nullable
     ICharacterView getView();
+
+    void onFatherButtonClick();
+
+    void onMotherButtonClick();
 }

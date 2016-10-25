@@ -29,8 +29,6 @@ public class CharacterPresenter implements ICharacterPresenter {
 
     private CharacterDTO mCharacterDTO;
 
-    private CharacterDTO mOpenCharacter;
-
     private String mDiedCharacterMessage;
 
     private CharacterPresenter() {
@@ -62,9 +60,23 @@ public class CharacterPresenter implements ICharacterPresenter {
         return mCharacterView;
     }
 
+    @Override
+    public void onFatherButtonClick() {
+        if (getView() != null) {
+            getView().openParentOfCharacter(new CharacterDTO(mFatherOfCharacter));
+        }
+    }
+
+    @Override
+    public void onMotherButtonClick() {
+        if (getView() != null) {
+            getView().openParentOfCharacter(new CharacterDTO(mMotherOfCharacter));
+        }
+    }
+
     private void setCallbacks() {
         mDataModel.setLoadTitleHouse(titleHouse -> setTitleHouse(titleHouse));
-        mDataModel.setLoadCharacterByRemoteId(character -> setCharacterFatherAndMother(character));
+        mDataModel.setLoadCharacterByRemoteId(character -> setParentOfCharacter(character));
     }
 
     /**
@@ -99,13 +111,13 @@ public class CharacterPresenter implements ICharacterPresenter {
             }
 
             if (!mCharacterDTO.getMother().isEmpty()) {
-                mDataModel.getParentName(mCharacterDTO.getMother());
+                mDataModel.getParent(mCharacterDTO.getMother());
             } else {
                 getView().setVisibleMother(View.INVISIBLE);
             }
 
             if (!mCharacterDTO.getFather().isEmpty()) {
-                mDataModel.getParentName(mCharacterDTO.getFather());
+                mDataModel.getParent(mCharacterDTO.getFather());
             } else {
                 getView().setVisibleFather(View.INVISIBLE);
             }
@@ -132,7 +144,7 @@ public class CharacterPresenter implements ICharacterPresenter {
         getView().setWoodsCharacter(resultString);
     }
 
-    public void setCharacterFatherAndMother(CharacterOfHouse character) {
+    public void setParentOfCharacter(CharacterOfHouse character) {
         if (character.getRemoteId().equals(mCharacterDTO.getMother())) {
             mMotherOfCharacter = character;
             mMotherOfCharacter.setHouseRemoteId(mCharacterDTO.getHouseRemoteId());

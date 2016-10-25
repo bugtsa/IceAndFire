@@ -1,5 +1,7 @@
 package com.bugtsa.iceandfire.mvp.views;
 
+import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
+
 public interface ICharacterView {
 
     void setNameCharacter(String nameCharacter);
@@ -23,4 +25,6 @@ public interface ICharacterView {
     void setVisibleMother(int stateVisible);
 
     void setMotherName(String nameMother);
+
+    void openParentOfCharacter(CharacterDTO parentOfCharacter);
 }

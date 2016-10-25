@@ -41,7 +41,7 @@ public class HouseFragment extends Fragment implements IHouseView {
 
     private List<CharacterOfHouse> mCharacterList;
 
-    private int mHouseKey;
+    private int mHousePageId;
 
     //region Life cycle
     @Override
@@ -49,7 +49,7 @@ public class HouseFragment extends Fragment implements IHouseView {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        mHouseKey = getArguments().getInt(KEY_HOUSE_INDEX);
+        mHousePageId = getArguments().getInt(KEY_HOUSE_INDEX);
 
         mHousePresenter = HousePresenter.getInstance();
 
@@ -59,7 +59,7 @@ public class HouseFragment extends Fragment implements IHouseView {
 
         mHousePresenter.takeView(this);
         mHousePresenter.initView();
-        mHousePresenter.loadCharactersOfHouseFromDb(mHouseKey);
+        mHousePresenter.loadCharactersOfHouseFromDb(mHousePageId);
     }
 
     @Override
@@ -83,8 +83,8 @@ public class HouseFragment extends Fragment implements IHouseView {
 
     //region Show ui components
     private int getIdDrawableIconHouse() {
-        int idDrawable = R.drawable.ic_item;
-        switch (mHouseKey) {
+        int idDrawable;
+        switch (mHousePageId) {
             case STARK_PAGE_ID:
                 idDrawable = R.drawable.ic_stark;
                 break;

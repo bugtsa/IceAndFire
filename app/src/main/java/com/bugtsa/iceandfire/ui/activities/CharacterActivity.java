@@ -1,72 +1,50 @@
 package com.bugtsa.iceandfire.ui.activities;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.bugtsa.iceandfire.R;
+import com.bugtsa.iceandfire.data.managers.DataManager;
+import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.databinding.ActivityCharacterBinding;
 import com.bugtsa.iceandfire.mvp.presenters.CharacterPresenter;
 import com.bugtsa.iceandfire.mvp.views.ICharacterView;
-import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 
 import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.PARCELABLE_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
 
-public class CharacterActivity extends AppCompatActivity implements View.OnClickListener, ICharacterView {
+public class CharacterActivity extends AppCompatActivity implements ICharacterView {
 
     private CharacterPresenter mCharacterPresenter = CharacterPresenter.getInstance();
 
     private ActivityCharacterBinding mBinding;
 
-
-
+    //region Life cycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_character);
 
-        mBinding.fatherCharacterButton.setOnClickListener(this);
-        mBinding.motherCharacterButton.setOnClickListener(this);
+        mBinding.fatherCharacterButton.setOnClickListener(view -> mCharacterPresenter.onFatherButtonClick());
+        mBinding.motherCharacterButton.setOnClickListener(view -> mCharacterPresenter.onMotherButtonClick());
 
         setupToolBar();
         mCharacterPresenter.takeView(this);
         mCharacterPresenter.initView();
-        mCharacterPresenter.initCharacterData(getIntent().getParcelableExtra(ConstantManager.PARCELABLE_KEY));
+        mCharacterPresenter.initCharacterData(getIntent().getParcelableExtra(PARCELABLE_KEY));
     }
+    //endregion
 
-    @Override
-    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.father_character_button:
-//                mOpenCharacter = new CharacterDTO(mFatherOfCharacter);
-//                break;
-//            case R.id.mother_character_button:
-//                mOpenCharacter = new CharacterDTO(mMotherOfCharacter);
-//                break;
-//        }
-//        Intent intent = new Intent(this, CharacterActivity.class);
-//        intent.putExtra(PARCELABLE_KEY, mOpenCharacter);
-//        startActivity(intent);
-    }
-
-    /**
-     * Устанавливает ToolBar
-     */
-    private void setupToolBar() {
-        setSupportActionBar(mBinding.toolbarCharacter);
-        ActionBar actionBar = getSupportActionBar();
-
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
+    //region init ui components
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -87,6 +65,21 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         this.finish();
     }
 
+    /**
+     * Устанавливает ToolBar
+     */
+    private void setupToolBar() {
+        setSupportActionBar(mBinding.toolbarCharacter);
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+    //endregion
+
+    //region ICharacterView
     private int getIdDrawable(String houseRemoteId) {
         int idDrawable = R.drawable.stark;
         switch (Integer.parseInt(houseRemoteId)) {
@@ -105,6 +98,14 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
         return idDrawable;
     }
 
+    private Drawable getHouseImage(final String houseRemoteId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return getResources().getDrawable(getIdDrawable(houseRemoteId), DataManager.getInstance().getContext().getTheme());
+        } else {
+            return getResources().getDrawable(getIdDrawable(houseRemoteId));
+        }
+    }
+
     @Override
     public void setNameCharacter(String nameCharacter) {
         mBinding.collapsingToolbarCharacter.setTitle(nameCharacter);
@@ -112,8 +113,7 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void setImageHouse(String houseRemoteId) {
-//        houseRemoteId
-//        mBinding.characterImageView.setImageDrawable(getDrawable(getIdDrawable(mCharacterDTO.getHouseRemoteId())));
+        mBinding.characterImageView.setImageDrawable(getHouseImage(houseRemoteId));
     }
 
     @Override
@@ -159,11 +159,19 @@ public class CharacterActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void setFatherName(String nameFather) {
-        mBinding.motherCharacterButton.setText(nameFather);
+        mBinding.fatherCharacterButton.setText(nameFather);
     }
 
     @Override
     public void setMotherName(String nameMother) {
         mBinding.motherCharacterButton.setText(nameMother);
     }
+
+    @Override
+    public void openParentOfCharacter(CharacterDTO parentOfCharacter) {
+        Intent intent = new Intent(this, CharacterActivity.class);
+        intent.putExtra(PARCELABLE_KEY, parentOfCharacter);
+        startActivity(intent);
+    }
+    //endregion
 }
