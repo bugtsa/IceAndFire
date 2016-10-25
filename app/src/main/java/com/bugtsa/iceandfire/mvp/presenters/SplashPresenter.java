@@ -4,7 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.support.annotation.Nullable;
 
 import com.bugtsa.iceandfire.data.events.ShowMessageEvent;
-import com.bugtsa.iceandfire.mvp.models.DataModel;
+import com.bugtsa.iceandfire.mvp.models.SplashModel;
 import com.bugtsa.iceandfire.mvp.views.ISplashView;
 import com.bugtsa.iceandfire.utils.AppConfig;
 
@@ -17,12 +17,12 @@ public class SplashPresenter implements ISplashPresenter {
 
     private ISplashView mSplashView;
 
-    private DataModel mDataModel;
+    private SplashModel mSplashModel;
 
     private Long mStart;
 
     private SplashPresenter() {
-        mDataModel = new DataModel();
+        mSplashModel = new SplashModel();
     }
 
     public static SplashPresenter getInstance() {
@@ -55,12 +55,12 @@ public class SplashPresenter implements ISplashPresenter {
     }
 
     private void setCallBacks() {
-        mDataModel.setOnLoadAllCharacterListListener(time -> loadAllCharactersDone(time));
+        mSplashModel.setOnLoadAllCharacterListListener(time -> loadAllCharactersDone(time));
     }
 
     private void loadCharacterFromDb() {
         mStart = System.currentTimeMillis();
-        mDataModel.loadCharacterFromDb();
+        mSplashModel.loadCharacterFromDb();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

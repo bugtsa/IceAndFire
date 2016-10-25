@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.bugtsa.iceandfire.data.storage.models.CharacterDTO;
 import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
-import com.bugtsa.iceandfire.mvp.models.DataModel;
+import com.bugtsa.iceandfire.mvp.models.CharacterModel;
 import com.bugtsa.iceandfire.mvp.views.ICharacterView;
 import com.bugtsa.iceandfire.utils.StringUtils;
 
@@ -21,7 +21,7 @@ public class CharacterPresenter implements ICharacterPresenter {
 
     private ICharacterView mCharacterView;
 
-    private DataModel mDataModel;
+    private CharacterModel mCharacterModel;
 
     private CharacterOfHouse mFatherOfCharacter;
 
@@ -32,7 +32,7 @@ public class CharacterPresenter implements ICharacterPresenter {
     private String mDiedCharacterMessage;
 
     private CharacterPresenter() {
-        mDataModel = new DataModel();
+        mCharacterModel = new CharacterModel();
     }
 
     public static CharacterPresenter getInstance() {
@@ -75,8 +75,8 @@ public class CharacterPresenter implements ICharacterPresenter {
     }
 
     private void setCallbacks() {
-        mDataModel.setLoadTitleHouse(titleHouse -> setTitleHouse(titleHouse));
-        mDataModel.setLoadCharacterByRemoteId(character -> setParentOfCharacter(character));
+        mCharacterModel.setTitleHouseCallback(titleHouse -> setTitleHouse(titleHouse));
+        mCharacterModel.setCharacterByRemoteIdCallback(character -> setParentOfCharacter(character));
     }
 
     /**
@@ -92,7 +92,7 @@ public class CharacterPresenter implements ICharacterPresenter {
                 getView().setNameCharacter(mCharacterDTO.getName());
             }
 
-            mDataModel.getWords(mCharacterDTO.getHouseRemoteId());
+            mCharacterModel.getWords(mCharacterDTO.getHouseRemoteId());
 
             if (!TextUtils.isEmpty(mCharacterDTO.getBorn())) {
                 getView().setDateBorn(mCharacterDTO.getBorn());
@@ -111,13 +111,13 @@ public class CharacterPresenter implements ICharacterPresenter {
             }
 
             if (!mCharacterDTO.getMother().isEmpty()) {
-                mDataModel.getParent(mCharacterDTO.getMother());
+                mCharacterModel.getParent(mCharacterDTO.getMother());
             } else {
                 getView().setVisibleMother(View.INVISIBLE);
             }
 
             if (!mCharacterDTO.getFather().isEmpty()) {
-                mDataModel.getParent(mCharacterDTO.getFather());
+                mCharacterModel.getParent(mCharacterDTO.getFather());
             } else {
                 getView().setVisibleFather(View.INVISIBLE);
             }

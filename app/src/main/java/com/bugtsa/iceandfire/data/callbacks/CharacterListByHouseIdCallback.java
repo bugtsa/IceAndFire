@@ -4,7 +4,7 @@ import com.bugtsa.iceandfire.data.storage.models.CharacterOfHouse;
 
 import java.util.List;
 
-public interface LoadCharacterListByHouseId {
+public interface CharacterListByHouseIdCallback {
 
     void getCharactersList(List<CharacterOfHouse> listCharacter);
 }
