@@ -45,6 +45,7 @@
     <dimen name="spacing_10">10dp</dimen>
     <dimen name="spacing_5">5dp</dimen>
     <dimen name="zeros_0">0dp</dimen>
-
+    <dimen name="list_item_name_margin_bottom">4dp</dimen>
+    <dimen name="list_item_image_size">44dp</dimen>
 
 </resources>
