@@ -4,6 +4,9 @@
     <string name="ff_medium">sans-serif-medium</string>
     <string name="ff_condensed">sans-serif-condensed</string>
 
+    <string name="weight_left_text_view_character_row">1</string>
+    <string name="weight_right_text_view_character_row">2</string>
+
     <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
 
     <string name="user_profile_placeholder_image_title">Изменить фотографию профиля</string>

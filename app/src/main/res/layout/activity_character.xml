@@ -53,20 +53,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_normal_16"
                 android:orientation="vertical">
 
+                <!--Words-->
                 <LinearLayout
                     android:id="@+id/words_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small_8"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/icon.left"/>
+                    style="@style/character_row">
 
                     <TextView
-                        style="@style/text_view_left"
+                        style="@style/text_view_left.drawable"
                         android:text="@string/character_words"
                         tools:text="@string/character_words"/>
 
@@ -75,21 +71,15 @@
                         style="@style/text_view_right"
                         tools:ignore="RtlHardcoded"
                         tools:text="@string/character_words"/>
-
                 </LinearLayout>
 
+                <!--Born-->
                 <LinearLayout
                     android:id="@+id/born_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small_8"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/icon.left"/>
+                    style="@style/character_row">
 
                     <TextView
-                        style="@style/text_view_left"
+                        style="@style/text_view_left.drawable"
                         android:text="@string/character_born"
                         tools:text="@string/character_born"/>
 
@@ -98,21 +88,15 @@
                         style="@style/text_view_right"
                         tools:ignore="RtlHardcoded"
                         tools:text="@string/character_born"/>
-
                 </LinearLayout>
 
+                <!--Titles-->
                 <LinearLayout
                     android:id="@+id/titles_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small_8"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/icon.left"/>
+                    style="@style/character_row">
 
                     <TextView
-                        style="@style/text_view_left"
+                        style="@style/text_view_left.drawable"
                         android:text="@string/character_titles"
                         tools:text="@string/character_titles"/>
 
@@ -120,21 +104,15 @@
                         android:id="@+id/titles_character_text_view"
                         style="@style/text_view_right"
                         tools:text="@string/character_titles"/>
-
                 </LinearLayout>
 
+                <!--Aliases-->
                 <LinearLayout
                     android:id="@+id/aliases_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_big_medium_48"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/icon.left"/>
+                    style="@style/character_row">
 
                     <TextView
-                        style="@style/text_view_left"
+                        style="@style/text_view_left.drawable"
                         android:text="@string/character_aliases"
                         tools:text="@string/character_aliases"/>
 
@@ -142,53 +120,16 @@
                         android:id="@+id/aliases_character_text_view"
                         style="@style/text_view_right"
                         tools:text="@string/character_aliases"/>
-
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/mother_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_big_medium_48"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/icon.left"
-                        android:src="@drawable/ic_item"
-                        android:visibility="invisible"/>
-
-                    <TextView
-                        android:id="@+id/mother_character_text_view"
-                        style="@style/text_view_left"
-                        android:text="@string/character_mother"
-                        tools:text="@string/character_mother"/>
-
-                    <LinearLayout
-                        style="@style/text_view_right">
-
-                        <Button
-                            android:id="@+id/mother_character_button"
-                            style="@style/button"
-                            tools:text="@string/character_mother"/>
-                    </LinearLayout>
-
-                </LinearLayout>
-
+                <!--fatherButton-->
                 <LinearLayout
                     android:id="@+id/father_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small_8"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/icon.left"
-                        android:src="@drawable/ic_item"
-                        android:visibility="invisible"/>
+                    style="@style/character_row">
 
                     <TextView
                         android:id="@+id/father_character_text_view"
-                        style="@style/text_view_left"
+                        style="@style/text_view_left.button"
                         android:text="@string/character_father"
                         tools:text="@string/character_father"/>
 
@@ -197,11 +138,32 @@
 
                         <Button
                             android:id="@+id/father_character_button"
-                            style="@style/button"
+                            style="@style/parent_button"
                             tools:text="@string/character_father"/>
                     </LinearLayout>
-
                 </LinearLayout>
+
+                <!--motherButton-->
+                <LinearLayout
+                    android:id="@+id/mother_layout"
+                    style="@style/character_row">
+
+                    <TextView
+                        android:id="@+id/mother_character_text_view"
+                        style="@style/text_view_left.button"
+                        android:text="@string/character_mother"
+                        tools:text="@string/character_mother"/>
+
+                    <LinearLayout
+                        style="@style/text_view_right">
+
+                        <Button
+                            android:id="@+id/mother_character_button"
+                            style="@style/parent_button"
+                            tools:text="@string/character_mother"/>
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
