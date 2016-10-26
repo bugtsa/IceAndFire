@@ -1,5 +1,6 @@
 package com.bugtsa.iceandfire.ui.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
@@ -20,7 +21,7 @@ import com.bugtsa.iceandfire.utils.ConstantManager;
 import com.bugtsa.iceandfire.utils.SnackBarUtils;
 
 import static com.bugtsa.iceandfire.utils.ConstantManager.LANNISTER_KEY;
-import static com.bugtsa.iceandfire.utils.ConstantManager.PARCELABLE_KEY;
+import static com.bugtsa.iceandfire.utils.ConstantManager.PARCELABLE_CHARACTER_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.STARK_KEY;
 import static com.bugtsa.iceandfire.utils.ConstantManager.TARGARIEN_KEY;
 
@@ -29,6 +30,12 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
     private CharacterPresenter mCharacterPresenter = CharacterPresenter.getInstance();
 
     private ActivityCharacterBinding mBinding;
+
+    public static Intent newIntent(Context packageContext, CharacterDTO characterDTO) {
+        Intent intent = new Intent(packageContext, CharacterActivity.class);
+        intent.putExtra(PARCELABLE_CHARACTER_KEY, characterDTO);
+        return intent;
+    }
 
     //region Life cycle
     @Override
@@ -42,7 +49,7 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
         setupToolBar();
         mCharacterPresenter.takeView(this);
         mCharacterPresenter.initView();
-        mCharacterPresenter.initCharacterData(getIntent().getParcelableExtra(PARCELABLE_KEY));
+        mCharacterPresenter.initCharacterData(getIntent().getParcelableExtra(PARCELABLE_CHARACTER_KEY));
     }
     //endregion
 
@@ -201,8 +208,7 @@ public class CharacterActivity extends AppCompatActivity implements ICharacterVi
 
     @Override
     public void openParentOfCharacter(CharacterDTO parentOfCharacter) {
-        Intent intent = new Intent(this, CharacterActivity.class);
-        intent.putExtra(PARCELABLE_KEY, parentOfCharacter);
+        Intent intent = CharacterActivity.newIntent(this, parentOfCharacter);
         startActivity(intent);
     }
     //endregion

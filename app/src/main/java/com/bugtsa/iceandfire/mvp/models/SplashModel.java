@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bugtsa.iceandfire.utils.ConstantManager.EXCEPTION_PREPARE_CHARACTERSLIST;
+import static com.bugtsa.iceandfire.utils.ConstantManager.EXCEPTION_IN_PREPARE_CHARACTERS_LIST;
 import static com.bugtsa.iceandfire.utils.ConstantManager.FAILED_SERVER;
 import static com.bugtsa.iceandfire.utils.ConstantManager.NETWORK_IS_NOT_AVAILABLE;
 import static com.bugtsa.iceandfire.utils.ConstantManager.PER_PAGE;
@@ -132,7 +132,7 @@ public class SplashModel {
                 mCharacterList.add(characterOfHouse);
             }
         } catch (Exception e) {
-            LogUtils.d(EXCEPTION_PREPARE_CHARACTERSLIST + e.toString());
+            LogUtils.d(EXCEPTION_IN_PREPARE_CHARACTERS_LIST + e.toString());
         }
     }
 
